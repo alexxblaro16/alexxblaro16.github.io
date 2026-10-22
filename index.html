@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Alejandro Blanco Rodríguez · Desarrollador Full Stack</title>
+  <meta name="description" content="Portfolio de Alejandro Blanco Rodríguez, desarrollador full stack junior (Java, React, Laravel, Python). Un videojuego en píxeles con mi trayectoria, mis proyectos y mi contacto.">
+  <meta property="og:title" content="Alejandro Blanco Rodríguez · Desarrollador Full Stack">
+  <meta property="og:description" content="Mi vida en píxeles: trayectoria, proyectos y contacto en forma de videojuego.">
+  <meta name="theme-color" content="#1b1f27">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231b1f27'/%3E%3Ctext x='3' y='12' font-size='10' font-family='monospace' fill='%232fbf71'%3E%3E_%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="juego"></div>
+  <div id="pantalla" class="pantalla" hidden></div>
+
+  <!-- Barra superior: lo importante siempre a la vista -->
+  <header id="hud">
+    <div class="hud-izq">
+      <b class="marca">alejandro.blanco()</b>
+      <span id="hud-titulo"></span>
+      <a id="btn-practicas" class="boton verde"></a>
+      <a id="btn-cv" class="boton" download></a>
+    </div>
+    <div class="hud-der">
+      <span id="hud-zonas"></span>
+      <button id="btn-sonido" class="boton"></button>
+      <button id="btn-idioma" class="boton"></button>
+      <button id="btn-clasico" class="boton"></button>
+    </div>
+  </header>
+  <p id="ayuda"></p>
+
+  <!-- Diálogo estilo RPG -->
+  <div id="dialogo" hidden><b id="dialogo-nombre"></b><p id="dialogo-texto"></p><span class="seguir">▼</span></div>
+
+  <!-- Panel de cada zona -->
+  <div id="panel" hidden>
+    <div class="ventana">
+      <div class="ventana-barra"><i></i><i></i><i></i><h2 id="panel-titulo"></h2><button id="panel-cerrar" aria-label="Cerrar">✕</button></div>
+      <div id="panel-cuerpo"></div>
+    </div>
+  </div>
+
+  <div id="logros"></div>
+  <span id="etiqueta" hidden></span>
+
+  <!-- Mando táctil -->
+  <div id="mando">
+    <div class="cruceta">
+      <button data-dir="arriba" aria-label="Arriba">▲</button>
+      <button data-dir="izquierda" aria-label="Izquierda">◀</button>
+      <button data-dir="derecha" aria-label="Derecha">▶</button>
+      <button data-dir="abajo" aria-label="Abajo">▼</button>
+    </div>
+    <button id="btn-accion"></button>
+  </div>
+
+  <!-- Modo clásico: todo el contenido como web normal -->
+  <section id="clasico" hidden>
+    <button id="clasico-volver" class="boton verde"></button>
+    <div id="clasico-cuerpo"></div>
+  </section>
+
+  <noscript><p style="color:#fff;padding:2rem;font-family:sans-serif">Alejandro Blanco Rodríguez · Desarrollador Full Stack Junior · alexxblaro@gmail.com · github.com/alexxblaro16</p></noscript>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

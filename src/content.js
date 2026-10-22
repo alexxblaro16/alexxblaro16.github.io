@@ -1,0 +1,177 @@
+// Todo el texto del portfolio en español e inglés. El juego y el modo clásico leen de aquí.
+
+const GITHUB = 'https://github.com/alexxblaro16'
+export const ENLACES = {
+  github: GITHUB,
+  linkedin: 'https://www.linkedin.com/in/alejandro-blanco-rodr%C3%ADguez-13977530b/',
+  email: 'alexxblaro@gmail.com',
+  practicas: 'mailto:alexxblaro@gmail.com?subject=Pr%C3%A1cticas%20-%20Alejandro%20Blanco',
+  cv: { es: 'cv/CV-Alejandro-Blanco-ES.pdf', en: 'cv/CV-Alejandro-Blanco-EN.pdf' },
+}
+
+// Proyectos: los mismos en los dos idiomas, solo cambia el texto
+const PROYECTOS = [
+  { id: 'medscan', nombre: 'MedScan', premio: true, stack: ['React', 'IA', 'OCR'], repo: null, demo: null },
+  { id: 'virtualph', nombre: 'VirtualpH · CSIC', stack: ['Electron', 'React', 'Tailwind', 'Laravel', 'Docker'], repo: `${GITHUB}/proyecto-csic`, demo: null },
+  { id: 'dante', nombre: 'DANTE P.W.', stack: ['Python', 'FastAPI', 'Ollama', 'React', 'Whisper'], repo: null, demo: null },
+  { id: 'helios', nombre: 'Helios Deck', stack: ['TypeScript', 'React Router 7', 'Three.js', 'Vercel'], repo: `${GITHUB}/helios-deck`, demo: 'https://helios-deck-liard.vercel.app' },
+  { id: 'pykv', nombre: 'PyKV', stack: ['Python', 'pytest', 'GitHub Actions'], repo: `${GITHUB}/software-engineering`, demo: null },
+  { id: 'focus', nombre: 'FOCUS', stack: ['React', 'Tailwind', 'Vite'], repo: `${GITHUB}/mi-lista-tareas-react`, demo: 'https://mi-lista-tareas-react.vercel.app' },
+  { id: 'eventos', nombre: 'API de eventos', stack: ['Laravel', 'PHP', 'Docker'], repo: `${GITHUB}/eventos-api-udit`, demo: null },
+  { id: 'bikes', nombre: 'BLAROSBIKES', stack: ['Laravel', 'MySQL', 'Redis', 'Leaflet'], repo: `${GITHUB}/bikes-udit-ABR`, demo: null },
+  { id: 'aed2', nombre: 'AED 2', stack: ['C++20', 'CMake'], repo: `${GITHUB}/aed2-udit`, demo: null },
+  { id: 'jerry', nombre: 'Jerry EV3', stack: ['MicroPython', 'LEGO EV3'], repo: `${GITHUB}/jerry-ev3`, demo: null },
+]
+
+const STACK = [
+  { grupo: 'front', items: [['React', 9], ['JavaScript', 9], ['Astro', 8], ['HTML / CSS', 9], ['Tailwind', 8], ['Electron', 7]] },
+  { grupo: 'back', items: [['Java', 8], ['Laravel', 8], ['Python', 8], ['Spring Boot', 5], ['FastAPI', 6], ['Node / Express', 5]] },
+  { grupo: 'datos', items: [['MySQL', 8], ['MongoDB', 7], ['PostgreSQL', 5], ['Redis', 6]] },
+  { grupo: 'herramientas', items: [['Git / GitHub', 9], ['Docker', 7], ['GitHub Actions', 6], ['Linux', 6]] },
+]
+
+export const TEXTOS = {
+  es: {
+    titulo: 'Desarrollador Full Stack Junior',
+    intro: { pulsa: 'PULSA ENTER O TOCA PARA EMPEZAR', saltar: 'Modo clásico' },
+    seleccion: {
+      titulo: 'ELIGE A TU ALEJANDRO',
+      ayuda: '← → para elegir · ENTER para jugar',
+      clases: {
+        front: { nombre: 'FRONTEND', lema: 'Píxel a píxel, como este juego.' },
+        full: { nombre: 'FULL STACK', lema: 'Del botón a la base de datos.' },
+        back: { nombre: 'BACKEND', lema: 'APIs, datos y que nada se caiga.' },
+      },
+      stats: { front: 'Front', back: 'Back', datos: 'Datos', equipo: 'Equipo' },
+    },
+    hud: { nivel: 'Nivel', curso: '3.º Full Stack', misiones: 'Zonas', clasico: 'Modo clásico', idioma: 'EN', ayuda: 'Muévete con WASD o las flechas · E para entrar' },
+    accion: 'ENTRAR',
+    logro: 'Logro desbloqueado',
+    todas: '¡Has visto toda mi vida en píxeles! Si te encaja, hablamos.',
+    zonas: {
+      trayectoria: { cartel: 'ESCUELA', titulo: 'Trayectoria', logro: 'Historiador' },
+      proyectos: { cartel: 'LABORATORIO', titulo: 'Proyectos', logro: 'Explorador de repos' },
+      trofeos: { cartel: 'TROFEOS', titulo: 'Sala de trofeos', logro: 'Fan de MedScan' },
+      stack: { cartel: 'TERMINAL', titulo: 'Inventario · stack', logro: 'Inspector de stack' },
+      contacto: { cartel: 'CORREOS', titulo: 'Contacto', logro: 'Primer contacto' },
+      hola: { cartel: 'HELLO, WORLD!', titulo: 'Donde empezó todo', logro: 'Hello, World!' },
+    },
+    sobreMi: 'Técnico Superior en DAM y estudiante de 3.º de Desarrollo de Software Full Stack en UDIT (Madrid). Trabajo en front y back con Java, React, Laravel y Python. El front es mi punto fuerte, pero me interesa entender el sistema completo, desde la base de datos hasta el despliegue. Busco prácticas con opción a media jornada compatible con mis estudios.',
+    hola: 'Mi primer lenguaje fue Java y mi primera línea, un System.out.println("Hello, World!"). Desde entonces no he parado: del DAM a la carrera, de las prácticas a los hackatones, y ahora este portfolio en el que cada edificio es una parte de mi vida.',
+    trayectoria: [
+      { fecha: '2021 – 2023', titulo: 'Bachillerato de Ciencias', lugar: 'IES Tierra de Campos · Villalpando (Zamora)', texto: 'Donde empezó todo, en mi pueblo.' },
+      { fecha: '2023 – 2025', titulo: 'Técnico Superior en DAM', lugar: 'MEDAC Albalá · Madrid', texto: 'Java, bases de datos y mis primeras apps de verdad.' },
+      { fecha: 'mar – jun 2025', titulo: 'Prácticas de desarrollo web', lugar: 'Anexia Tecnologías', texto: 'Nueva versión de la web del departamento de tecnología con Astro, aprendiendo desde cero, y mi primer trabajo en equipo con Git.' },
+      { fecha: '2025 – hoy', titulo: 'Grado en Desarrollo de Software Full Stack', lugar: 'UDIT · Madrid', texto: 'Cursando 3.º: front, back, algoritmos, ingeniería del software y mucho trabajo en equipo con pull requests.' },
+      { fecha: 'dic 2025', titulo: 'Hackatón IndesIAhack', lugar: 'Reto de ACCIONA', texto: 'CityScan: LiDAR y visión artificial con YOLO para la gestión urbana.' },
+      { fecha: '2026', titulo: 'Hackatón OdiseIA4Good · 4.º premio', lugar: 'MedScan', texto: 'Con cobertura en RTVE, Antena 3 y El Español.' },
+      { fecha: 'abr 2026', titulo: 'Erasmus+ BIP en Tallin', lugar: 'EEK Mainor · Estonia', texto: 'Programa intensivo en inglés sobre empleabilidad y marca personal en la era de la IA.' },
+      { fecha: '2026 – hoy', titulo: 'Lead de frontend · VirtualpH', lugar: 'Proyecto universitario con el CSIC', texto: 'App de escritorio para monitorizar sensores en museos (Electron, React, Laravel, Docker).' },
+    ],
+    proyectosTexto: {
+      medscan: 'App con IA para evitar errores con la medicación: escaneas la caja, la consulta en el vademécum y puedes preguntar a un chat. Hice el frontend en React y su conexión con el backend, en un equipo de 5. Repositorio privado.',
+      virtualph: 'Aplicación de escritorio para monitorizar sensores y pH en museos, para el CSIC. Lead de frontend en un equipo de 3: ramas, pull requests y revisión de código.',
+      dante: 'Mi propio asistente de IA 100 % local: memoria que aprende de mis apuntes, app móvil, voz en tiempo real y un agente que usa herramientas pidiendo permiso. Repositorio privado.',
+      helios: 'Dashboard que agrega datos abiertos de USGS, NOAA y NASA en tiempo real, con renderizado en servidor y escenas 3D.',
+      pykv: 'Base de datos clave-valor estilo Bitcask (log append-only e índice hash) hecha en equipo con CI y revisiones.',
+      focus: 'Gestor de tareas con interfaz 3D, modo oscuro y claro, español e inglés y guardado local.',
+      eventos: 'API REST de una plataforma de eventos con autenticación y tests.',
+      bikes: 'Préstamo de bicicletas para el campus: 50 estaciones en un mapa, batería de cada bici y estadísticas.',
+      aed2: 'Árboles, grafos con Dijkstra, heap y tabla hash propia en C++ con memoria gestionada a mano.',
+      jerry: 'Robot LEGO EV3 con siguelíneas (control PD), modo sumo y mando web desde el móvil.',
+    },
+    verCodigo: 'Código',
+    verDemo: 'Demo',
+    privado: 'Privado',
+    trofeos: {
+      titulo: 'MedScan · 4.º premio OdiseIA4Good',
+      texto: 'Lo que empezó como un hackatón acabó en la tele. Con mi equipo creamos una app que usa IA para que la gente mayor no se líe con la medicación. Yo me encargué del frontend y de conectarlo con el backend.',
+      medios: ['RTVE (entrevista en estudio)', 'Antena 3', 'El Español', 'El Periódico de España', 'El Día de Zamora'],
+    },
+    grupos: { front: 'Frontend', back: 'Backend', datos: 'Datos', herramientas: 'Herramientas' },
+    contacto: {
+      texto: '¿Buscas a alguien para prácticas? Escríbeme, contesto rápido.',
+      email: 'Escríbeme',
+      practicas: 'Ofrecer prácticas',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      cv: 'Descargar CV (ES)',
+      cvOtro: 'Download CV (EN)',
+    },
+    clasico: { volver: 'Volver al juego', proyectos: 'Proyectos', trayectoria: 'Trayectoria', stack: 'Stack', contacto: 'Contacto', sobre: 'Sobre mí' },
+    cerrar: 'Cerrar',
+  },
+
+  en: {
+    titulo: 'Junior Full Stack Developer',
+    intro: { pulsa: 'PRESS ENTER OR TAP TO START', saltar: 'Classic mode' },
+    seleccion: {
+      titulo: 'CHOOSE YOUR ALEJANDRO',
+      ayuda: '← → to choose · ENTER to play',
+      clases: {
+        front: { nombre: 'FRONTEND', lema: 'Pixel by pixel, like this game.' },
+        full: { nombre: 'FULL STACK', lema: 'From the button to the database.' },
+        back: { nombre: 'BACKEND', lema: 'APIs, data and nothing going down.' },
+      },
+      stats: { front: 'Front', back: 'Back', datos: 'Data', equipo: 'Team' },
+    },
+    hud: { nivel: 'Level', curso: '3rd year Full Stack', misiones: 'Zones', clasico: 'Classic mode', idioma: 'ES', ayuda: 'Move with WASD or the arrows · E to enter' },
+    accion: 'ENTER',
+    logro: 'Achievement unlocked',
+    todas: 'You have seen my whole life in pixels! If I fit, let\'s talk.',
+    zonas: {
+      trayectoria: { cartel: 'SCHOOL', titulo: 'Journey', logro: 'Historian' },
+      proyectos: { cartel: 'LAB', titulo: 'Projects', logro: 'Repo explorer' },
+      trofeos: { cartel: 'TROPHIES', titulo: 'Trophy room', logro: 'MedScan fan' },
+      stack: { cartel: 'TERMINAL', titulo: 'Inventory · stack', logro: 'Stack inspector' },
+      contacto: { cartel: 'POST OFFICE', titulo: 'Contact', logro: 'First contact' },
+      hola: { cartel: 'HELLO, WORLD!', titulo: 'Where it all began', logro: 'Hello, World!' },
+    },
+    sobreMi: 'Higher Vocational Diploma in Multiplatform Application Development (DAM) and 3rd-year Full Stack Software Development student at UDIT (Madrid). I work on front end and back end with Java, React, Laravel and Python. Front end is my strong point, but I like understanding the whole system, from the database to deployment. Looking for an internship with the option to continue part-time alongside my studies.',
+    hola: 'My first language was Java and my first line a System.out.println("Hello, World!"). I have not stopped since: from vocational training to university, from my internship to hackathons, and now this portfolio where every building is a part of my life.',
+    trayectoria: [
+      { fecha: '2021 – 2023', titulo: 'Science Baccalaureate', lugar: 'IES Tierra de Campos · Villalpando (Zamora)', texto: 'Where it all began, in my hometown.' },
+      { fecha: '2023 – 2025', titulo: 'Higher Vocational Diploma in Multiplatform App Development', lugar: 'MEDAC Albalá · Madrid', texto: 'Java, databases and my first real apps.' },
+      { fecha: 'Mar – Jun 2025', titulo: 'Web Developer Intern', lugar: 'Anexia Tecnologías', texto: 'A new version of the technology department\'s website with Astro, learned from scratch, and my first team project with Git.' },
+      { fecha: '2025 – now', titulo: 'Degree in Full Stack Software Development', lugar: 'UDIT · Madrid', texto: '3rd year: front end, back end, algorithms, software engineering and lots of teamwork with pull requests.' },
+      { fecha: 'Dec 2025', titulo: 'IndesIAhack hackathon', lugar: 'ACCIONA challenge', texto: 'CityScan: LiDAR and computer vision with YOLO for urban management.' },
+      { fecha: '2026', titulo: 'OdiseIA4Good hackathon · 4th prize', lugar: 'MedScan', texto: 'Featured on RTVE, Antena 3 and El Español.' },
+      { fecha: 'Apr 2026', titulo: 'Erasmus+ BIP in Tallinn', lugar: 'EEK Mainor · Estonia', texto: 'Intensive programme in English on employability and personal branding in the AI era.' },
+      { fecha: '2026 – now', titulo: 'Front-end lead · VirtualpH', lugar: 'University project with the CSIC', texto: 'Desktop app to monitor sensors in museums (Electron, React, Laravel, Docker).' },
+    ],
+    proyectosTexto: {
+      medscan: 'AI app to prevent medication errors: scan the box, look it up in the drug database and ask a chat. I built the React front end and its back-end integration in a team of 5. Private repository.',
+      virtualph: 'Desktop app to monitor sensors and pH levels in museums for the CSIC (Spanish National Research Council). Front-end lead in a team of 3: branches, pull requests and code review.',
+      dante: 'My own 100% local AI assistant: memory that learns from my notes, mobile app, real-time voice and an agent that uses tools after asking permission. Private repository.',
+      helios: 'Dashboard aggregating open data from USGS, NOAA and NASA in real time, with server-side rendering and 3D scenes.',
+      pykv: 'Bitcask-style key-value store (append-only log and hash index) built as a team with CI and reviews.',
+      focus: 'Task manager with a 3D interface, dark and light mode, Spanish and English and local storage.',
+      eventos: 'REST API for an events platform with authentication and tests.',
+      bikes: 'Campus bike sharing: 50 stations on a map, battery per bike and statistics.',
+      aed2: 'Trees, graphs with Dijkstra, heap and a custom hash table in C++ with manual memory management.',
+      jerry: 'LEGO EV3 robot with line following (PD control), sumo mode and a web remote from the phone.',
+    },
+    verCodigo: 'Code',
+    verDemo: 'Demo',
+    privado: 'Private',
+    trofeos: {
+      titulo: 'MedScan · 4th prize OdiseIA4Good',
+      texto: 'What started as a hackathon ended up on TV. With my team we built an app that uses AI so older people don\'t get their medication mixed up. I was in charge of the front end and connecting it to the back end.',
+      medios: ['RTVE (studio interview)', 'Antena 3', 'El Español', 'El Periódico de España', 'El Día de Zamora'],
+    },
+    grupos: { front: 'Front end', back: 'Back end', datos: 'Data', herramientas: 'Tools' },
+    contacto: {
+      texto: 'Looking for an intern? Drop me a line, I reply fast.',
+      email: 'Email me',
+      practicas: 'Offer an internship',
+      linkedin: 'LinkedIn',
+      github: 'GitHub',
+      cv: 'Download CV (EN)',
+      cvOtro: 'Descargar CV (ES)',
+    },
+    clasico: { volver: 'Back to the game', proyectos: 'Projects', trayectoria: 'Journey', stack: 'Stack', contacto: 'Contact', sobre: 'About me' },
+    cerrar: 'Close',
+  },
+}
+
+export { PROYECTOS, STACK }
