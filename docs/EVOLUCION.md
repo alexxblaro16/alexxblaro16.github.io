@@ -59,6 +59,16 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
   encima una tecla «E» que flota; en el móvil sale «A», el botón táctil.
 - Pablo (UDIT) con melena lisa negra con raya al medio y barba poco poblada; Manuel con gafas finas de montura dorada.
 
+### 7. Creador nuevo y mapa más pulido
+- **Creador de personaje** con vista grande que anda y se puede girar, botón de personaje aleatorio y tres pestañas:
+  cuerpo (piel, once peinados, color de pelo y barba), ropa (prenda, color, pantalón, corte y zapatillas) y extras
+  (gafas, cadena y sonrisa).
+- Iván con degradado y la franja de su camiseta; Gabriel despeinado y con la equipación de fútbol de la UDIT (rayas,
+  pantalón corto y medias blancas); Héctor con su pelo ondulado y polo; mi madre con la piel más clara y yo menos moreno.
+- Avión de Tallin nuevo, visto desde arriba, con alas en flecha, motores, la cola con la bandera de Estonia y la escalerilla.
+- Mapa: sombras bajo los edificios, bordes en el camino, árboles en alcorques en la plaza, palomas que picotean,
+  flores por la hierba y una niebla suave en las esquinas de la pantalla.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

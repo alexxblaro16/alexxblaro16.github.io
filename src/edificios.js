@@ -663,6 +663,71 @@ function banderas(fotograma) {
   }
 }
 
+// Avión del Erasmus a Tallin visto desde arriba: fuselaje con ventanillas, alas en flecha con motores,
+// cola con los colores de la bandera de Estonia y la escalerilla puesta
+function avion() {
+  const [c, ctx] = lienzo(96, 64)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.beginPath(); ctx.ellipse(50, 58, 40, 5, 0, 0, Math.PI * 2); ctx.fill()
+  // alas en flecha
+  const ala = (y0, sentido) => {
+    // ala en flecha: cada fila algo más atrás y más estrecha, con borde oscuro y el canto de ataque claro
+    for (let i = 0; i < 20; i++) {
+      const y = y0 + i * sentido, x = 42 - Math.round(i * 0.9), w = 18 - Math.round(i * 0.45)
+      p(x - 1, y, w + 2, 1, '#1b1f27'); p(x, y, w, 1, '#d3d9e0'); p(x + w - 2, y, 2, 1, '#f4f6f8')
+    }
+    p(42 - 18, y0 + 20 * sentido, 10, 1, '#1b1f27')
+    p(34, y0 + 9 * sentido - 2, 10, 5, '#1b1f27'); p(35, y0 + 9 * sentido - 1, 8, 3, '#6a717c'); p(42, y0 + 9 * sentido - 1, 1, 3, '#2b2f38') // motor
+  }
+  ala(24, -1); ala(39, 1)
+  // fuselaje
+  p(10, 25, 76, 14, '#1b1f27'); p(11, 26, 74, 12, '#f4f6f8'); p(11, 26, 74, 3, '#ffffff'); p(11, 35, 74, 3, '#d9dee4')
+  p(85, 27, 4, 10, '#1b1f27'); p(85, 28, 5, 8, '#f4f6f8'); p(89, 29, 3, 6, '#1b1f27'); p(89, 30, 2, 4, '#e9ecef') // morro
+  p(86, 29, 3, 3, '#33476b') // cabina
+  p(11, 32, 74, 1, '#2f5fb0') // franja azul
+  for (let x = 20; x < 82; x += 5) p(x, 29, 2, 2, '#4a6a9a')
+  p(64, 27, 3, 8, '#9aa3ad') // puerta
+  // cola con la bandera de Estonia (azul, negro y blanco)
+  p(4, 18, 12, 28, '#1b1f27'); p(5, 19, 10, 26, '#f4f6f8')
+  p(5, 19, 10, 3, '#0072ce'); p(5, 22, 10, 3, '#15171c'); p(5, 25, 10, 2, '#ffffff')
+  p(5, 37, 10, 3, '#0072ce'); p(5, 40, 10, 3, '#15171c')
+  p(2, 30, 14, 4, '#1b1f27'); p(3, 31, 12, 2, '#d9dee4')
+  // escalerilla
+  p(63, 39, 5, 14, '#1b1f27'); p(64, 40, 3, 12, '#f2c200'); for (let y = 42; y < 52; y += 2) p(64, y, 3, 1, '#8a6d00')
+  return c
+}
+
+function paloma() {
+  const [c, ctx] = lienzo(16, 8)
+  for (let f = 0; f < 2; f++) {
+    const o = f * 8, p = (x, y, w, h, col) => px(ctx, o + x, y, col, w, h)
+    const pico = f ? 4 : 3
+    p(1, 3, 5, 3, '#8a919a'); p(2, 2, 3, 1, '#a9b0b8'); p(4, pico - 2, 2, 2, '#6a717c'); p(6, pico - 1, 1, 1, '#e8a33a')
+    p(2, 4, 2, 1, '#6fa58a'); p(1, 6, 1, 2, '#e8a33a'); p(4, 6, 1, 2, '#e8a33a'); p(0, 4, 1, 1, '#5b6068')
+  }
+  return c
+}
+
+function flores() {
+  const [c, ctx] = lienzo(16, 10)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  for (const [x, y, col] of [[2, 4, '#f6e05e'], [6, 2, '#ffffff'], [10, 5, '#ff8fb0'], [13, 2, '#a970ff'], [5, 7, '#e05a5a'], [12, 8, '#f6e05e']]) {
+    p(x, y + 1, 1, 2, '#3f8a3a'); p(x - 1, y, 3, 1, col); p(x, y - 1, 1, 3, col); p(x, y, 1, 1, '#f2b33d')
+  }
+  return c
+}
+
+// Árbol de plaza en un alcorque redondo de piedra
+function arbolPlaza() {
+  const [c, ctx] = lienzo(24, 34)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(4, 29, 16, 5, '#1b1f27'); p(5, 30, 14, 3, '#b3ac9d'); p(7, 30, 10, 2, '#6b4a2b')
+  p(10, 16, 4, 14, '#1b1f27'); p(11, 16, 2, 14, '#7a5532')
+  p(3, 2, 18, 15, '#1b2a1e'); p(2, 5, 20, 9, '#1b2a1e'); p(4, 3, 16, 13, '#3c9a47'); p(3, 6, 18, 7, '#3c9a47')
+  p(6, 4, 5, 4, '#5cbf5f'); p(14, 6, 4, 3, '#5cbf5f'); p(13, 11, 6, 4, '#2a7535'); p(4, 11, 5, 3, '#2a7535')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -673,7 +738,10 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), veleta, telarana, mochila_arana: mochilaArana,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, veleta, telarana, mochila_arana: mochilaArana,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
+  // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando
+  const tex = scene.textures.addCanvas('paloma', paloma())
+  tex.add(0, 0, 0, 0, 8, 8); tex.add(1, 0, 8, 0, 8, 8)
 }

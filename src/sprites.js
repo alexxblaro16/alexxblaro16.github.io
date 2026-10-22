@@ -121,19 +121,6 @@ export function crearDecorado(scene) {
     scene.textures.addCanvas('campo', c)
   }
 
-  // Avioneta para el Erasmus
-  {
-    const [c, ctx] = lienzo(48, 24)
-    px(ctx, 4, 9, '#1b1f27', 40, 8); px(ctx, 5, 10, '#eef1f4', 38, 6); px(ctx, 5, 14, '#c9ced5', 38, 2)
-    px(ctx, 5, 12, '#3d7be0', 38, 1)
-    px(ctx, 40, 11, '#3d7be0', 3, 2)
-    for (let x = 10; x < 38; x += 5) px(ctx, x, 11, '#7fc8ff', 3, 2)
-    px(ctx, 18, 2, '#1b1f27', 10, 8); px(ctx, 19, 3, '#d9dde2', 8, 6)
-    px(ctx, 18, 16, '#1b1f27', 10, 7); px(ctx, 19, 16, '#d9dde2', 8, 6)
-    px(ctx, 2, 4, '#1b1f27', 6, 6); px(ctx, 3, 5, '#2fbf71', 4, 4)
-    scene.textures.addCanvas('avion', c)
-  }
-
   // Parada de autobús y bloque de tierra (secreto)
   {
     const [c, ctx] = lienzo(32, 32)

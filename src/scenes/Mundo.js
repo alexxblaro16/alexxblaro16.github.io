@@ -11,7 +11,7 @@ import { lienzo, px, texto } from '../pixel.js'
 const VELOCIDAD = 90
 // Sacado de sus fotos: pelo oscuro ondulado, piel morena clara, camiseta blanca, cadena plateada,
 // vaqueros anchos y zapatillas blancas, y el portátil con pegatinas
-const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#d99e78', ropa: '#f2f3f5', pantalon: '#4f6d9a', anchos: true, zapatillas: '#f4f4f4', cadena: true }
+const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#e6b28e', ropa: '#f2f3f5', pantalon: '#4f6d9a', anchos: true, zapatillas: '#f4f4f4', cadena: true }
 const DANTE_PW = { pelo: 'flequillo', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', robot: true }
 
 const frases = (clave) => HISTORIA[estado.idioma][clave] || []
@@ -81,6 +81,12 @@ export default class Mundo extends Phaser.Scene {
     for (let y = 0; y < ALTO; y++) for (let x = 0; x < ANCHO; x++) ctx.drawImage(img(azar() > 0.93 ? 'hierba2' : 'hierba'), x * T, y * T)
     for (let x = CAMINO_INICIO; x < ANCHO - 2; x++) for (const y of [CAMINO, CAMINO + 1]) ctx.drawImage(img('camino'), x * T, y * T)
     for (const sd of SENDAS) for (let y = sd.y0; y <= sd.y1; y++) ctx.drawImage(img('camino'), sd.x * T, y * T)
+    const borde = (x, y, w, h) => { ctx.fillStyle = '#b8995c'; ctx.fillRect(x, y, w, h) }
+    for (let x = CAMINO_INICIO * T; x < (ANCHO - 2) * T; x += 1) {
+      borde(x, CAMINO * T, 1, 1); borde(x, (CAMINO + 2) * T - 1, 1, 1)
+      if (azar() > 0.86) { ctx.fillStyle = '#4f9e4a'; ctx.fillRect(x, CAMINO * T, 2, 2); ctx.fillRect(x, (CAMINO + 2) * T - 2, 2, 2) }
+    }
+    for (const sd of SENDAS) for (let y = sd.y0 * T; y < (sd.y1 + 1) * T; y++) { borde(sd.x * T, y, 1, 1); borde((sd.x + 1) * T - 1, y, 1, 1) }
     for (const z of SUELOS) for (let y = z.y0; y <= z.y1; y++) for (let x = z.x0; x <= z.x1; x++) ctx.drawImage(img(z.tipo), x * T, y * T)
     if (this.textures.exists('suelo')) this.textures.remove('suelo')
     this.textures.addCanvas('suelo', lienzo)
@@ -118,7 +124,7 @@ export default class Mundo extends Phaser.Scene {
           this.solido(ax * T - 4, y * T - 6, 8, 6)
         } else if (!borde && azar() > 0.82) {
           const bx = x + (azar() - 0.5) * 1.5
-          if (!this.ocupado(bx, y)) this.add.image(bx * T, y * T, 'arbusto').setOrigin(0.5, 1).setDepth(y * T)
+          if (!this.ocupado(bx, y)) this.add.image(bx * T, y * T, azar() > 0.5 ? 'arbusto' : 'flores').setOrigin(0.5, 1).setDepth(y * T)
         }
       }
     }
@@ -136,12 +142,14 @@ export default class Mundo extends Phaser.Scene {
     for (const e of EDIFICIOS) {
       const img = this.add.image(e.x * T, e.base * T, e.clave).setOrigin(0.5, 1).setDepth(e.base * T)
       const w = img.width, h = img.height
+      this.add.rectangle(e.x * T + 3, e.base * T - 2, w, 5, 0x000000, 0.16).setOrigin(0.5, 0).setDepth(-450)
       this.solido(e.x * T - w / 2, e.base * T - h + 8, w, h - 8)
       if (e.letrero) this.letrero(e.letrero, e.x * T, e.base * T - h - 1)
       if (e.zona || e.vida) this.interactivos.push({ x: e.x * T, y: e.base * T + 6, radio: 20, zona: e.zona, vida: e.vida, nombre: 'Alejandro' })
     }
     for (const o of OBJETOS) {
       const img = this.add.image(o.x * T, o.base * T, o.clave).setOrigin(0.5, 1).setDepth(o.base * T)
+      if (img.width >= 30 && !['campo', 'laguna', 'muelle', 'telarana', 'avion', 'banderas', 'puesto'].includes(o.clave)) this.add.rectangle(o.x * T + 2, o.base * T - 2, img.width - 4, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-450)
       if (o.puerta) {
         // Las torres son sólidas; por el arco del medio se pasa y se ve al otro lado
         this.solido(o.x * T - 64, o.base * T - 28, 51, 26)
@@ -158,9 +166,9 @@ export default class Mundo extends Phaser.Scene {
         img.setDepth(-480) // se anda por encima
       } else if (o.encima) {
         img.setDepth(o.base * T + 40) // pegado a la pared de un edificio
-      } else if (o.clave === 'arbusto') {
+      } else if (o.clave === 'arbusto' || o.clave === 'flores') {
         // se puede pisar
-      } else if (['farola', 'farola_moderna', 'veleta', 'papelera', 'palmera'].includes(o.clave)) {
+      } else if (['farola', 'farola_moderna', 'veleta', 'papelera', 'palmera', 'arbol_plaza'].includes(o.clave)) {
         this.solido(o.x * T - 3, o.base * T - 5, 6, 5)
       } else if (o.clave !== 'cartel' && o.clave !== 'bloque') {
         this.solido(o.x * T - img.width / 2 + 2, o.base * T - img.height / 2, img.width - 4, img.height / 2)
@@ -209,6 +217,16 @@ export default class Mundo extends Phaser.Scene {
       // el punto para hablar con ellos se mueve con ellos
       if (p.vida) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, vida: p.vida, nombre: p.nombre })
     })
+
+    // Palomas que picotean y dan saltitos por la plaza y la terraza de la uni
+    for (const [x0, y0, n] of [[33, 22.5, 4], [38, 17.2, 3], [124, 22.4, 2]]) {
+      for (let i = 0; i < n; i++) {
+        const pal = this.add.sprite((x0 + i * 1.3) * T, (y0 + (i % 2) * 0.6) * T, 'paloma', 0).setOrigin(0.5, 1).setDepth(y0 * T)
+        if (i % 2) pal.setFlipX(true)
+        this.time.addEvent({ delay: 600 + i * 230, loop: true, callback: () => pal.setFrame(Math.random() < 0.5 ? 1 : 0) })
+        this.tweens.add({ targets: pal, x: pal.x + (i % 2 ? -10 : 10), duration: 3000 + i * 500, yoyo: true, repeat: -1, ease: 'Stepped', easeParams: [6], onYoyo: () => pal.toggleFlipX(), onRepeat: () => pal.toggleFlipX() })
+      }
+    }
 
     // Alejandro, el guía
     this.guia = this.physics.add.sprite(12 * T, (CAMINO + 0.5) * T, 'alejandro', 0).setOrigin(0.5, 1)

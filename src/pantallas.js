@@ -13,8 +13,12 @@ const TXT = {
   es: {
     nueva: 'NUEVA PARTIDA', continuar: 'CONTINUAR', clasico: 'MODO CLÁSICO', opciones: 'OPCIONES', creditos: 'CRÉDITOS',
     sonido: 'SONIDO', idioma: 'IDIOMA', volver: 'VOLVER', crea: 'CREA TU PERSONAJE', nombre: 'TU NOMBRE',
-    pelo: 'PELO', colorPelo: 'COLOR DE PELO', piel: 'PIEL', ropa: 'CAMISETA', gafas: 'GAFAS', si: 'SÍ', no: 'NO', jugar: 'A JUGAR',
-    estilos: { corto: 'CORTO', largo: 'LARGO', ondulado: 'ONDULADO', rizado: 'RIZADO', melena: 'MELENA', rapado: 'RAPADO' }, visitante: 'Visitante',
+    pelo: 'PEINADO', colorPelo: 'COLOR DE PELO', piel: 'PIEL', ropa: 'COLOR', gafas: 'GAFAS', si: 'SÍ', no: 'NO', jugar: 'A JUGAR',
+    estilos: { corto: 'CORTO', ondulado: 'ONDULADO', rizado: 'RIZADO', flequillo: 'FLEQUILLO', cortina: 'CORTINA', media: 'MEDIA MELENA', largo: 'LARGO', larga: 'LARGA LISA', melena: 'MELENA RIZADA', rapado: 'RAPADO', calvo: 'CALVO' },
+    pestanas: { cuerpo: 'CUERPO', ropa: 'ROPA', extras: 'EXTRAS' }, tipo: 'PRENDA', pantalon: 'PANTALON', anchos: 'CORTE', zapatillas: 'ZAPATILLAS',
+    barba: 'BARBA', cadena: 'CADENA', sonrisa: 'SONRISA', aleatorio: 'ALEATORIO', girar: 'GIRAR',
+    tipos: { camiseta: 'CAMISETA', polo: 'POLO', sudadera: 'SUDADERA', chaqueta: 'CHAQUETA' }, cortes: { '': 'RECTO', 1: 'ANCHO' },
+    barbas: { '': 'NO', rala: 'POCA', perilla: 'PERILLA', completa: 'COMPLETA' }, visitante: 'Visitante',
     pulsa: 'PULSA ENTER O TOCA PARA EMPEZAR', subtitulo: 'Desarrollador Full Stack Junior · mi vida en píxeles',
     textoCreditos: 'Diseñado y programado por Alejandro Blanco Rodríguez con Phaser 3, Vite y mucho Java en el corazón. Todo el pixel art está dibujado con código.',
     rapido: '¿Tienes prisa?', practicas: 'Abierto a prácticas',
@@ -22,8 +26,12 @@ const TXT = {
   en: {
     nueva: 'NEW GAME', continuar: 'CONTINUE', clasico: 'CLASSIC MODE', opciones: 'OPTIONS', creditos: 'CREDITS',
     sonido: 'SOUND', idioma: 'LANGUAGE', volver: 'BACK', crea: 'CREATE YOUR CHARACTER', nombre: 'YOUR NAME',
-    pelo: 'HAIR', colorPelo: 'HAIR COLOUR', piel: 'SKIN', ropa: 'T-SHIRT', gafas: 'GLASSES', si: 'YES', no: 'NO', jugar: 'PLAY',
-    estilos: { corto: 'SHORT', largo: 'LONG', ondulado: 'WAVY', rizado: 'CURLY', melena: 'CURLY LONG', rapado: 'BUZZED' }, visitante: 'Visitor',
+    pelo: 'HAIRSTYLE', colorPelo: 'HAIR COLOUR', piel: 'SKIN', ropa: 'COLOUR', gafas: 'GLASSES', si: 'YES', no: 'NO', jugar: 'PLAY',
+    estilos: { corto: 'SHORT', ondulado: 'WAVY', rizado: 'CURLY', flequillo: 'FRINGE', cortina: 'CURTAIN', media: 'BOB', largo: 'LONG', larga: 'STRAIGHT LONG', melena: 'CURLY LONG', rapado: 'BUZZED', calvo: 'BALD' },
+    pestanas: { cuerpo: 'LOOK', ropa: 'CLOTHES', extras: 'EXTRAS' }, tipo: 'TOP', pantalon: 'TROUSERS', anchos: 'FIT', zapatillas: 'SNEAKERS',
+    barba: 'BEARD', cadena: 'CHAIN', sonrisa: 'SMILE', aleatorio: 'RANDOM', girar: 'TURN',
+    tipos: { camiseta: 'T-SHIRT', polo: 'POLO', sudadera: 'HOODIE', chaqueta: 'JACKET' }, cortes: { '': 'SLIM', 1: 'BAGGY' },
+    barbas: { '': 'NO', rala: 'LIGHT', perilla: 'GOATEE', completa: 'FULL' }, visitante: 'Visitor',
     pulsa: 'PRESS ENTER OR TAP TO START', subtitulo: 'Junior Full Stack Developer · my life in pixels',
     textoCreditos: 'Designed and coded by Alejandro Blanco Rodríguez with Phaser 3, Vite and a lot of Java at heart. All the pixel art is drawn with code.',
     rapido: 'In a hurry?', practicas: 'Open to internships',
@@ -118,49 +126,84 @@ function creditos() {
 }
 
 // ---------------------------------------------------------------------------------------------- 3. creador
+// Vista grande que anda y se puede girar, tres pestañas de opciones y un botón para un personaje al azar
+const ESTILOS = ['corto', 'ondulado', 'rizado', 'flequillo', 'cortina', 'media', 'largo', 'larga', 'melena', 'rapado', 'calvo']
+const TIPOS = ['camiseta', 'polo', 'sudadera', 'chaqueta']
+const BARBAS = ['', 'rala', 'perilla', 'completa']
+const BOOLEANOS = ['gafas', 'cadena', 'anchos', 'sonrisa']
+const azarDe = (lista) => lista[Math.floor(Math.random() * lista.length)]
+
 function creador() {
   quitarTeclado()
-  const p = estado.personaje?.rasgos || { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], gafas: false }
+  const p = { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], tipo: 'camiseta', zapatillas: PALETAS.zapatillas[0], barba: '', gafas: false, cadena: false, anchos: false, sonrisa: false, ...(estado.personaje?.rasgos || {}) }
   let nombre = estado.personaje?.nombre || ''
-  const estilos = ['corto', 'ondulado', 'rizado', 'largo', 'melena', 'rapado']
+  let pestana = 'cuerpo'
+  let direccion = 0 // 0 abajo, 1 izquierda, 2 derecha, 3 arriba
   caja().className = 'pantalla portada'
   const fila = (clave, contenido) => `<div class="fila-creador"><span>${x()[clave]}</span><div>${contenido}</div></div>`
   const colores = (clave, lista) => lista.map((c) => `<button class="color ${p[clave] === c ? 'sel' : ''}" style="background:${c}" data-k="${clave}" data-v="${c}" aria-label="${c}"></button>`).join('')
+  const opciones = (clave, lista, textos) => lista.map((v) => {
+    const actual = BOOLEANOS.includes(clave) ? (p[clave] ? '1' : '') : (p[clave] || '')
+    return `<button class="opcion ${actual === String(v) ? 'sel' : ''}" data-k="${clave}" data-v="${v}">${textos[v]}</button>`
+  }).join('')
+  const siNo = { 1: x().si, '': x().no }
+  const contenido = () => ({
+    cuerpo: fila('piel', colores('piel', PALETAS.piel)) + fila('pelo', opciones('pelo', ESTILOS, x().estilos)) + fila('colorPelo', colores('colorPelo', PALETAS.pelo)) + fila('barba', opciones('barba', BARBAS, x().barbas)),
+    ropa: fila('tipo', opciones('tipo', TIPOS, x().tipos)) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('anchos', opciones('anchos', [1, ''], x().cortes)) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
+    extras: fila('gafas', opciones('gafas', [1, ''], siNo)) + fila('cadena', opciones('cadena', [1, ''], siNo)) + fila('sonrisa', opciones('sonrisa', [1, ''], siNo)),
+  })[pestana]
   const pintar = () => {
     caja().innerHTML = `<div class="cuadro creador"><h2>${x().crea}</h2>
-      <canvas id="vista" width="72" height="96"></canvas>
-      ${fila('nombre', `<input id="nombre" maxlength="12" value="${nombre.replace(/"/g, '')}" placeholder="${x().visitante}">`)}
-      ${fila('pelo', estilos.map((s) => `<button class="opcion ${p.pelo === s ? 'sel' : ''}" data-k="pelo" data-v="${s}">${x().estilos[s]}</button>`).join(''))}
-      ${fila('colorPelo', colores('colorPelo', PALETAS.pelo))}
-      ${fila('piel', colores('piel', PALETAS.piel))}
-      ${fila('ropa', colores('ropa', PALETAS.ropa))}
-      ${fila('gafas', `<button class="opcion ${p.gafas ? 'sel' : ''}" data-k="gafas" data-v="1">${x().si}</button><button class="opcion ${!p.gafas ? 'sel' : ''}" data-k="gafas" data-v="">${x().no}</button>`)}
+      <div class="creador-cuerpo">
+        <div class="creador-vista">
+          <canvas id="vista" width="144" height="192"></canvas>
+          <div class="botones-vista"><button class="opcion" id="girar-izq" aria-label="${x().girar}">&lt;</button><span>${x().girar}</span><button class="opcion" id="girar-der" aria-label="${x().girar}">&gt;</button></div>
+          <button class="opcion" id="aleatorio">${x().aleatorio}</button>
+        </div>
+        <div class="creador-opciones">
+          ${fila('nombre', `<input id="nombre" maxlength="12" value="${nombre.replace(/"/g, '')}" placeholder="${x().visitante}">`)}
+          <div class="pestanas">${Object.entries(x().pestanas).map(([k, t]) => `<button class="opcion ${pestana === k ? 'sel' : ''}" data-pestana="${k}">${t}</button>`).join('')}</div>
+          ${contenido()}
+        </div>
+      </div>
       <div class="botones"><button class="boton" id="volver">${x().volver}</button><button class="boton verde" id="jugar">${x().jugar} ▶</button></div></div>`
     caja().querySelectorAll('[data-k]').forEach((b) => b.onclick = () => {
-      p[b.dataset.k] = b.dataset.k === 'gafas' ? !!b.dataset.v : b.dataset.v
+      const k = b.dataset.k, v = b.dataset.v
+      p[k] = BOOLEANOS.includes(k) ? !!v : k === 'barba' ? (v || false) : v
       sfx.mover(); nombre = $('#nombre').value; pintar()
     })
+    caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre').value; pintar() })
+    $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover() }
+    $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover() }
+    $('#aleatorio').onclick = () => {
+      Object.assign(p, {
+        pelo: azarDe(ESTILOS), colorPelo: azarDe(PALETAS.pelo), piel: azarDe(PALETAS.piel), ropa: azarDe(PALETAS.ropa), pantalon: azarDe(PALETAS.pantalon),
+        tipo: azarDe(TIPOS), zapatillas: azarDe(PALETAS.zapatillas), barba: azarDe(BARBAS) || false, gafas: Math.random() < 0.3, cadena: Math.random() < 0.3, anchos: Math.random() < 0.5, sonrisa: Math.random() < 0.5,
+      })
+      sfx.aceptar(); nombre = $('#nombre').value; pintar()
+    }
     $('#nombre').oninput = (e) => { nombre = e.target.value }
     $('#nombre').onkeydown = (e) => { if (e.key === 'Enter') confirmar() }
     $('#volver').onclick = () => principal()
     $('#jugar').onclick = () => confirmar()
+    crearPersonaje(escena, 'vista-previa', p)
     vista()
   }
-  // Vista previa animada del personaje
+  // Vista previa: anda en la dirección elegida sobre un trozo de hierba
   let marco = 0
   const vista = () => {
-    crearPersonaje(escena, 'vista-previa', p)
-    const img = escena.textures.get('vista-previa').getSourceImage()
     const lienzo = $('#vista')
-    if (!lienzo) return
+    if (!lienzo || !escena.textures.exists('vista-previa')) return
+    const img = escena.textures.get('vista-previa').getSourceImage()
     const ctx = lienzo.getContext('2d')
     ctx.imageSmoothingEnabled = false
-    ctx.clearRect(0, 0, 72, 96)
-    const [col, fil] = [[1, 0], [0, 0], [2, 0], [0, 0]][marco % 4]
-    ctx.drawImage(img, col * 24, fil * 32, 24, 32, 0, 0, 72, 96)
+    ctx.fillStyle = '#5aa84f'; ctx.fillRect(0, 0, 144, 192)
+    for (let i = 0; i < 40; i++) { ctx.fillStyle = i % 2 ? '#63b457' : '#519a47'; ctx.fillRect((i * 37) % 144, (i * 53) % 192, 6, 6) }
+    const col = [1, 0, 2, 0][marco % 4]
+    ctx.drawImage(img, col * 24, direccion * 32, 24, 32, 0, 0, 144, 192)
   }
   clearInterval(creador.reloj)
-  creador.reloj = setInterval(() => { marco++; vista() }, 220)
+  creador.reloj = setInterval(() => { marco++; vista() }, 200)
   const confirmar = () => {
     clearInterval(creador.reloj)
     estado.personaje = { nombre: ($('#nombre')?.value || nombre).trim() || x().visitante, rasgos: { ...p } }

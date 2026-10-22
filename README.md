@@ -10,7 +10,8 @@ stack. Para quien tenga prisa hay un **modo clásico** con todo en una página, 
 ## Qué tiene
 
 - **Intro de terminal**, menú (continuar, nueva partida, modo clásico, opciones y créditos) y **creador de personaje**
-  (nombre, seis peinados, color de pelo, piel, camiseta y gafas), con vista previa animada.
+  (nombre, piel, once peinados, color de pelo, barba, prenda, colores, corte, zapatillas, gafas, cadena y sonrisa),
+  con vista previa animada que se puede girar y un botón de personaje aleatorio.
 - **Recorrido guiado**: Alejandro va delante y cuenta cada etapa (Villalpando, el instituto, la residencia en Madrid,
   MEDAC, las prácticas en Anexia, la UDIT, el Erasmus, los hackatones y DANTE P.W.). Se puede saltar en cualquier momento.
 - **Mapa de su vida en píxeles**, con sitios dibujados a partir de fotos reales: la Puerta de la Villa (que se cruza

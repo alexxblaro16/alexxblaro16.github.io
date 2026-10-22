@@ -6,10 +6,11 @@ export const ANCHO_PJ = 24
 export const ALTO_PJ = 32
 
 export const PALETAS = {
-  pelo: ['#3b2a20', '#1d1a19', '#7a4a26', '#d8a64a', '#b0452f', '#9aa3ad'],
-  piel: ['#f2c29b', '#e5a97f', '#c98a5e', '#8d5a3b', '#5e3a26', '#fbd9c0'],
-  ropa: ['#2fbf71', '#3d7be0', '#a970ff', '#e05a5a', '#f2b33d', '#eef1f4', '#2b2f38', '#ff7fb0'],
-  pantalon: ['#34466e', '#3a3f48', '#5b4636', '#1f2a44'],
+  pelo: ['#3b2a20', '#1d1a19', '#5e3c24', '#8a5a38', '#c49a5a', '#e8d29a', '#b0452f', '#9aa3ad', '#3d7be0', '#ff7fb0'],
+  piel: ['#fbd9c0', '#f2c29b', '#e5a97f', '#d49a72', '#c98a5e', '#8d5a3b', '#5e3a26'],
+  ropa: ['#2fbf71', '#3d7be0', '#1f2a44', '#a970ff', '#e05a5a', '#f2b33d', '#eef1f4', '#2b2f38', '#ff7fb0', '#8a6a4a'],
+  pantalon: ['#34466e', '#8fa9cc', '#2b2f38', '#cfc6b0', '#6a6f78', '#5a6b45'],
+  zapatillas: ['#f4f4f4', '#2a2d33', '#e05a5a', '#3d7be0'],
 }
 
 function colores(r) {
@@ -193,6 +194,47 @@ const PELO = {
       p(11, 3, 2, 15, C.h); p(17, 7, 3, 11, C.h)
     },
   },
+  // Despeinado: pelo de punta arriba y mechones sueltos sobre la frente (Gabriel)
+  despeinado: {
+    frente(p, C) {
+      mechones(p, C, [[7, 0, 1, 2], [10, 0, 2, 2], [14, 0, 1, 2], [16, 1, 1, 2], [6, 1, 12, 2], [5, 3, 14, 5], [5, 8, 3, 1], [9, 8, 2, 2], [12, 8, 3, 1], [16, 8, 3, 1], [5, 9, 1, 2], [18, 9, 1, 2]])
+      p(8, 1, 2, 2, C.L); p(11, 2, 2, 2, C.L); p(7, 4, 2, 2, C.L); p(13, 4, 1, 3, C.L)
+      p(15, 3, 4, 4, C.h); p(10, 7, 1, 2, C.h); p(14, 7, 1, 1, C.h); p(17, 7, 2, 2, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 0, 1, 2], [11, 0, 2, 2], [15, 1, 1, 2], [6, 1, 12, 2], [5, 3, 14, 5], [4, 7, 3, 2], [5, 9, 1, 1], [12, 8, 6, 5], [13, 13, 4, 1]])
+      p(8, 1, 3, 2, C.L); p(6, 4, 2, 2, C.L)
+      p(15, 3, 4, 10, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[7, 0, 1, 2], [10, 0, 2, 2], [14, 0, 1, 2], [6, 1, 12, 2], [5, 3, 14, 10], [7, 13, 10, 1]])
+      p(8, 2, 2, 2, C.L); p(11, 3, 2, 3, C.L)
+      p(15, 3, 4, 10, C.h); p(7, 12, 10, 1, C.h)
+    },
+  },
+  // Degradado: volumen arriba y los lados muy cortos (Iván)
+  degradado: {
+    frente(p, C) {
+      mechones(p, C, [[8, 1, 8, 1], [7, 2, 10, 1], [6, 3, 12, 4], [6, 7, 4, 1], [11, 7, 3, 1], [15, 7, 3, 1]])
+      p(8, 2, 4, 1, C.L); p(7, 3, 3, 1, C.L); p(13, 3, 2, 1, C.L)
+      p(15, 4, 3, 3, C.h); p(10, 7, 1, 1, C.h)
+      const lado = mezclar(C.h, C.S, 0.55)
+      p(6, 8, 1, 3, lado); p(17, 8, 1, 3, lado)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 1, 8, 1], [7, 2, 10, 1], [6, 3, 12, 4], [5, 7, 4, 1]])
+      p(8, 2, 3, 1, C.L); p(7, 3, 2, 1, C.L)
+      p(15, 3, 3, 4, C.h)
+      const lado = mezclar(C.h, C.S, 0.55)
+      p(12, 7, 6, 5, lado); p(14, 12, 3, 1, lado)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 1, 8, 1], [7, 2, 10, 1], [6, 3, 12, 5]])
+      p(8, 2, 4, 1, C.L); p(15, 3, 3, 5, C.h)
+      const lado = mezclar(C.h, C.S, 0.55)
+      p(6, 8, 12, 5, lado); p(7, 13, 10, 1, lado)
+    },
+  },
   rapado: {
     frente(p, C) {
       mechones(p, C, [[8, 3, 8, 1], [6, 4, 12, 3], [6, 7, 1, 2], [17, 7, 1, 2]], true)
@@ -249,7 +291,12 @@ function cara(p, C, dir, r) {
   p(7, 12, 1, 1, C.rubor); p(16, 12, 1, 1, C.rubor)
 }
 
-function piernas(p, C, dir, paso, r) {
+function piernas(p0, C, dir, paso, r) {
+  // con pantalón corto, por debajo de la fila 26 se ve la rodilla y luego los calcetines
+  const p = (x, y, w, h, col) => {
+    if (!r.corto || (col !== C.P && col !== C.p && col !== C.Pl)) return p0(x, y, w, h, col)
+    for (let yy = y; yy < y + h; yy++) p0(x, yy, w, 1, yy < 26 ? col : yy === 26 ? C.S : (r.calcetines || '#f4f4f4'))
+  }
   if (dir === 'lado') {
     const ancho = r.anchos ? 1 : 0
     if (paso === 0) {
@@ -285,6 +332,8 @@ function cuerpo(p, C, dir, r) {
   if (dir === 'lado') {
     p(8, 17, 8, 7, C.T); if (r.robusto) p(7, 17, 10, 7, C.T)
     p(14, 17, r.robusto ? 3 : 2, 7, C.t); p(8, 23, 8, 1, C.t); p(8, 18, 1, 3, C.Tl)
+    if (r.rayasV) for (const x of [9, 12]) p(x, 17, 1, 7, r.rayasV)
+    if (r.franja) p(8, 19, 8, 2, r.franja)
     if (tipo === 'chaqueta') { p(8, 17, 2, 7, C.I); p(10, 17, 1, 7, C.t) }
     if (tipo === 'polo') p(9, 17, 3, 1, C.Tl)
     if (tipo === 'sudadera') p(8, 21, 4, 2, C.t)
@@ -293,6 +342,8 @@ function cuerpo(p, C, dir, r) {
   p(8, 17, 8, 1, C.T); p(7, 18, 10, 6, C.T)
   if (r.robusto) { p(7, 17, 10, 1, C.T); p(6, 18, 12, 6, C.T); p(16, 18, 2, 6, C.t); p(6, 23, 12, 1, C.t); p(7, 18, 1, 3, C.Tl) }
   else { p(15, 18, 2, 6, C.t); p(7, 23, 10, 1, C.t); p(8, 18, 1, 3, C.Tl) }
+  if (r.rayasV) for (const x of [8, 11, 14]) p(x, 18, 1, 6, r.rayasV)
+  if (r.franja) p(r.robusto ? 6 : 7, 19, r.robusto ? 12 : 10, 2, r.franja)
   if (dir === 'espalda') return
   if (tipo === 'camiseta') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.t); p(14, 17, 1, 1, C.t) }
   if (tipo === 'polo') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.Tl); p(14, 17, 1, 1, C.Tl); p(11, 18, 2, 2, C.t) }

@@ -39,6 +39,7 @@ export const OBJETOS = [
   { clave: 'banco', x: 36.2, base: 16.4 }, { clave: 'banco', x: 39.6, base: 16.4 }, { clave: 'banco', x: 30.5, base: 23.4 },
   { clave: 'papelera', x: 41.2, base: 16.4 }, { clave: 'macetero', x: 22.5, base: 18.2 }, { clave: 'macetero', x: 22.5, base: 24.3 }, { clave: 'macetero', x: 44.5, base: 24 },
   { clave: 'puesto', x: 41.5, base: 23.6 },
+  { clave: 'arbol_plaza', x: 21.6, base: 20.6 }, { clave: 'arbol_plaza', x: 46, base: 20.6 }, { clave: 'arbol_plaza', x: 26, base: 22.6 }, { clave: 'arbol_plaza', x: 44.6, base: 25.4 },
   // Guiño a Bob Esponja junto al agua
   { clave: 'casa_cabeza', x: 4.5, base: 25, vida: 'cabeza' }, { clave: 'casa_pina', x: 8.5, base: 25, vida: 'pina' }, { clave: 'casa_roca', x: 9.2, base: 30.6, vida: 'roca' },
   { clave: 'laguna', x: 5, base: 29.5 }, { clave: 'muelle', x: 6.6, base: 28, vida: 'medusas' },
@@ -55,7 +56,7 @@ export const OBJETOS = [
   { clave: 'parada', x: 57, base: 18.4, vida: 'parada', letrero: 'MADRID · 2023' },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
   { clave: 'campo', x: 104, base: 28, vida: 'futbol' },
-  { clave: 'avion', x: 118, base: 25, vida: 'tallin', letrero: 'TALLIN' },
+  { clave: 'avion', x: 118.5, base: 26.6, vida: 'tallin', letrero: 'TALLIN' },
   { clave: 'bloque', x: 51, base: 31, vida: 'minecraft', secreto: true },
   { clave: 'cartel', x: 166, base: 18.4, vida: 'fin', letrero: 'FIN… POR AHORA' },
   { clave: 'cartel', x: 21.6, base: 31.6, vida: 'inicio', letrero: 'START' },
@@ -82,7 +83,7 @@ const amigos = (lista, x0, y0) => lista.map(([nombre, pelo, ropa, extra = {}], i
 
 export const PERSONAJES = [
   { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'calvo', colorPelo: '#9a8a80', piel: '#ebb995', ropa: '#1f2430', pantalon: '#3a4a66', robusto: true, sonrisa: true, zapatillas: '#e9ecef' }, vida: 'pedro' },
-  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#d49a72', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
+  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#ebbd99', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
   { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', logo: '#e8e2d6' }, vida: 'dante' },
   ...amigos([
     ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true }],
@@ -93,18 +94,18 @@ export const PERSONAJES = [
   ], 62, 21.5),
   ...amigos([
     ['Pablo', '#4a3020', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true }],
-    ['Héctor', '#3b2a20', '#24324f', { pelo: 'ondulado', piel: '#d9a07a', tipo: 'polo' }],
+    ['Héctor', '#4a3020', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4' }],
   ], 80, 21.5),
   ...amigos([
     ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' }],
     ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f' }],
     ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' }],
     ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: 'perilla' }],
-    ['Iván', '#5a4030', '#eef1f4', { piel: '#ecb68f', zapatillas: '#f4f4f4' }],
+    ['Iván', '#7a5a3e', '#1f2124', { pelo: 'degradado', piel: '#ecbf9c', franja: '#8a9099', pantalon: '#3a3f48', zapatillas: '#f4f4f4' }],
     ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' }],
     ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', logo: '#3a7bd5' }],
     ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a' }],
-    ['Gabriel', '#4a3020', '#1f2a44', { piel: '#ecb68f', logo: '#7fc8ff', zapatillas: '#f4f4f4' }],
+    ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' }],
   ], 100, 21.4),
 ]
 

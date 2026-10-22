@@ -23,11 +23,12 @@ Cada fotograma se pinta por capas, de atrás hacia delante:
 1. Capucha (si lleva sudadera).
 2. Piernas y zapatillas: los pasos levantan un pie; de lado, las piernas se abren y la de atrás va más oscura.
 3. Cuerpo, según el tipo de ropa: `camiseta`, `polo`, `sudadera` o `chaqueta` (con la camiseta de dentro, que puede
-   ser de rayas). `robusto` lo hace más ancho.
+   ser de rayas). `robusto` lo hace más ancho; `rayasV` pinta rayas verticales (equipación) y `franja`, una banda en el pecho.
+   Con `corto` el pantalón es corto y se ven las rodillas y los calcetines.
 4. Brazos: manga corta con el brazo a la vista, o manga larga. De lado, el brazo se balancea al andar.
 5. Cabeza con orejas, cuello y la sombra en el lado derecho (la luz viene de arriba a la izquierda).
 6. Cara: ojos con brillo, cejas, nariz, boca y rubor. Opciones: `ojosFinos`, `sonrisa` y `labios`.
-7. Pelo: `corto`, `ondulado`, `rizado`, `flequillo`, `cortina`, `largo`, `larga`, `media`, `melena`, `rapado` y `calvo`, cada uno
+7. Pelo: `corto`, `ondulado`, `rizado`, `flequillo`, `cortina`, `despeinado`, `degradado`, `largo`, `larga`, `media`, `melena`, `rapado` y `calvo`, cada uno
    dibujado de frente, de lado y de espaldas, con luces y sombras. Los rizos llevan una textura generada.
 8. Accesorios: gafas de montura fina (del color que se quiera), barba completa, poco poblada (`rala`) o perilla, cadena, bolso cruzado, logo en el pecho y las piezas de robot
    de DANTE P.W.
