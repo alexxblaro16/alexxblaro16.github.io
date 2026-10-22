@@ -120,6 +120,42 @@ const PELO = {
       p(17, 6, 4, 14, C.h)
     },
   },
+  // Melena lisa por los hombros con raya al lado
+  media: {
+    frente(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [6, 8, 7, 1], [15, 8, 3, 1], [6, 9, 3, 1], [4, 8, 3, 9], [17, 8, 3, 9], [5, 17, 2, 1], [17, 17, 3, 1]])
+      p(8, 3, 3, 1, C.L); p(7, 4, 3, 1, C.L); p(5, 10, 1, 5, C.L)
+      p(13, 4, 1, 4, C.h); p(14, 5, 3, 3, C.h); p(18, 9, 2, 8, C.h); p(6, 10, 1, 7, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [5, 8, 5, 1], [12, 8, 7, 9], [13, 17, 5, 1]])
+      p(8, 3, 3, 1, C.L); p(7, 4, 2, 1, C.L); p(13, 10, 1, 6, C.L)
+      p(16, 5, 3, 12, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [4, 8, 16, 9], [5, 17, 14, 1]])
+      p(9, 3, 3, 1, C.L); p(8, 4, 2, 1, C.L); p(7, 9, 2, 7, C.L)
+      p(16, 8, 4, 9, C.h)
+    },
+  },
+  // Liso con flequillo recto que tapa la frente
+  flequillo: {
+    frente(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 5], [6, 9, 5, 1], [13, 9, 5, 1], [5, 6, 1, 7], [18, 6, 1, 7], [6, 10, 1, 3], [17, 10, 1, 3]])
+      p(8, 3, 4, 1, C.L); p(7, 4, 3, 1, C.L); p(13, 5, 2, 1, C.L)
+      p(11, 4, 2, 6, C.h); p(16, 5, 2, 5, C.h); p(18, 8, 1, 5, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 5], [5, 9, 5, 1], [12, 9, 6, 5], [13, 14, 4, 1]])
+      p(8, 3, 3, 1, C.L); p(7, 4, 2, 1, C.L)
+      p(15, 5, 3, 10, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 10], [7, 14, 10, 1]])
+      p(9, 3, 3, 1, C.L); p(8, 4, 2, 2, C.L)
+      p(15, 5, 3, 9, C.h); p(11, 4, 2, 10, C.h)
+    },
+  },
   rapado: {
     frente(p, C) {
       mechones(p, C, [[8, 3, 8, 1], [6, 4, 12, 3], [6, 7, 1, 2], [17, 7, 1, 2]], true)
@@ -134,7 +170,7 @@ const PELO = {
   // Calvo: brillo en la coronilla y pelo corto solo por los lados (Pedro)
   calvo: {
     frente(p, C) { p(9, 5, 2, 1, C.SL); p(8, 6, 1, 1, C.SL); p(6, 8, 1, 4, C.H); p(17, 8, 1, 4, C.h) },
-    lado(p, C) { p(8, 5, 3, 1, C.SL); p(7, 6, 1, 1, C.SL); p(13, 9, 5, 4, C.H); p(16, 9, 2, 4, C.h) },
+    lado(p, C) { p(8, 5, 3, 1, C.SL); p(7, 6, 1, 1, C.SL); p(14, 10, 3, 2, C.H); p(16, 10, 1, 2, C.h) },
     espalda(p, C) { p(9, 5, 3, 1, C.SL); p(6, 10, 12, 3, C.H); p(6, 12, 12, 1, C.h) },
   },
 }
@@ -156,6 +192,12 @@ function cabeza(p, C, dir) {
 function cara(p, C, dir, r) {
   if (dir === 'espalda') return
   const ojos = r.robot ? C.A : C.E
+  if (r.ojosFinos) {
+    if (dir === 'lado') { p(7, 11, 2, 1, C.E0); p(7, 10, 1, 1, C.s); p(7, 9, 2, 1, C.h); p(9, 12, 1, 1, C.rubor); p(7, 14, 2, 1, C.m); return }
+    p(8, 11, 2, 1, C.E0); p(14, 11, 2, 1, C.E0); p(8, 10, 2, 1, C.s); p(14, 10, 2, 1, C.s); p(9, 12, 1, 1, C.s); p(14, 12, 1, 1, C.s)
+    p(8, 9, 2, 1, C.h); p(14, 9, 2, 1, C.h); p(12, 12, 1, 1, C.s); p(11, 14, 2, 1, C.m); p(7, 12, 1, 1, C.rubor); p(16, 12, 1, 1, C.rubor)
+    return
+  }
   if (dir === 'lado') {
     p(7, 10, 1, 3, r.robot ? C.A : C.E0); p(8, 10, 1, 1, '#ffffff'); p(8, 11, 1, 2, ojos)
     p(7, 9, 2, 1, C.h); p(9, 12, 1, 1, C.rubor); p(7, 14, 2, 1, C.m)
@@ -165,7 +207,8 @@ function cara(p, C, dir, r) {
   p(15, 10, 1, 3, r.robot ? C.A : C.E0); p(14, 10, 1, 1, '#ffffff'); p(14, 11, 1, 2, ojos)
   p(8, 9, 2, 1, C.h); p(14, 9, 2, 1, C.h) // cejas
   p(12, 12, 1, 1, C.s) // nariz
-  p(11, 14, 2, 1, C.m) // boca
+  if (r.sonrisa) { p(10, 14, 4, 1, C.m); p(11, 14, 2, 1, '#ffffff'); p(10, 13, 1, 1, C.s); p(13, 13, 1, 1, C.s) }
+  else p(11, 14, 2, 1, C.m) // boca
   p(7, 12, 1, 1, C.rubor); p(16, 12, 1, 1, C.rubor)
 }
 
@@ -203,19 +246,25 @@ function capucha(p, C, dir) {
 function cuerpo(p, C, dir, r) {
   const tipo = r.tipo || 'camiseta'
   if (dir === 'lado') {
-    p(8, 17, 8, 7, C.T); p(14, 17, 2, 7, C.t); p(8, 23, 8, 1, C.t); p(8, 18, 1, 3, C.Tl)
+    p(8, 17, 8, 7, C.T); if (r.robusto) p(7, 17, 10, 7, C.T)
+    p(14, 17, r.robusto ? 3 : 2, 7, C.t); p(8, 23, 8, 1, C.t); p(8, 18, 1, 3, C.Tl)
     if (tipo === 'chaqueta') { p(8, 17, 2, 7, C.I); p(10, 17, 1, 7, C.t) }
     if (tipo === 'polo') p(9, 17, 3, 1, C.Tl)
     if (tipo === 'sudadera') p(8, 21, 4, 2, C.t)
     return
   }
   p(8, 17, 8, 1, C.T); p(7, 18, 10, 6, C.T)
-  p(15, 18, 2, 6, C.t); p(7, 23, 10, 1, C.t); p(8, 18, 1, 3, C.Tl)
+  if (r.robusto) { p(7, 17, 10, 1, C.T); p(6, 18, 12, 6, C.T); p(16, 18, 2, 6, C.t); p(6, 23, 12, 1, C.t); p(7, 18, 1, 3, C.Tl) }
+  else { p(15, 18, 2, 6, C.t); p(7, 23, 10, 1, C.t); p(8, 18, 1, 3, C.Tl) }
   if (dir === 'espalda') return
   if (tipo === 'camiseta') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.t); p(14, 17, 1, 1, C.t) }
   if (tipo === 'polo') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.Tl); p(14, 17, 1, 1, C.Tl); p(11, 18, 2, 2, C.t) }
   if (tipo === 'sudadera') { p(10, 18, 1, 3, C.Tl); p(13, 18, 1, 3, C.Tl); p(9, 21, 6, 2, C.t) }
-  if (tipo === 'chaqueta') { p(10, 17, 4, 7, C.I); p(10, 17, 1, 7, C.t); p(13, 17, 1, 7, C.t); p(9, 17, 1, 5, C.Tl); p(14, 17, 1, 5, C.Tl) }
+  if (tipo === 'chaqueta') {
+    p(10, 17, 4, 7, C.I)
+    if (r.rayas) for (let y = 18; y < 24; y += 2) p(10, y, 4, 1, r.rayas)
+    p(10, 17, 1, 7, C.t); p(13, 17, 1, 7, C.t); p(9, 17, 1, 5, C.Tl); p(14, 17, 1, 5, C.Tl)
+  }
 }
 
 function brazos(p, C, dir, paso, r) {
@@ -228,7 +277,7 @@ function brazos(p, C, dir, paso, r) {
     p(mano[0], mano[1], 2, 2, C.S); p(mano[0] + 1, mano[1] + 1, 1, 1, C.s)
     return
   }
-  for (const [x, sombra] of [[4, 4], [18, 19]]) {
+  for (const [x, sombra] of r.robusto ? [[3, 3], [19, 20]] : [[4, 4], [18, 19]]) {
     p(x, 18, 2, corta ? 2 : 5, C.T); p(sombra, 18, 1, corta ? 2 : 5, C.t)
     if (corta) { p(x, 20, 2, 3, C.S); p(sombra, 20, 1, 3, C.s) }
     p(x, 23, 2, 1, C.S)

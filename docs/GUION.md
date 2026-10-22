@@ -13,7 +13,7 @@ Elige pelo, color de piel, camiseta y nombre. Aparece en un cruce de caminos.
 > Sígueme, que te la enseño desde el principio.
 
 ## 2. Villalpando
-Se cruza la **Puerta de la Villa de San Andrés** y se llega a la **Plaza Mayor**.
+El juego empieza al sur del pueblo: se cruza la **Puerta de la Villa de San Andrés** por el arco y se llega a la **Plaza Mayor**.
 > Esta es mi historia. Nací en Zamora en 2005 y viví en Villalpando 18 años. Este es mi pueblo.
 
 - **Reblán Electrodomésticos**, la tienda de su padre. **Pedro** en la puerta.
@@ -59,5 +59,6 @@ Al terminar el recorrido se puede explorar libremente. Al visitar todas las zona
 
 ## Secretos
 - Código Konami (↑↑↓↓←→←→ B A): todo pasa a verde de terminal.
-- Jerry y DANTE te siguen si les hablas.
+- DANTE P.W. te sigue si le hablas (y deja de seguirte si le vuelves a hablar).
+- Casa-piña junto al agua (guiño a Bob Esponja), murciélago en la veleta (Batman) y mochila con una araña (Spider-Man).
 - Bloque de tierra en Villalpando.

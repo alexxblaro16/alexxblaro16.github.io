@@ -1,7 +1,7 @@
 // La escena principal: el mundo en píxeles, el personaje del visitante, Alejandro como guía y todos los NPC.
 import Phaser from 'phaser'
 import { T, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdificios, crearDecorado } from '../sprites.js'
-import { ANCHO, ALTO, CAMINO, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO } from '../mapa.js'
+import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO } from '../mapa.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD } from '../ui.js'
@@ -10,8 +10,8 @@ import { sfx } from '../sonido.js'
 const VELOCIDAD = 90
 // Sacado de sus fotos: pelo oscuro ondulado, piel morena clara, camiseta blanca, cadena plateada,
 // vaqueros anchos y zapatillas blancas, y el portátil con pegatinas
-const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#d99e78', ropa: '#f2f3f5', pantalon: '#4f6d9a', anchos: true, zapatillas: '#f4f4f4', cadena: true, portatil: true }
-const DANTE_PW = { pelo: 'corto', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', robot: true }
+const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#d99e78', ropa: '#f2f3f5', pantalon: '#4f6d9a', anchos: true, zapatillas: '#f4f4f4', cadena: true }
+const DANTE_PW = { pelo: 'flequillo', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', robot: true }
 
 const frases = (clave) => HISTORIA[estado.idioma][clave] || []
 
@@ -68,7 +68,7 @@ export default class Mundo extends Phaser.Scene {
     let s = 11
     const azar = () => ((s = (s * 9301 + 49297) % 233280) / 233280)
     for (let y = 0; y < ALTO; y++) for (let x = 0; x < ANCHO; x++) ctx.drawImage(img(azar() > 0.93 ? 'hierba2' : 'hierba'), x * T, y * T)
-    for (let x = 2; x < ANCHO - 2; x++) for (const y of [CAMINO, CAMINO + 1]) ctx.drawImage(img('camino'), x * T, y * T)
+    for (let x = CAMINO_INICIO; x < ANCHO - 2; x++) for (const y of [CAMINO, CAMINO + 1]) ctx.drawImage(img('camino'), x * T, y * T)
     for (const sd of SENDAS) for (let y = sd.y0; y <= sd.y1; y++) ctx.drawImage(img('camino'), sd.x * T, y * T)
     for (const z of SUELOS) for (let y = z.y0; y <= z.y1; y++) for (let x = z.x0; x <= z.x1; x++) ctx.drawImage(img(z.tipo), x * T, y * T)
     if (this.textures.exists('suelo')) this.textures.remove('suelo')
@@ -108,6 +108,9 @@ export default class Mundo extends Phaser.Scene {
           if (!borde && this.ocupado(ax, y)) continue
           this.add.image(ax * T, y * T, 'arbol').setOrigin(0.5, 1).setDepth(y * T)
           this.solido(ax * T - 4, y * T - 6, 8, 6)
+        } else if (!borde && azar() > 0.82) {
+          const bx = x + (azar() - 0.5) * 1.5
+          if (!this.ocupado(bx, y)) this.add.image(bx * T, y * T, 'arbusto').setOrigin(0.5, 1).setDepth(y * T)
         }
       }
     }
@@ -132,11 +135,16 @@ export default class Mundo extends Phaser.Scene {
     for (const o of OBJETOS) {
       const img = this.add.image(o.x * T, o.base * T, o.clave).setOrigin(0.5, 1).setDepth(o.base * T)
       if (o.puerta) {
-        // La Puerta de la Villa está de frente, junto al camino: es sólida por abajo como un edificio
-        this.solido(o.x * T - 64, o.base * T - 26, 128, 24)
+        // Las torres son sólidas; por el arco del medio se pasa y se ve al otro lado
+        this.solido(o.x * T - 64, o.base * T - 28, 51, 26)
+        this.solido(o.x * T + 13, o.base * T - 28, 51, 26)
       } else if (o.clave === 'campo') {
         img.setDepth(-500)
-      } else if (o.clave === 'farola') {
+      } else if (o.encima) {
+        img.setDepth(o.base * T + 40) // pegado a la pared de un edificio
+      } else if (o.clave === 'arbusto') {
+        // se puede pisar
+      } else if (['farola', 'farola_moderna', 'veleta', 'papelera'].includes(o.clave)) {
         this.solido(o.x * T - 3, o.base * T - 5, 6, 5)
       } else if (o.clave !== 'cartel' && o.clave !== 'bloque') {
         this.solido(o.x * T - img.width / 2 + 2, o.base * T - img.height / 2, img.width - 4, img.height / 2)
@@ -154,18 +162,18 @@ export default class Mundo extends Phaser.Scene {
     PERSONAJES.forEach((p, i) => {
       const clave = `npc-${i}`
       crearPersonaje(this, clave, p.rasgos)
+      crearAnimaciones(this, clave)
       const s = this.physics.add.sprite(p.x * T, p.y * T, clave, 0).setOrigin(0.5, 1).setImmovable(true)
       s.body.setSize(10, 6).setOffset(7, 25)
+      s.setData('paseo', { clave, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 18 : 22, destino: null, espera: 1000 + (i * 977) % 3000 })
       s.setInteractive({ useHandCursor: true })
       s.on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointermove', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointerout', () => etiqueta(null))
       s.on('pointerdown', (ptr) => { etiqueta(p.nombre, ptr.x, ptr.y); setTimeout(() => etiqueta(null), 1500) })
-      // De vez en cuando miran hacia otro lado
-      this.time.addEvent({ delay: 2000 + (i * 733) % 3000, loop: true, callback: () => s.setFrame([0, 3, 6, 9][Phaser.Math.Between(0, 3)]) })
       this.npcs.push(s)
-      this.solidos.add(s)
-      if (p.vida) this.interactivos.push({ x: p.x * T, y: p.y * T, radio: 18, vida: p.vida, nombre: p.nombre })
+      // el punto para hablar con ellos se mueve con ellos
+      if (p.vida) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, vida: p.vida, nombre: p.nombre })
     })
 
     // Alejandro, el guía
@@ -192,10 +200,14 @@ export default class Mundo extends Phaser.Scene {
     const p = estado.personaje
     crearPersonaje(this, 'jugador', p.rasgos)
     crearAnimaciones(this, 'jugador')
-    this.jugador = this.physics.add.sprite(8 * T, (CAMINO + 1.2) * T, 'jugador', 0).setOrigin(0.5, 1)
+    // Se empieza al sur del pueblo, delante de la Puerta de la Villa
+    this.jugador = this.physics.add.sprite(19 * T, 31.8 * T, 'jugador', 9).setOrigin(0.5, 1)
+    this.mirando = 'arriba'
     this.jugador.body.setSize(10, 6).setOffset(7, 25)
     this.jugador.setCollideWorldBounds(true)
     this.physics.add.collider(this.jugador, this.solidos)
+    this.physics.add.collider(this.jugador, this.npcs)
+    this.physics.add.collider(this.npcs, this.solidos)
     this.jugador.setInteractive().on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     this.cameras.main.startFollow(this.jugador, true, 0.12, 0.12)
     // El jugador va algo por debajo del centro para que se vean enteros los edificios altos bajo la barra de arriba
@@ -266,6 +278,33 @@ export default class Mundo extends Phaser.Scene {
     if (cosa.vida) return decir(cosa.nombre, frases(cosa.vida))
   }
 
+  // Cada NPC da paseos cortos alrededor de su sitio; si el jugador se acerca, se para y le mira
+  pasear(n, pausado) {
+    const m = n.getData('paseo')
+    const ahora = this.time.now
+    const j = this.jugador
+    const cerca = Phaser.Math.Distance.Between(n.x, n.y, j.x, j.y) < 34
+    if (pausado || cerca) {
+      n.setVelocity(0); n.anims.stop(); m.destino = null; m.espera = ahora + 1500
+      if (cerca) { const dx = j.x - n.x, dy = j.y - n.y; n.setFrame(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 3) : (dy > 0 ? 0 : 9)) }
+      return
+    }
+    if (!m.destino) {
+      if (ahora < m.espera) return
+      const a = Math.random() * Math.PI * 2, r = Math.random() * m.radio
+      m.destino = { x: m.casaX + Math.cos(a) * r, y: m.casaY + Math.sin(a) * r, hasta: ahora + 3500 }
+    }
+    const dx = m.destino.x - n.x, dy = m.destino.y - n.y
+    if (Math.hypot(dx, dy) < 2 || ahora > m.destino.hasta) {
+      n.setVelocity(0); n.anims.stop(); n.setFrame(Math.random() < 0.5 ? 0 : [3, 6, 9][Math.floor(Math.random() * 3)])
+      m.destino = null; m.espera = ahora + 1500 + Math.random() * 3500
+      return
+    }
+    const v = new Phaser.Math.Vector2(dx, dy).normalize().scale(26)
+    n.setVelocity(v.x, v.y)
+    n.play(`${m.clave}-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`, true)
+  }
+
   update() {
     if (this.modo === 'portada') {
       // Barrido lento de cámara por el mapa
@@ -301,7 +340,7 @@ export default class Mundo extends Phaser.Scene {
     }
     j.setDepth(j.y)
     this.guia.setDepth(this.guia.y)
-    this.npcs.forEach((n) => n.setDepth(n.y))
+    this.npcs.forEach((n) => { this.pasear(n, pausado); n.setDepth(n.y) })
     this.jerry.setDepth(this.jerry.y)
 
     // DANTE P.W. sigue al jugador si se lo pides

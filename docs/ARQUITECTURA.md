@@ -1,0 +1,65 @@
+# Arquitectura
+
+El juego es una sola escena de Phaser (`Mundo`) con una capa de HTML por encima para todo lo que es texto
+(HUD, diálogos, paneles, menús y modo clásico). Así el texto se lee nítido en cualquier pantalla, se puede
+seleccionar y es accesible, y Phaser solo se ocupa del mundo en píxeles.
+
+## Flujo al arrancar
+
+1. `main.js` espera a que cargue la fuente Press Start 2P (si no, los primeros textos salen con otra fuente) y crea
+   el juego con `pixelArt: true` y escalado `RESIZE`.
+2. `Mundo.create()` dibuja todas las texturas (`prepararTexturas`), pinta el suelo en un único canvas, coloca árboles,
+   edificios, objetos y personajes, y deja la cámara paseando por el mapa en modo `portada`.
+3. `pantallas.js` muestra encima la intro de terminal, el menú y el creador de personaje.
+4. Al pulsar «A jugar», `Mundo.empezar()` crea al jugador al sur de la Puerta de la Villa, la cámara le sigue
+   y arranca el recorrido guiado.
+
+## El mapa (`mapa.js`)
+
+Todo lo que hay en el mundo está descrito como datos, en casillas de 16 px:
+
+- `EDIFICIOS`: textura, centro `x`, fila `base` donde apoya y, opcionalmente, `letrero`, `vida` (un diálogo) o
+  `zona` (abre un panel).
+- `OBJETOS`: igual, para el decorado (farolas, bancos, coches, la furgoneta, los guiños…).
+- `SUELOS` y `SENDAS`: zonas de plaza, asfalto, baldosa o agua, y caminos verticales.
+- `PERSONAJES`: familia y amigos con sus rasgos.
+- `RECORRIDO`: las paradas del guía, con puntos intermedios (`via`) para que no atraviese edificios.
+
+Cambiar algo de sitio o añadir un banco es editar una línea de este fichero.
+
+## Colisiones y profundidad
+
+- Cada edificio es sólido salvo una franja de 8 px arriba, para poder pasar por detrás sin chocar con el tejado.
+- La Puerta de la Villa tiene dos sólidos, uno por torre: el arco del medio queda libre y su parte de abajo es
+  transparente, así se ve (y se cruza) al otro lado.
+- La profundidad de todo es su coordenada `y` (`setDepth(y)`): lo que está más abajo en pantalla se pinta delante.
+  Es lo que permite pasar por detrás de un edificio o de un árbol.
+
+## Personajes que pasean
+
+Cada NPC guarda su sitio de origen y un radio. Cada pocos segundos elige un punto al azar dentro de ese círculo,
+anda hasta él con su animación y espera. Si el jugador se acerca, se para y le mira, para que se pueda hablar con él.
+El punto de interacción de los NPC con diálogo se calcula con *getters*, así sigue al personaje allá donde vaya.
+
+## Recorrido guiado
+
+El guía (Alejandro) espera con un «!» encima en cada parada. Cuando el jugador se acerca, cuenta su parte
+(`historia.js`) con el efecto de máquina de escribir y avanza a la siguiente parada con una interpolación (*tween*)
+por los puntos `via`. El progreso se guarda en `localStorage`, así que al volver se puede continuar.
+
+## Interfaz (`ui.js` y `pantallas.js`)
+
+- `decir()` devuelve una promesa que se resuelve al cerrar el diálogo, lo que permite encadenar frases con `await`.
+- Los paneles se generan a partir de `content.js` y desbloquean un logro la primera vez.
+- El modo clásico es una página normal con la misma información, para reclutadores con prisa.
+- En móvil aparece una cruceta táctil que escribe en `teclasTactiles`, que la escena lee igual que el teclado.
+
+## Idiomas y estado
+
+`estado.js` guarda idioma, sonido, personaje, zonas visitadas y si el recorrido está hecho. Todos los textos
+salen de `content.js` y `historia.js`, que tienen la misma estructura en `es` y `en`.
+
+## Publicación
+
+`vite.config.js` usa `BASE` para la ruta de publicación. El flujo de GitHub Actions compila con Node 20 y publica
+`dist/` en GitHub Pages: en la raíz si el repositorio es `alexxblaro16.github.io` y en `/nombre-del-repo/` si no.

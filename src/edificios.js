@@ -131,9 +131,10 @@ function puertaVilla() {
     const t = Math.max(0, (66 - y) / 14)
     const mitad = y >= 66 ? 13 : Math.round(13 * (1 - Math.pow(t, 1.5)))
     p(64 - mitad - 3, y, 3, 1, luz); p(64 + mitad, y, 3, 1, luz)
-    if (mitad > 0) p(64 - mitad, y, mitad * 2, 1, y > 84 ? '#c9ae80' : y > 78 ? '#5e4a33' : '#2b2119')
+    if (mitad > 0) { if (y < 64) p(64 - mitad, y, mitad * 2, 1, '#2b2119'); else ctx.clearRect(64 - mitad, y, mitad * 2, 1) }
   }
   for (let y = 56; y < 100; y += 5) { p(48, y, 3, 1, sombra); p(77, y, 3, 1, sombra) }
+  p(51, 64, 26, 2, 'rgba(20,12,5,0.45)') // sombra de la bóveda
   // torres cilíndricas: luz a la izquierda y sombra a la derecha
   const torre = (x0) => {
     const w = 44
@@ -365,12 +366,186 @@ function farola() {
   return c
 }
 
+// ---------------------------------------------------------------------------------------------- muralla junto a la puerta
+function muralla() {
+  const [c, ctx] = lienzo(48, 40)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  const base = '#cfa565', luz = '#e8c587', sombra = '#a77f45'
+  p(0, 10, 48, 30, base); p(0, 10, 48, 1, luz); p(0, 36, 48, 4, oscurecer(base, 0.82))
+  for (let y = 12; y < 36; y += 6) { p(0, y, 48, 1, 'rgba(70,45,15,0.3)'); for (let x = (y / 6) % 2 ? 4 : 0; x < 48; x += 9) p(x, y, 1, 6, 'rgba(70,45,15,0.28)') }
+  for (let x = 1; x < 48; x += 8) { p(x, 2, 5, 8, base); p(x, 2, 5, 1, luz); p(x + 4, 3, 1, 7, sombra) }
+  p(20, 18, 2, 8, '#2b2119')
+  return c
+}
+
+// ---------------------------------------------------------------------------------------------- casas de la plaza
+// Dos plantas con balcones y soportales abajo, como las de la Plaza Mayor de Villalpando
+function casaPlaza(pared) {
+  return () => {
+    const [c, ctx] = lienzo(48, 64)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    tejado(ctx, 0, 4, 48, 10, '#a84a30')
+    p(0, 16, 48, 48, pared); p(0, 16, 48, 2, oscurecer(pared, 0.8)); p(0, 18, 2, 46, aclarar(pared, 0.2)); p(45, 18, 3, 46, oscurecer(pared, 0.88))
+    for (const x of [7, 29]) {
+      p(x, 22, 12, 16, '#f4f1ea'); p(x + 1, 23, 10, 14, '#2a3440'); p(x + 1, 23, 10, 4, '#3d4c5c'); p(x + 6, 23, 1, 14, '#f4f1ea')
+      p(x - 2, 38, 16, 1, '#bfb5a0'); p(x - 2, 34, 16, 1, NEGRO)
+      for (let b = x - 2; b < x + 14; b += 2) p(b, 35, 1, 3, NEGRO)
+      p(x + 1, 33, 3, 1, '#e05a5a'); p(x + 8, 33, 3, 1, '#f6e05e')
+    }
+    p(0, 41, 48, 1, aclarar(pared, 0.3)); p(0, 42, 48, 1, oscurecer(pared, 0.78))
+    for (const x of [0, 24]) {
+      const ox = x + 4
+      p(ox, 48, 16, 16, '#6b5843'); p(ox + 1, 46, 14, 2, '#6b5843'); p(ox + 3, 45, 10, 1, '#6b5843')
+      p(ox, 48, 16, 5, '#4a3c2e'); p(ox + 1, 46, 14, 2, '#4a3c2e'); p(ox, 60, 16, 4, '#8a7a62')
+      p(ox + 6, 50, 4, 10, '#7a5232'); p(ox + 9, 55, 1, 1, '#f2c200')
+      p(x, 43, 4, 21, pared); p(x, 43, 1, 21, aclarar(pared, 0.25)); p(x + 3, 43, 1, 21, oscurecer(pared, 0.82))
+    }
+    p(44, 43, 4, 21, pared); p(47, 43, 1, 21, oscurecer(pared, 0.82))
+    return c
+  }
+}
+
+// ---------------------------------------------------------------------------------------------- mobiliario urbano
+function banco() {
+  const [c, ctx] = lienzo(24, 14)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 0, 22, 5, NEGRO); p(2, 1, 20, 1, '#b07a44'); p(2, 3, 20, 1, '#b07a44')
+  p(0, 6, 24, 4, NEGRO); p(1, 7, 22, 2, '#c58a50'); p(1, 7, 22, 1, '#dba56a')
+  p(2, 10, 2, 4, NEGRO); p(20, 10, 2, 4, NEGRO)
+  return c
+}
+
+function papelera() {
+  const [c, ctx] = lienzo(8, 12)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 0, 8, 12, NEGRO); p(1, 1, 6, 10, '#2f7d4a'); p(1, 1, 6, 1, '#4fa56a'); p(2, 3, 1, 7, '#3c9a5a'); p(1, 1, 6, 2, '#22252c')
+  return c
+}
+
+function macetero() {
+  const [c, ctx] = lienzo(16, 20)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 11, 14, 9, NEGRO); p(2, 12, 12, 7, '#d6d0c2'); p(2, 12, 12, 1, '#ece7db'); p(2, 17, 12, 2, '#b3ac9d')
+  p(1, 2, 14, 10, '#2a7535'); p(2, 1, 12, 10, '#3c9a47'); p(3, 0, 10, 2, '#3c9a47'); p(4, 2, 4, 3, '#5cbf5f')
+  for (const [x, y, col] of [[4, 5, '#e05a5a'], [9, 3, '#f6e05e'], [11, 7, '#ff8fb0'], [6, 8, '#ffffff']]) p(x, y, 2, 2, col)
+  return c
+}
+
+function puesto() {
+  const [c, ctx] = lienzo(40, 36)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  for (let x = 0; x < 40; x += 5) { p(x, 2, 5, 7, (x / 5) % 2 ? '#ffffff' : '#d9352a'); p(x + 1, 9, 3, 1, (x / 5) % 2 ? '#ffffff' : '#d9352a') }
+  p(0, 1, 40, 1, NEGRO)
+  p(2, 10, 2, 22, '#6b4a2b'); p(36, 10, 2, 22, '#6b4a2b')
+  p(0, 22, 40, 10, '#8a5a32'); p(0, 22, 40, 2, '#b07a44'); p(0, 32, 40, 1, NEGRO)
+  for (let x = 3; x < 37; x += 4) { const col = ['#e05a5a', '#f2b33d', '#7ad37a', '#f6e05e'][((x - 3) / 4) % 4]; p(x, 19, 3, 3, col); p(x, 19, 1, 1, '#ffffff') }
+  return c
+}
+
+function coche(color) {
+  return () => {
+    const [c, ctx] = lienzo(40, 24)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    p(3, 21, 34, 3, 'rgba(0,0,0,0.2)')
+    p(1, 9, 38, 11, NEGRO); p(2, 10, 36, 9, color); p(2, 10, 36, 2, aclarar(color, 0.25)); p(2, 16, 36, 3, oscurecer(color, 0.8))
+    p(8, 2, 22, 8, NEGRO); p(9, 3, 20, 7, color); p(10, 4, 8, 5, '#33476b'); p(20, 4, 8, 5, '#33476b'); p(11, 5, 2, 2, '#7f9fcf')
+    p(37, 12, 2, 2, '#ffe58a'); p(1, 12, 2, 2, '#e05a5a'); p(19, 11, 1, 6, oscurecer(color, 0.7))
+    for (const cx of [9, 30]) { p(cx - 3, 16, 7, 7, NEGRO); p(cx - 1, 18, 3, 3, '#9aa3ad') }
+    return c
+  }
+}
+
+function farolaModerna() {
+  const [c, ctx] = lienzo(12, 40)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(5, 4, 2, 34, '#5b6068'); p(5, 4, 1, 34, '#8a919a'); p(5, 2, 7, 2, '#5b6068'); p(8, 4, 4, 2, '#e9ecef'); p(8, 6, 4, 1, '#fff3c4')
+  p(3, 37, 6, 3, '#3a3f48')
+  return c
+}
+
+function aparcabicis() {
+  const [c, ctx] = lienzo(32, 18)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  const rueda = (x, y, col) => { p(x + 1, y, 4, 1, col); p(x, y + 1, 1, 4, col); p(x + 5, y + 1, 1, 4, col); p(x + 1, y + 5, 4, 1, col) }
+  for (const [x, col] of [[2, '#e05a5a'], [17, '#3d7be0']]) {
+    rueda(x, 10, NEGRO); rueda(x + 7, 10, NEGRO)
+    p(x + 3, 9, 8, 1, col); p(x + 5, 6, 1, 4, col); p(x + 4, 5, 3, 1, NEGRO); p(x + 10, 6, 1, 4, col); p(x + 9, 5, 3, 1, '#9aa3ad')
+  }
+  p(0, 16, 32, 2, '#9aa3ad')
+  return c
+}
+
+function arbusto() {
+  const [c, ctx] = lienzo(16, 12)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 4, 14, 8, '#1b2a1e'); p(3, 2, 10, 2, '#1b2a1e'); p(2, 4, 12, 7, '#2a7535'); p(3, 3, 10, 6, '#3c9a47'); p(4, 3, 4, 2, '#5cbf5f')
+  p(10, 6, 1, 1, '#f6e05e'); p(5, 7, 1, 1, '#ff8fb0')
+  return c
+}
+
+// ---------------------------------------------------------------------------------------------- guiños a sus favoritos
+// Son homenajes con formas sencillas (una casa-piña, un murciélago, una telaraña), no copias de los personajes.
+// Casa con forma de piña junto al agua: guiño a Bob Esponja (Alejandro hizo un juego suyo en Unity)
+function casaPina() {
+  const [c, ctx] = lienzo(32, 44)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  // hojas
+  for (const [x, y, w, h] of [[14, 0, 4, 10], [9, 3, 4, 9], [19, 3, 4, 9], [5, 7, 4, 7], [23, 7, 4, 7]]) { p(x, y, w, h, '#2f8a3a'); p(x, y, 1, h, '#5cbf5f') }
+  // cuerpo de la piña
+  p(5, 13, 22, 31, '#1b1f27'); p(6, 14, 20, 29, '#f2a71b'); p(4, 18, 24, 22, '#1b1f27'); p(5, 19, 22, 20, '#f2a71b')
+  for (let y = 16; y < 42; y += 4) for (let x = 6 + ((y / 4) % 2) * 2; x < 26; x += 4) { p(x, y, 2, 1, '#c7801a'); p(x + 1, y + 1, 1, 1, '#c7801a') }
+  p(6, 14, 3, 26, '#f7c35a')
+  // puerta y ventanas redondas
+  p(12, 32, 8, 12, '#1b1f27'); p(13, 33, 6, 11, '#7f8fa6'); p(13, 33, 6, 1, '#a9b6c8')
+  for (const [x, y] of [[8, 22], [20, 20]]) { p(x, y, 5, 5, '#1b1f27'); p(x + 1, y + 1, 3, 3, '#7fc8ff'); p(x + 1, y + 1, 1, 1, '#d6ecfa') }
+  return c
+}
+
+// Veleta con un murciélago encima: guiño a Batman (la W de DANTE P.W. es de Bruce Wayne)
+function veleta() {
+  const [c, ctx] = lienzo(20, 40)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(9, 10, 2, 28, '#3a3f48'); p(9, 10, 1, 28, '#6a717c'); p(6, 37, 8, 3, '#2b2f38')
+  // murciélago
+  const negro = '#15171c'
+  p(8, 2, 4, 5, negro); p(7, 1, 1, 2, negro); p(12, 1, 1, 2, negro)
+  p(2, 3, 6, 3, negro); p(12, 3, 6, 3, negro); p(0, 2, 2, 3, negro); p(18, 2, 2, 3, negro)
+  p(3, 6, 2, 1, negro); p(15, 6, 2, 1, negro); p(6, 6, 2, 1, negro); p(12, 6, 2, 1, negro)
+  p(9, 4, 1, 1, '#f2c200'); p(10, 4, 1, 1, '#f2c200')
+  return c
+}
+
+// Telaraña en una esquina y una mochila roja y azul: guiño a Spider-Man (la P de DANTE P.W. es de Peter Parker)
+function telarana() {
+  const [c, ctx] = lienzo(24, 24)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  const hilo = 'rgba(240,244,248,0.85)'
+  for (let i = 0; i < 24; i++) { p(i, 0, 1, 1, hilo); p(0, i, 1, 1, hilo); p(i, i, 1, 1, hilo); if (i < 12) { p(i * 2, i, 1, 1, hilo); p(i, i * 2, 1, 1, hilo) } }
+  for (const r of [6, 12, 18]) for (let a = 0; a <= 90; a += 6) { const rad = (a * Math.PI) / 180; p(Math.round(Math.cos(rad) * r), Math.round(Math.sin(rad) * r), 1, 1, hilo) }
+  p(13, 15, 3, 3, '#15171c'); p(12, 14, 1, 1, '#15171c'); p(16, 14, 1, 1, '#15171c'); p(12, 18, 1, 1, '#15171c'); p(16, 18, 1, 1, '#15171c')
+  return c
+}
+
+function mochilaArana() {
+  const [c, ctx] = lienzo(14, 16)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 2, 12, 14, '#1b1f27'); p(2, 3, 10, 12, '#d6302a'); p(2, 10, 10, 5, '#2a4fb0'); p(4, 0, 6, 3, '#1b1f27'); p(5, 1, 4, 1, '#d6302a')
+  for (const x of [4, 7, 10]) p(x, 3, 1, 7, '#a32420')
+  p(3, 6, 8, 1, '#a32420'); p(6, 6, 2, 2, '#15171c')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
     casa(ctx, w, h, o)
     scene.textures.addCanvas(nombre, c)
   }
-  const especiales = { puerta_villa: puertaVilla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola }
+  const especiales = {
+    puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
+    casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
+    banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, veleta, telarana, mochila_arana: mochilaArana,
+  }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
 }
