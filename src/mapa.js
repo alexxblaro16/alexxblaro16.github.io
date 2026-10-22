@@ -10,7 +10,7 @@ export const EDIFICIOS = [
   { clave: 'reblan', x: 29, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', vida: 'reblan' },
   { clave: 'soportales', x: 36, base: 13, letrero: 'PLAZA MAYOR' },
   { clave: 'piso', x: 45, base: 18, vida: 'casa' },
-  { clave: 'instituto', x: 36, base: 29, letrero: 'IES TIERRA DE CAMPOS', vida: 'instituto' },
+  { clave: 'instituto', x: 36, base: 29, vida: 'instituto' },
   { clave: 'residencia', x: 67, base: 18, letrero: 'RESIDENCIA JOSÉ PÉREZ DE VARGAS', vida: 'residencia' },
   { clave: 'medac', x: 83, base: 18, letrero: 'MEDAC', vida: 'medac' },
   { clave: 'anexia', x: 93, base: 18, letrero: 'ANEXIA', vida: 'anexia' },
@@ -24,7 +24,7 @@ export const EDIFICIOS = [
 
 // Cosas sueltas del decorado (también se puede interactuar con varias)
 export const OBJETOS = [
-  { clave: 'puerta_villa', x: 19, base: 20.6, puerta: true, letrero: 'VILLALPANDO' },
+  { clave: 'puerta_villa', x: 18, base: 19, puerta: true, letrero: 'VILLALPANDO' },
   { clave: 'fuente', x: 32, base: 15.5, solido: true },
   { clave: 'furgoneta', x: 34.6, base: 18.4 },
   { clave: 'farola', x: 24.5, base: 17.6 }, { clave: 'farola', x: 41.5, base: 17.6 }, { clave: 'farola', x: 25, base: 24.5 },

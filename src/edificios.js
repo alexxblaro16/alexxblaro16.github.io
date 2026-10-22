@@ -271,7 +271,7 @@ function instituto() {
   p(0, 44, 128, 1, '#8a3b2b')
   // cuerpo central algo adelantado
   p(48, 8, 32, 37, aclarar(crema, 0.15)); p(48, 8, 32, 1, NEGRO); p(48, 8, 1, 37, '#c8bd9c'); p(79, 8, 1, 37, '#b8ad8c')
-  for (const x of [58, 68]) { p(x, 13, 4, 6, '#2f3f52'); p(x - 1, 14, 6, 4, '#2f3f52'); p(x, 14, 1, 1, '#8fb0c8') }
+  for (const x of [58, 68]) { p(x, 14, 3, 5, '#f4f4f0'); p(x - 1, 15, 5, 3, '#f4f4f0'); p(x, 15, 3, 3, '#8fb0c8'); p(x, 15, 1, 1, '#cfe0ec') }
   const ventanita = (x, y) => {
     p(x, y, 11, 9, '#f4f4f0'); p(x + 1, y + 1, 9, 7, '#8fb0c8'); p(x + 1, y + 1, 9, 3, '#e8e4da'); p(x + 5, y + 1, 1, 7, '#f4f4f0')
   }
@@ -307,7 +307,7 @@ function medac() {
   // pancarta vertical azul con el nombre
   p(10, 6, 13, 72, azul); p(10, 6, 1, 72, '#2f57a3'); p(22, 6, 1, 72, '#142c5a')
   ;['M', 'E', 'D', 'A', 'C'].forEach((l, i) => textoCentrado(ctx, l, 16 + (l === 'M' ? 1 : 0), 10 + i * 8, '#ffffff'))
-  p(13, 54, 7, 9, '#e9ecef'); p(15, 52, 3, 3, '#e5a97f'); p(14, 64, 5, 1, '#ffffff'); p(14, 67, 5, 1, '#ffffff'); p(14, 70, 3, 1, '#ffffff')
+  p(13, 56, 7, 1, '#ffffff'); p(13, 60, 7, 1, '#7fa8e0'); p(13, 64, 5, 1, '#ffffff')
   // logotipo en la fachada
   p(56, 16, 52, 7, panel)
   p(60, 17, 4, 5, azul); p(61, 18, 2, 1, '#ffffff')
@@ -344,7 +344,7 @@ function udit() {
   p(66, 72, 16, 16, '#15171c'); p(68, 74, 12, 14, '#33475e'); p(73, 74, 1, 14, '#15171c')
   p(0, 86, 128, 2, '#9aa3ad')
   // terraza con pérgola blanca, suelo de damero y sillas de colores
-  for (let y = 70; y < 88; y += 4) for (let x = 128; x < 176; x += 4) p(x, y, 4, 4, ((x + y) / 4) % 2 ? '#f4f4f4' : '#2b2f38')
+  for (let y = 70; y < 88; y += 4) for (let x = 128; x < 176; x += 4) p(x, y, 4, 4, ((x - 128) / 4 + (y - 70) / 4) % 2 ? '#f4f4f4' : '#2b2f38')
   for (const x of [131, 151, 172]) p(x, 46, 1, 30, '#2b2f38')
   p(128, 40, 48, 7, '#f4f6f8'); p(128, 46, 48, 1, '#9aa3ad'); p(128, 40, 48, 1, '#ffffff')
   for (let y = 41; y < 46; y += 2) for (let x = 129 + (y % 4); x < 176; x += 4) p(x, y, 1, 1, '#c3cbd3')

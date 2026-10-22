@@ -52,7 +52,7 @@ const PELO = {
     espalda(p, C) {
       mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 10], [7, 14, 10, 1]])
       p(9, 3, 3, 1, C.L); p(8, 4, 2, 2, C.L)
-      p(15, 5, 3, 9, C.h); p(6, 12, 12, 2, C.h)
+      p(15, 5, 3, 9, C.h); p(8, 13, 2, 1, C.h); p(12, 13, 2, 1, C.h)
     },
   },
   // Ondulado con volumen y mechones que caen sobre la frente (Alejandro)
@@ -70,7 +70,7 @@ const PELO = {
     espalda(p, C) {
       mechones(p, C, [[9, 1, 2, 1], [13, 1, 3, 1], [7, 2, 10, 1], [6, 3, 12, 1], [5, 4, 14, 9], [6, 13, 3, 2], [10, 13, 4, 2], [15, 13, 3, 1]])
       p(8, 2, 2, 1, C.L); p(10, 3, 2, 1, C.L); p(7, 5, 3, 1, C.L); p(11, 7, 3, 1, C.L); p(8, 9, 2, 1, C.L)
-      p(15, 4, 4, 9, C.h); p(6, 11, 8, 2, C.h)
+      p(15, 4, 4, 9, C.h); p(7, 12, 2, 1, C.h); p(12, 12, 2, 1, C.h)
     },
   },
   // Rizado cerrado con textura de rizos
@@ -247,8 +247,10 @@ function accesorios(p, C, dir, r) {
     p(11, 10, 2, 1, C.G)
   }
   if (r.gafas && dir === 'lado') { p(6, 9, 4, 1, C.G); p(6, 13, 4, 1, C.G); p(9, 10, 1, 3, C.G); p(10, 10, 3, 1, C.G) }
-  if (r.cadena && dir === 'frente') { p(9, 17, 1, 1, '#d6dce3'); p(14, 17, 1, 1, '#d6dce3'); p(10, 18, 1, 1, '#d6dce3'); p(13, 18, 1, 1, '#d6dce3'); p(11, 19, 2, 1, '#aab3bd') }
-  if (r.cadena && dir === 'lado') { p(8, 17, 1, 1, '#d6dce3'); p(9, 18, 1, 1, '#aab3bd') }
+  // la cadena se oscurece un poco sobre camisetas claras para que se vea
+  const plata = r.ropa && parseInt(r.ropa.slice(1), 16) > 0xcccccc ? ['#8e98a3', '#5f6873'] : ['#d6dce3', '#aab3bd']
+  if (r.cadena && dir === 'frente') { p(9, 17, 1, 1, plata[0]); p(14, 17, 1, 1, plata[0]); p(10, 18, 1, 1, plata[0]); p(13, 18, 1, 1, plata[0]); p(11, 19, 2, 1, plata[1]) }
+  if (r.cadena && dir === 'lado') { p(8, 17, 1, 1, plata[0]); p(9, 18, 1, 1, plata[1]) }
   if (r.logo && dir === 'frente') p(13, 19, 2, 1, r.logo)
   if (r.robot) {
     p(11, 1, 2, 3, C.metal); p(11, 0, 2, 1, C.A)
@@ -266,7 +268,6 @@ function dibujar(ctx, dir, paso, r, C) {
   const p = (x, y, w, h, c) => px(ctx, x, y, c, w, h)
   const pelo = PELO[r.pelo] || PELO.corto
   if (r.tipo === 'sudadera') capucha(p, C, dir)
-  if (r.portatil && dir === 'lado') { p(6, 20, 10, 2, '#2b2f38'); p(6, 20, 10, 1, '#aeb6c0'); p(8, 21, 1, 1, '#f89820'); p(11, 21, 1, 1, '#61dafb') }
   piernas(p, C, dir, paso, r)
   cuerpo(p, C, dir, r)
   brazos(p, C, dir, paso, r)

@@ -1,6 +1,6 @@
 // La escena principal: el mundo en píxeles, el personaje del visitante, Alejandro como guía y todos los NPC.
 import Phaser from 'phaser'
-import { T, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdificios } from '../sprites.js'
+import { T, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdificios, crearDecorado } from '../sprites.js'
 import { ANCHO, ALTO, CAMINO, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO } from '../mapa.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
@@ -52,6 +52,7 @@ export default class Mundo extends Phaser.Scene {
     if (!this.textures.exists('hierba')) {
       crearSuelos(this)
       crearEdificios(this)
+      crearDecorado(this)
       crearJerry(this)
     }
     crearPersonaje(this, 'alejandro', ALEJANDRO); crearAnimaciones(this, 'alejandro')
@@ -131,10 +132,8 @@ export default class Mundo extends Phaser.Scene {
     for (const o of OBJETOS) {
       const img = this.add.image(o.x * T, o.base * T, o.clave).setOrigin(0.5, 1).setDepth(o.base * T)
       if (o.puerta) {
-        // La puerta de la villa: solo son sólidas las torres, por el arco se pasa
-        this.solido(o.x * T - 64, o.base * T - 30, 50, 28)
-        this.solido(o.x * T + 14, o.base * T - 30, 50, 28)
-        img.setDepth(o.base * T + 20)
+        // La Puerta de la Villa está de frente, junto al camino: es sólida por abajo como un edificio
+        this.solido(o.x * T - 64, o.base * T - 26, 128, 24)
       } else if (o.clave === 'campo') {
         img.setDepth(-500)
       } else if (o.clave === 'farola') {
@@ -199,6 +198,8 @@ export default class Mundo extends Phaser.Scene {
     this.physics.add.collider(this.jugador, this.solidos)
     this.jugador.setInteractive().on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     this.cameras.main.startFollow(this.jugador, true, 0.12, 0.12)
+    // El jugador va algo por debajo del centro para que se vean enteros los edificios altos bajo la barra de arriba
+    this.cameras.main.setFollowOffset(0, 36)
     this.modo = 'juego'
     this.paso = estado.recorridoHecho ? RECORRIDO.length : 0
     if (estado.recorridoHecho) this.guia.setPosition(148 * T, (CAMINO + 0.5) * T)
