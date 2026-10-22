@@ -190,19 +190,37 @@ export function crearSuelos(scene) {
 // ---------------------------------------------------------------------------------------------- decorado pequeño
 // Campo de fútbol, avioneta del Erasmus, parada, bloque secreto, carteles y fuente
 export function crearDecorado(scene) {
-  // Campo de fútbol
+  // Campo de fútbol: césped segado a franjas, líneas completas, áreas, puntos de penalti, córners,
+  // porterías con red, banderines y un balón
   {
     const [c, ctx] = lienzo(112, 64)
-    px(ctx, 0, 0, '#3f9e4f', 112, 64)
-    for (let x = 0; x < 112; x += 16) px(ctx, x, 0, '#46a957', 8, 64)
-    px(ctx, 2, 2, '#ffffff', 108, 1); px(ctx, 2, 61, '#ffffff', 108, 1); px(ctx, 2, 2, '#ffffff', 1, 60); px(ctx, 109, 2, '#ffffff', 1, 60)
-    px(ctx, 56, 2, '#ffffff', 1, 60)
-    for (let a = 0; a < 360; a += 6) px(ctx, 56 + Math.round(Math.cos(a * Math.PI / 180) * 10), 32 + Math.round(Math.sin(a * Math.PI / 180) * 10), '#ffffff')
-    // áreas
-    px(ctx, 2, 18, '#ffffff', 14, 1); px(ctx, 2, 45, '#ffffff', 14, 1); px(ctx, 16, 18, '#ffffff', 1, 28)
-    px(ctx, 96, 18, '#ffffff', 14, 1); px(ctx, 96, 45, '#ffffff', 14, 1); px(ctx, 95, 18, '#ffffff', 1, 28)
-    px(ctx, 0, 24, '#eeeeee', 3, 16); px(ctx, 109, 24, '#eeeeee', 3, 16)
-    px(ctx, 0, 24, '#9aa3ad', 1, 16); px(ctx, 111, 24, '#9aa3ad', 1, 16)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    p(0, 0, 112, 64, '#3c984b')
+    for (let x = 0; x < 112; x += 14) p(x, 0, 7, 64, '#45a654')
+    const L = '#f4f6f2'
+    p(4, 3, 104, 1, L); p(4, 60, 104, 1, L); p(4, 3, 1, 58, L); p(107, 3, 1, 58, L); p(56, 3, 1, 58, L)
+    for (let a = 0; a < 360; a += 5) p(56 + Math.round(Math.cos((a * Math.PI) / 180) * 9), 32 + Math.round(Math.sin((a * Math.PI) / 180) * 9), 1, 1, L)
+    p(55, 31, 3, 3, L)
+    for (const [x0, s] of [[4, 1], [107, -1]]) {
+      // área grande, área pequeña, punto de penalti y la media luna
+      p(s > 0 ? x0 : x0 - 16, 16, 17, 1, L); p(s > 0 ? x0 : x0 - 16, 47, 17, 1, L); p(x0 + s * 16, 16, 1, 32, L)
+      p(s > 0 ? x0 : x0 - 6, 24, 7, 1, L); p(s > 0 ? x0 : x0 - 6, 39, 7, 1, L); p(x0 + s * 6, 24, 1, 16, L)
+      p(x0 + s * 11 - (s < 0 ? 1 : 0), 31, 2, 2, L)
+      for (let a = -50; a <= 50; a += 8) { const xx = x0 + s * 11 + s * Math.round(Math.cos((a * Math.PI) / 180) * 9); if ((xx - (x0 + s * 16)) * s > 0) p(xx, 32 + Math.round(Math.sin((a * Math.PI) / 180) * 9), 1, 1, L) }
+      // portería con red
+      const gx = s > 0 ? 0 : 108
+      p(gx, 25, 4, 14, '#d9dee4')
+      for (let y = 26; y < 38; y += 2) p(gx, y, 4, 1, '#9aa3ad')
+      for (let x = gx; x < gx + 4; x += 2) p(x, 25, 1, 14, '#b9c0c8')
+      p(s > 0 ? 3 : 108, 25, 1, 14, '#ffffff'); p(gx, 25, 4, 1, '#ffffff'); p(gx, 38, 4, 1, '#ffffff')
+    }
+    // córners y banderines
+    for (const [x, y] of [[4, 3], [107, 3], [4, 60], [107, 60]]) {
+      p(x + (x < 50 ? 1 : -1), y + (y < 30 ? 1 : -1), 1, 1, L)
+      p(x, y - 3, 1, 4, '#ffffff'); p(x + (x < 50 ? 1 : -2), y - 3, 2, 2, '#e05a5a')
+    }
+    // balón
+    p(70, 37, 3, 3, '#ffffff'); p(71, 38, 1, 1, '#1b1f27'); p(70, 40, 3, 1, 'rgba(0,0,0,0.25)')
     scene.textures.addCanvas('campo', c)
   }
 

@@ -56,6 +56,9 @@ export const OBJETOS = [
   { clave: 'parada', x: 57, base: 18.4, vida: 'parada', letrero: 'MADRID · 2023' },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
   { clave: 'campo', x: 104, base: 28, vida: 'futbol' },
+  { clave: 'grada', x: 104, base: 30.6 }, { clave: 'banquillo', x: 99.3, base: 27.2 },
+  // huerto del pueblo con una berenjena gigante
+  { clave: 'huerto', x: 9.5, base: 13.6 }, { clave: 'berenjena', x: 12.9, base: 13.8, vida: 'berenjena' },
   { clave: 'avion', x: 118.5, base: 26.6, vida: 'tallin', letrero: 'TALLIN' },
   { clave: 'bloque', x: 51, base: 31, vida: 'minecraft', secreto: true },
   { clave: 'cartel', x: 166, base: 18.4, vida: 'fin', letrero: 'FIN… POR AHORA' },

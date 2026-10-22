@@ -2,7 +2,7 @@
 
 Portfolio de **Alejandro Blanco Rodríguez**, desarrollador full stack junior, hecho como un videojuego de pixel art:
 creas tu personaje, entras en Villalpando por la Puerta de la Villa y Alejandro te enseña su vida, sus proyectos y su
-stack. Para quien tenga prisa hay un **modo clásico** con todo en una página, y el CV y el contacto están siempre a mano.
+stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con foto, proyectos, trayectoria, stack y contacto, y el CV y el contacto están siempre a mano.
 
 > `javac HelloWorld.java` → `java AlejandroBlanco` → `Hello, World!`
 > Java fue el primer lenguaje que aprendí, así que el juego empieza ahí.
@@ -10,7 +10,7 @@ stack. Para quien tenga prisa hay un **modo clásico** con todo en una página, 
 ## Qué tiene
 
 - **Intro de terminal**, menú (continuar, nueva partida, modo clásico, opciones y créditos) y **creador de personaje**
-  (nombre, piel, once peinados, color de pelo, barba, prenda, colores, corte, zapatillas, gafas, cadena y sonrisa),
+  (chico o chica, nombre, piel, once peinados, color de pelo, barba, prenda, colores, corte, zapatillas, gafas, cadena y sonrisa),
   con vista previa animada que se puede girar y un botón de personaje aleatorio.
 - **Recorrido guiado**: Alejandro va delante y cuenta cada etapa (Villalpando, el instituto, la residencia en Madrid,
   MEDAC, las prácticas en Anexia, la UDIT, el Erasmus, los hackatones y DANTE P.W.). Se puede saltar en cualquier momento.

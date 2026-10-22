@@ -15,6 +15,7 @@ const TXT = {
     sonido: 'SONIDO', idioma: 'IDIOMA', volver: 'VOLVER', crea: 'CREA TU PERSONAJE', nombre: 'TU NOMBRE',
     pelo: 'PEINADO', colorPelo: 'COLOR DE PELO', piel: 'PIEL', ropa: 'COLOR', gafas: 'GAFAS', si: 'SÍ', no: 'NO', jugar: 'A JUGAR',
     estilos: { corto: 'CORTO', ondulado: 'ONDULADO', rizado: 'RIZADO', flequillo: 'FLEQUILLO', cortina: 'CORTINA', media: 'MEDIA MELENA', largo: 'LARGO', larga: 'LARGA LISA', melena: 'MELENA RIZADA', rapado: 'RAPADO', calvo: 'CALVO' },
+    soy: 'SOY', generos: { '': 'CHICO', 1: 'CHICA' }, abajo: 'ABAJO', abajos: { pantalon: 'PANTALON', falda: 'FALDA', corto: 'CORTO' },
     pestanas: { cuerpo: 'CUERPO', ropa: 'ROPA', extras: 'EXTRAS' }, tipo: 'PRENDA', pantalon: 'PANTALON', anchos: 'CORTE', zapatillas: 'ZAPATILLAS',
     barba: 'BARBA', cadena: 'CADENA', sonrisa: 'SONRISA', aleatorio: 'ALEATORIO', girar: 'GIRAR',
     tipos: { camiseta: 'CAMISETA', polo: 'POLO', sudadera: 'SUDADERA', chaqueta: 'CHAQUETA' }, cortes: { '': 'RECTO', 1: 'ANCHO' },
@@ -28,6 +29,7 @@ const TXT = {
     sonido: 'SOUND', idioma: 'LANGUAGE', volver: 'BACK', crea: 'CREATE YOUR CHARACTER', nombre: 'YOUR NAME',
     pelo: 'HAIRSTYLE', colorPelo: 'HAIR COLOUR', piel: 'SKIN', ropa: 'COLOUR', gafas: 'GLASSES', si: 'YES', no: 'NO', jugar: 'PLAY',
     estilos: { corto: 'SHORT', ondulado: 'WAVY', rizado: 'CURLY', flequillo: 'FRINGE', cortina: 'CURTAIN', media: 'BOB', largo: 'LONG', larga: 'STRAIGHT LONG', melena: 'CURLY LONG', rapado: 'BUZZED', calvo: 'BALD' },
+    soy: 'I AM', generos: { '': 'BOY', 1: 'GIRL' }, abajo: 'BOTTOM', abajos: { pantalon: 'TROUSERS', falda: 'SKIRT', corto: 'SHORTS' },
     pestanas: { cuerpo: 'LOOK', ropa: 'CLOTHES', extras: 'EXTRAS' }, tipo: 'TOP', pantalon: 'TROUSERS', anchos: 'FIT', zapatillas: 'SNEAKERS',
     barba: 'BEARD', cadena: 'CHAIN', sonrisa: 'SMILE', aleatorio: 'RANDOM', girar: 'TURN',
     tipos: { camiseta: 'T-SHIRT', polo: 'POLO', sudadera: 'HOODIE', chaqueta: 'JACKET' }, cortes: { '': 'SLIM', 1: 'BAGGY' },
@@ -130,12 +132,14 @@ function creditos() {
 const ESTILOS = ['corto', 'ondulado', 'rizado', 'flequillo', 'cortina', 'media', 'largo', 'larga', 'melena', 'rapado', 'calvo']
 const TIPOS = ['camiseta', 'polo', 'sudadera', 'chaqueta']
 const BARBAS = ['', 'rala', 'perilla', 'completa']
-const BOOLEANOS = ['gafas', 'cadena', 'anchos', 'sonrisa']
+const BOOLEANOS = ['gafas', 'cadena', 'anchos', 'sonrisa', 'chica']
+const ABAJOS = ['pantalon', 'falda', 'corto']
+const CORTOS = ['corto', 'rapado', 'calvo', 'degradado', 'despeinado']
 const azarDe = (lista) => lista[Math.floor(Math.random() * lista.length)]
 
 function creador() {
   quitarTeclado()
-  const p = { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], tipo: 'camiseta', zapatillas: PALETAS.zapatillas[0], barba: '', gafas: false, cadena: false, anchos: false, sonrisa: false, ...(estado.personaje?.rasgos || {}) }
+  const p = { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], tipo: 'camiseta', zapatillas: PALETAS.zapatillas[0], barba: '', chica: false, abajo: 'pantalon', gafas: false, cadena: false, anchos: false, sonrisa: false, ...(estado.personaje?.rasgos || {}) }
   let nombre = estado.personaje?.nombre || ''
   let pestana = 'cuerpo'
   let direccion = 0 // 0 abajo, 1 izquierda, 2 derecha, 3 arriba
@@ -148,8 +152,8 @@ function creador() {
   }).join('')
   const siNo = { 1: x().si, '': x().no }
   const contenido = () => ({
-    cuerpo: fila('piel', colores('piel', PALETAS.piel)) + fila('pelo', opciones('pelo', ESTILOS, x().estilos)) + fila('colorPelo', colores('colorPelo', PALETAS.pelo)) + fila('barba', opciones('barba', BARBAS, x().barbas)),
-    ropa: fila('tipo', opciones('tipo', TIPOS, x().tipos)) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('anchos', opciones('anchos', [1, ''], x().cortes)) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
+    cuerpo: fila('soy', opciones('chica', ['', 1], x().generos)) + fila('piel', colores('piel', PALETAS.piel)) + fila('pelo', opciones('pelo', ESTILOS, x().estilos)) + fila('colorPelo', colores('colorPelo', PALETAS.pelo)) + fila('barba', opciones('barba', BARBAS, x().barbas)),
+    ropa: fila('tipo', opciones('tipo', TIPOS, x().tipos)) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('abajo', opciones('abajo', ABAJOS, x().abajos)) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('anchos', opciones('anchos', [1, ''], x().cortes)) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
     extras: fila('gafas', opciones('gafas', [1, ''], siNo)) + fila('cadena', opciones('cadena', [1, ''], siNo)) + fila('sonrisa', opciones('sonrisa', [1, ''], siNo)),
   })[pestana]
   const pintar = () => {
@@ -170,15 +174,21 @@ function creador() {
     caja().querySelectorAll('[data-k]').forEach((b) => b.onclick = () => {
       const k = b.dataset.k, v = b.dataset.v
       p[k] = BOOLEANOS.includes(k) ? !!v : k === 'barba' ? (v || false) : v
+      // al pasar a chica, si llevaba un pelo muy corto se le pone media melena; al pasar a chico, sin falda ni barba no se toca
+      if (k === 'chica' && p.chica && CORTOS.includes(p.pelo)) p.pelo = 'media'
+      if (k === 'chica' && p.chica) p.barba = false
+      if (k === 'chica' && !p.chica && p.abajo === 'falda') p.abajo = 'pantalon'
       sfx.mover(); nombre = $('#nombre').value; pintar()
     })
     caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre').value; pintar() })
     $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover() }
     $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover() }
     $('#aleatorio').onclick = () => {
+      const chica = Math.random() < 0.5
       Object.assign(p, {
-        pelo: azarDe(ESTILOS), colorPelo: azarDe(PALETAS.pelo), piel: azarDe(PALETAS.piel), ropa: azarDe(PALETAS.ropa), pantalon: azarDe(PALETAS.pantalon),
-        tipo: azarDe(TIPOS), zapatillas: azarDe(PALETAS.zapatillas), barba: azarDe(BARBAS) || false, gafas: Math.random() < 0.3, cadena: Math.random() < 0.3, anchos: Math.random() < 0.5, sonrisa: Math.random() < 0.5,
+        chica, abajo: chica ? azarDe(ABAJOS) : azarDe(['pantalon', 'corto']),
+        pelo: chica ? azarDe(ESTILOS.filter((e) => !CORTOS.includes(e))) : azarDe(ESTILOS), colorPelo: azarDe(PALETAS.pelo), piel: azarDe(PALETAS.piel), ropa: azarDe(PALETAS.ropa), pantalon: azarDe(PALETAS.pantalon),
+        tipo: azarDe(TIPOS), zapatillas: azarDe(PALETAS.zapatillas), barba: chica ? false : azarDe(BARBAS) || false, gafas: Math.random() < 0.3, cadena: Math.random() < 0.3, anchos: Math.random() < 0.5, sonrisa: Math.random() < 0.5,
       })
       sfx.aceptar(); nombre = $('#nombre').value; pintar()
     }

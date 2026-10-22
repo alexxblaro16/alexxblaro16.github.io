@@ -279,7 +279,7 @@ function cara(p, C, dir, r) {
   }
   if (dir === 'lado') {
     if (r.robot) { p(7, 10, 1, 3, C.A); p(8, 10, 1, 1, '#ffffff'); p(8, 11, 1, 2, ojos) }
-    else { p(7, 10, 2, 1, C.E0); p(7, 11, 1, 1, ojos); p(8, 11, 1, 1, '#ffffff'); p(7, 12, 2, 1, ojos); p(8, 12, 1, 1, C.E0) }
+    else { p(7, 10, 2, 1, C.E0); p(7, 11, 1, 1, ojos); p(8, 11, 1, 1, '#ffffff'); p(7, 12, 2, 1, ojos); p(8, 12, 1, 1, C.E0); if (r.chica) p(6, 10, 1, 1, C.E0) }
     p(7, 9, 2, 1, C.h); p(9, 12, 1, 1, C.rubor); p(7, 14, 2, 1, C.m)
     return
   }
@@ -290,12 +290,13 @@ function cara(p, C, dir, r) {
     // párpado, iris con brillo y el borde de abajo un poco más oscuro
     p(8, 10, 2, 1, C.E0); p(8, 11, 1, 1, ojos); p(9, 11, 1, 1, '#ffffff'); p(8, 12, 2, 1, ojos); p(9, 12, 1, 1, C.E0)
     p(14, 10, 2, 1, C.E0); p(14, 11, 1, 1, '#ffffff'); p(15, 11, 1, 1, ojos); p(14, 12, 2, 1, ojos); p(14, 12, 1, 1, C.E0)
+    if (r.chica) { p(7, 10, 1, 1, C.E0); p(16, 10, 1, 1, C.E0) } // pestañas
   }
   p(8, 9, 2, 1, C.h); p(14, 9, 2, 1, C.h) // cejas
   p(12, 12, 1, 1, C.s); p(11, 12, 1, 1, C.SL) // nariz con su luz
   p(10, 15, 4, 1, C.s) // sombra de la barbilla
   if (r.sonrisa) { p(10, 14, 4, 1, r.labios || C.m); p(11, 14, 2, 1, '#ffffff'); p(10, 13, 1, 1, C.s); p(13, 13, 1, 1, C.s) }
-  else p(11, 14, 2, 1, C.m) // boca
+  else p(11, 14, 2, 1, r.labios || (r.chica ? mezclar(C.m, '#d04a5a', 0.45) : C.m)) // boca
   p(7, 12, 1, 1, C.rubor); p(16, 12, 1, 1, C.rubor)
 }
 
@@ -304,6 +305,23 @@ function piernas(p0, C, dir, paso, r) {
   const p = (x, y, w, h, col) => {
     if (!r.corto || (col !== C.P && col !== C.p && col !== C.Pl)) return p0(x, y, w, h, col)
     for (let yy = y; yy < y + h; yy++) p0(x, yy, w, 1, yy < 26 ? col : yy === 26 ? C.S : (r.calcetines || '#f4f4f4'))
+  }
+  if (r.falda) {
+    // falda por encima de la rodilla y las piernas a la vista
+    if (dir === 'lado') {
+      p0(8, 24, 8, 2, C.P); p0(7, 26, 10, 1, C.P); p0(14, 24, 2, 2, C.p); p0(8, 24, 1, 2, C.Pl)
+      const piernas = paso === 0 ? [[10, 27, 3, 2]] : paso === 1 ? [[8, 27, 2, 2], [13, 27, 2, 2]] : [[9, 27, 2, 2], [14, 27, 2, 2]]
+      piernas.forEach(([x, y, w, h]) => p0(x, y, w, h, C.S))
+      if (paso === 0) { p0(8, 29, 7, 2, C.B); p0(8, 30, 7, 1, C.b) }
+      else if (paso === 1) { p0(12, 29, 4, 2, C.Bo); p0(6, 29, 5, 2, C.B); p0(6, 30, 5, 1, C.b) }
+      else { p0(7, 29, 4, 2, C.Bo); p0(13, 29, 5, 2, C.B); p0(13, 30, 5, 1, C.b) }
+      return
+    }
+    p0(8, 24, 8, 1, C.P); p0(7, 25, 10, 1, C.P); p0(6, 26, 12, 1, C.P); p0(14, 24, 2, 3, C.p); p0(7, 25, 1, 2, C.Pl)
+    const izq = paso === 1 ? 4 : 5, der = paso === 2 ? 4 : 5
+    p0(8, 27, 3, izq - 3, C.S); p0(13, 27, 3, der - 3, C.S); p0(10, 27, 1, izq - 3, C.s); p0(15, 27, 1, der - 3, C.s)
+    p0(7, 24 + izq, 5, 2, C.B); p0(7, 25 + izq, 5, 1, C.b); p0(12, 24 + der, 5, 2, C.B); p0(12, 25 + der, 5, 1, C.b)
+    return
   }
   if (dir === 'lado') {
     const ancho = r.anchos ? 1 : 0
@@ -352,9 +370,12 @@ function cuerpo(p, C, dir, r) {
     if (tipo === 'sudadera') p(8, 21, 4, 2, C.t)
     return
   }
-  p(8, 17, 8, 1, C.T); p(7, 18, 10, 6, C.T)
-  if (r.robusto) { p(7, 17, 10, 1, C.T); p(6, 18, 12, 6, C.T); p(16, 18, 2, 6, C.t); p(6, 23, 12, 1, C.t); p(7, 18, 1, 3, C.Tl) }
-  else { p(15, 18, 2, 6, C.t); p(7, 23, 10, 1, C.t); p(8, 18, 1, 3, C.Tl) }
+  if (r.chica && !r.robusto) {
+    // cintura un poco más estrecha
+    p(8, 17, 8, 1, C.T); p(7, 18, 10, 3, C.T); p(8, 21, 8, 3, C.T)
+    p(15, 18, 1, 3, C.t); p(16, 18, 1, 3, C.t); p(14, 21, 1, 3, C.t); p(8, 23, 8, 1, C.t); p(8, 18, 1, 3, C.Tl)
+  } else if (r.robusto) { p(7, 17, 10, 1, C.T); p(6, 18, 12, 6, C.T); p(16, 18, 2, 6, C.t); p(6, 23, 12, 1, C.t); p(7, 18, 1, 3, C.Tl) }
+  else { p(8, 17, 8, 1, C.T); p(7, 18, 10, 6, C.T); p(15, 18, 2, 6, C.t); p(7, 23, 10, 1, C.t); p(8, 18, 1, 3, C.Tl) }
   // pliegues: dos trazos en diagonal y el dobladillo de abajo con algo de luz
   p(9, 21, 1, 1, C.t); p(10, 22, 1, 1, C.t); p(14, 20, 1, 2, C.t); p(8, 23, 7, 1, oscurecer(C.T, 0.7))
   if (r.rayasV) for (const x of [8, 11, 14]) p(x, 18, 1, 6, r.rayasV)
@@ -445,7 +466,8 @@ function dibujar(ctx, dir, paso, r, C) {
 export function crearPersonaje(scene, clave, rasgos) {
   if (scene.textures.exists(clave)) scene.textures.remove(clave)
   const W = ANCHO_PJ, A = ALTO_PJ
-  const r = { ...rasgos, barba: rasgos.barba === true ? 'completa' : rasgos.barba, robot: rasgos.robot || rasgos.antena }
+  const r = { ...rasgos, barba: rasgos.barba === true ? 'completa' : rasgos.barba, robot: rasgos.robot || rasgos.antena,
+    falda: rasgos.falda || rasgos.abajo === 'falda', corto: rasgos.corto || rasgos.abajo === 'corto' }
   const C = colores(r)
   const [hoja, hctx] = lienzo(W * 3, A * 4)
   const filas = [['frente', false], ['lado', false], ['lado', true], ['espalda', false]]

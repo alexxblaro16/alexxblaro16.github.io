@@ -81,6 +81,17 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - **Edificios**: placas solares en el laboratorio, copa en los trofeos, código en las ventanas y antena en la terminal,
   neón `</>` en los hackatones, aires acondicionados en la residencia y buzón en contacto.
 
+### 9. El portfolio serio, chicas y chicos, fútbol y berenjena
+- **Modo clásico rehecho como una web profesional**: barra de navegación con secciones e idioma, cabecera estilo editor
+  (`HelloWorld.java`) con la foto del CV, resumen, «Abierto a prácticas» y botones (prácticas, CV, GitHub, LinkedIn),
+  cuatro datos destacados, proyectos en tarjetas con su stack y enlaces (MedScan destacado), trayectoria en línea de
+  tiempo, stack con barras de nivel, medios y contacto. Letra Inter y JetBrains Mono, como el CV; se adapta al móvil.
+- **Chico o chica** en el creador: con chica, cintura más estrecha, pestañas y labios; y abajo pantalón, falda o
+  pantalón corto. El aleatorio también elige.
+- **Campo de fútbol** completo: áreas, puntos de penalti, media luna, córners con banderines, porterías con red, un
+  balón, banquillo y una grada con público.
+- **Huerto** en el pueblo con una berenjena gigante (y berenjenas en el puesto de fruta de la plaza).
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

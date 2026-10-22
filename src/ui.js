@@ -172,14 +172,55 @@ export function cerrarPanel() { $('#panel').hidden = true; panelAbierto = false 
 function pintarClasico() {
   const x = t()
   const c = x.clasico
+  const otro = estado.idioma === 'es' ? 'en' : 'es'
+  const fuera = 'target="_blank" rel="noopener"'
+  const enlacesProyecto = (p) => [
+    p.repo && `<a href="${p.repo}" ${fuera}>${esc(x.verCodigo)} ↗</a>`,
+    p.demo && `<a href="${p.demo}" ${fuera}>${esc(x.verDemo)} ↗</a>`,
+    !p.repo && !p.demo && `<span class="privado">${esc(x.privado)}</span>`,
+  ].filter(Boolean).join('')
   $('#clasico-volver').textContent = c.volver
   $('#clasico-cuerpo').innerHTML = `
-    <header class="clasico-cab"><h1>Alejandro Blanco Rodríguez</h1><p>${esc(x.titulo)}</p></header>
-    <section><h2>${esc(c.sobre)}</h2><p>${esc(x.sobreMi)}</p></section>
-    <section><h2>${esc(c.contacto)}</h2>${htmlZona('contacto')}</section>
-    <section><h2>${esc(c.proyectos)}</h2>${htmlZona('proyectos')}</section>
-    <section><h2>${esc(c.trayectoria)}</h2>${htmlZona('trayectoria')}</section>
-    <section><h2>${esc(c.stack)}</h2>${htmlZona('stack')}</section>`
+    <nav class="cl-nav"><span class="cl-marca"><b>alejandro</b>.blanco()</span>
+      <div>${['sobre', 'proyectos', 'trayectoria', 'stack', 'contacto'].map((k) => `<a href="#cl-${k}">${esc(c[k])}</a>`).join('')}
+      <button class="cl-idioma" id="cl-idioma">${otro.toUpperCase()}</button></div></nav>
+    <header class="cl-hero" id="cl-sobre">
+      <div class="cl-editor">
+        <div class="cl-pestana"><i></i><i></i><i></i><span>HelloWorld.java</span></div>
+        <p class="cl-comentario">// ${esc(c.comentario)}</p>
+        <h1>Alejandro Blanco Rodríguez</h1>
+        <p class="cl-titulo">${esc(x.titulo)}</p>
+        <p class="cl-resumen">${esc(x.sobreMi)}</p>
+        <p class="cl-estado"><span class="cl-punto"></span>${esc(c.disponible)} · Madrid</p>
+        <div class="cl-acciones">
+          <a class="cl-btn principal" href="${ENLACES.practicas}">${esc(x.contacto.practicas)}</a>
+          <a class="cl-btn" href="${ENLACES.cv[estado.idioma]}" download>${esc(x.contacto.cv)}</a>
+          <a class="cl-btn" href="${ENLACES.github}" ${fuera}>GitHub</a>
+          <a class="cl-btn" href="${ENLACES.linkedin}" ${fuera}>LinkedIn</a>
+        </div>
+      </div>
+      <figure class="cl-foto"><img src="img/alejandro.jpg" alt="Alejandro Blanco Rodríguez" width="400" height="600"></figure>
+    </header>
+    <section class="cl-datos">${c.datos.map(([n, d]) => `<div><b>${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</section>
+    <section id="cl-proyectos"><h2>${esc(c.proyectos)}</h2><div class="cl-proyectos">${PROYECTOS.map((p) => `
+      <article class="${p.premio ? 'destacado' : ''}"><header><h3>${esc(p.nombre)}</h3>${p.premio ? `<span class="cl-premio">${esc(c.premio)}</span>` : ''}</header>
+      <p>${esc(x.proyectosTexto[p.id])}</p><div class="cl-chips">${p.stack.map((s) => `<span>${esc(s)}</span>`).join('')}</div>
+      <div class="cl-enlaces">${enlacesProyecto(p)}</div></article>`).join('')}</div></section>
+    <section id="cl-trayectoria"><h2>${esc(c.trayectoria)}</h2><ol class="cl-linea">${x.trayectoria.slice().reverse().map((h) => `
+      <li><time>${esc(h.fecha)}</time><div><h3>${esc(h.titulo)}</h3><em>${esc(h.lugar)}</em><p>${esc(h.texto)}</p></div></li>`).join('')}</ol></section>
+    <section id="cl-stack"><h2>${esc(c.stack)}</h2><div class="cl-stack">${STACK.map((g) => `
+      <div><h3>${esc(x.grupos[g.grupo])}</h3>${g.items.map(([n, v]) => `<div class="cl-nivel"><span>${esc(n)}</span><i style="--v:${v * 10}%"></i></div>`).join('')}</div>`).join('')}</div></section>
+    <section><h2>${esc(c.prensa)}</h2><div class="cl-prensa"><p><b>${esc(x.trofeos.titulo)}</b>. ${esc(x.trofeos.texto)}</p>
+      <ul>${x.trofeos.medios.map((m) => `<li>${esc(m)}</li>`).join('')}</ul></div></section>
+    <section id="cl-contacto" class="cl-contacto"><h2>${esc(c.contacto)}</h2><p>${esc(x.contacto.texto)}</p>
+      <div class="cl-acciones">
+        <a class="cl-btn principal" href="${ENLACES.practicas}">${esc(x.contacto.practicas)}</a>
+        <a class="cl-btn" href="mailto:${ENLACES.email}">${ENLACES.email}</a>
+        <a class="cl-btn" href="${ENLACES.cv[estado.idioma]}" download>${esc(x.contacto.cv)}</a>
+        <a class="cl-btn" href="${ENLACES.cv[otro]}" download>${esc(x.contacto.cvOtro)}</a>
+      </div></section>
+    <footer class="cl-pie">${esc(c.pie)}</footer>`
+  $('#cl-idioma').onclick = () => { cambiarIdioma(); pintarClasico(); pintarHUD() }
 }
 export function abrirClasico() { pintarClasico(); $('#clasico').hidden = false; document.body.classList.add('en-clasico') }
 export function cerrarClasico() { $('#clasico').hidden = true; document.body.classList.remove('en-clasico') }

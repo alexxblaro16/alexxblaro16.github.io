@@ -221,6 +221,8 @@ export default class Mundo extends Phaser.Scene {
         this.solido(o.x * T + 13, o.base * T - 28, 51, 26)
       } else if (o.clave === 'campo') {
         img.setDepth(-500)
+      } else if (o.clave === 'huerto') {
+        img.setDepth(-480) // se puede pisar entre los surcos
       } else if (o.clave === 'laguna') {
         this.laguna(img, o)
       } else if (o.clave === 'banderas') {

@@ -472,7 +472,7 @@ function puesto() {
   p(0, 1, 40, 1, NEGRO)
   p(2, 10, 2, 22, '#6b4a2b'); p(36, 10, 2, 22, '#6b4a2b')
   p(0, 22, 40, 10, '#8a5a32'); p(0, 22, 40, 2, '#b07a44'); p(0, 32, 40, 1, NEGRO)
-  for (let x = 3; x < 37; x += 4) { const col = ['#e05a5a', '#f2b33d', '#7ad37a', '#f6e05e'][((x - 3) / 4) % 4]; p(x, 19, 3, 3, col); p(x, 19, 1, 1, '#ffffff') }
+  for (let x = 3; x < 37; x += 4) { const col = ['#e05a5a', '#f2b33d', '#5b2a6e', '#7ad37a', '#f6e05e'][((x - 3) / 4) % 5]; p(x, 19, 3, 3, col); p(x, 19, 1, 1, '#ffffff') }
   return c
 }
 
@@ -758,6 +758,53 @@ function arbolPlaza() {
   return c
 }
 
+// Huerto del pueblo: surcos de tierra, lechugas y tomateras
+function huerto() {
+  const [c, ctx] = lienzo(56, 30)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 4, 56, 26, '#1b1f27'); p(1, 5, 54, 24, '#7a5232')
+  for (let y = 7; y < 29; y += 5) { p(1, y, 54, 2, '#5e3c24'); p(1, y + 2, 54, 1, '#94673f') }
+  for (let x = 4; x < 40; x += 7) { p(x, 6, 5, 4, '#3c9a47'); p(x + 1, 6, 3, 2, '#7ad37a'); p(x + 1, 11, 4, 4, '#3c9a47'); p(x + 2, 11, 2, 2, '#9ce68c') }
+  for (let x = 4; x < 40; x += 9) { p(x + 2, 17, 1, 9, '#2a7535'); p(x, 18, 5, 6, '#3c9a47'); p(x, 19, 2, 2, '#e05a5a'); p(x + 3, 21, 2, 2, '#e05a5a'); p(x + 1, 23, 2, 2, '#c8302a') }
+  for (let x = 0; x < 56; x += 8) { p(x, 0, 2, 6, '#6b4a2b'); p(x, 0, 2, 1, '#8a6040') } // valla
+  p(0, 2, 56, 1, '#8a6040')
+  return c
+}
+
+// Una berenjena enorme y brillante
+function berenjena() {
+  const [c, ctx] = lienzo(14, 18)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(4, 4, 6, 1, '#1b1f27'); p(3, 5, 8, 11, '#1b1f27'); p(4, 16, 6, 2, '#1b1f27')
+  p(4, 5, 6, 11, '#5b2a6e'); p(5, 16, 4, 1, '#5b2a6e'); p(4, 6, 2, 8, '#8a4aa0'); p(5, 7, 1, 2, '#e8d6f0'); p(8, 9, 2, 6, '#3f1c4d')
+  p(4, 2, 6, 3, '#2f8a3a'); p(3, 3, 2, 2, '#2f8a3a'); p(9, 3, 2, 2, '#2f8a3a'); p(6, 0, 2, 3, '#5a7a2a')
+  return c
+}
+
+// Grada pequeña de hormigón con asientos azules y blancos, con algo de público
+function grada() {
+  const [c, ctx] = lienzo(80, 24)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  for (let i = 0; i < 3; i++) {
+    const y = 4 + i * 6
+    p(0, y, 80, 7, '#1b1f27'); p(1, y + 1, 78, 5, '#b9c0c8'); p(1, y + 1, 78, 1, '#d9dee4')
+    for (let x = 3; x < 77; x += 5) { p(x, y + 2, 3, 3, (x / 5 + i) % 2 < 1 ? '#2f5fb0' : '#eef1f4'); if ((x * 7 + i * 3) % 11 === 0) { p(x, y - 1, 3, 3, '#e5a97f'); p(x, y - 2, 3, 1, '#3b2a20'); p(x, y + 2, 3, 3, ['#e05a5a', '#1f2a44', '#f2b33d'][i]) } }
+  }
+  p(0, 22, 80, 2, 'rgba(0,0,0,0.2)')
+  return c
+}
+
+// Banquillo con techo de metacrilato
+function banquillo() {
+  const [c, ctx] = lienzo(34, 20)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 0, 34, 4, '#1b1f27'); p(1, 1, 32, 2, '#8fc4e8'); p(1, 1, 32, 1, '#cfe8f7')
+  p(1, 4, 2, 14, '#5b6068'); p(31, 4, 2, 14, '#5b6068'); p(3, 4, 28, 8, 'rgba(160,210,240,0.35)')
+  p(3, 12, 28, 4, '#1b1f27'); p(4, 12, 26, 2, '#2f5fb0'); p(4, 12, 26, 1, '#5f86c8')
+  p(0, 18, 34, 2, 'rgba(0,0,0,0.2)')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -769,7 +816,7 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, veleta, telarana, mochila_arana: mochilaArana,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, veleta, telarana, mochila_arana: mochilaArana,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando
