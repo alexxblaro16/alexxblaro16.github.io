@@ -346,9 +346,12 @@ function piernas(p0, C, dir, paso, r) {
   if (r.anchos) { p(7, 26, 5, izq - 2, C.P); p(12, 26, 5, der - 2, C.P); p(16, 26, 1, der - 2, C.p); p(7, 26, 1, izq - 2, C.Pl) }
   p(7, 24 + izq, 5, 2, C.B); p(7, 25 + izq, 5, 1, C.b); p(8, 24 + izq, 2, 1, aclarar(C.B, 0.35))
   p(12, 24 + der, 5, 2, C.B); p(12, 25 + der, 5, 1, C.b); p(13, 24 + der, 2, 1, aclarar(C.B, 0.35))
+  if (r.raya) { p(9, 25 + izq - 1, 2, 1, r.raya); p(14, 25 + der - 1, 2, 1, r.raya) } // franja lateral de las zapatillas
   if (dir === 'frente' && !r.corto) {
     p(8, 24, 8, 1, C.p); p(11, 24, 2, 1, '#c9b37a') // cinturón con hebilla
     p(8, 25, 1, 1, C.Pl); p(15, 25, 1, 1, C.p) // bolsillos
+    p(8, 26, 1, izq - 3, C.Pl); p(15, 26, 1, der - 3, C.p) // costuras laterales
+    p(8, 23 + izq, 4, 1, C.Pl); p(12, 23 + der, 4, 1, C.Pl) // bajo vuelto
     if (izq === 5) p(9, 27, 1, 1, C.Pl); if (der === 5) p(14, 27, 1, 1, C.Pl) // rodillas
   }
 }
@@ -381,13 +384,23 @@ function cuerpo(p, C, dir, r) {
   if (r.rayasV) for (const x of [8, 11, 14]) p(x, 18, 1, 6, r.rayasV)
   if (r.franja) p(r.robusto ? 6 : 7, 19, r.robusto ? 12 : 10, 2, r.franja)
   if (dir === 'espalda') return
-  if (tipo === 'camiseta') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.t); p(14, 17, 1, 1, C.t) }
-  if (tipo === 'polo') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.Tl); p(14, 17, 1, 1, C.Tl); p(11, 18, 2, 2, C.t) }
-  if (tipo === 'sudadera') { p(10, 18, 1, 3, C.Tl); p(13, 18, 1, 3, C.Tl); p(9, 21, 6, 2, C.t) }
+  if (tipo === 'camiseta') {
+    p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.t); p(14, 17, 1, 1, C.t)
+    // estampado pequeño en el pecho
+    if (r.estampado) { p(10, 19, 4, 3, r.estampado); p(11, 20, 2, 1, oscurecer(r.estampado, 0.6)); p(10, 19, 4, 1, aclarar(r.estampado, 0.3)) }
+  }
+  if (tipo === 'polo') { p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.Tl); p(14, 17, 1, 1, C.Tl); p(11, 18, 2, 2, C.t); p(11, 18, 1, 1, '#f4f4f0'); p(11, 20, 1, 1, '#f4f4f0') }
+  if (tipo === 'sudadera') {
+    p(10, 18, 1, 3, C.Tl); p(13, 18, 1, 3, C.Tl); p(10, 21, 1, 1, '#f4f4f0'); p(13, 21, 1, 1, '#f4f4f0') // cordones con punteras
+    p(9, 21, 6, 2, C.t); p(9, 21, 6, 1, oscurecer(C.T, 0.7)) // bolsillo canguro
+    p(7, 23, 10, 1, oscurecer(C.T, 0.65)) // elástico de abajo
+  }
   if (tipo === 'chaqueta') {
     p(10, 17, 4, 7, C.I)
     if (r.rayas) for (let y = 18; y < 24; y += 2) p(10, y, 4, 1, r.rayas)
     p(10, 17, 1, 7, C.t); p(13, 17, 1, 7, C.t); p(9, 17, 1, 5, C.Tl); p(14, 17, 1, 5, C.Tl)
+    p(13, 18, 1, 6, '#c9ced5') // cremallera
+    p(8, 21, 2, 1, oscurecer(C.T, 0.6)); p(15, 21, 1, 1, oscurecer(C.T, 0.6)) // bolsillos
   }
 }
 

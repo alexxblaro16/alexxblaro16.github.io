@@ -10,6 +10,10 @@ export const CAMINO_INICIO = 3 // el camino recorre el pueblo de punta a punta
 export const EDIFICIOS = [
   { clave: 'casa_pueblo', x: 5, base: 18 }, { clave: 'casa_pueblo_2', x: 10, base: 18 }, { clave: 'casa_pueblo', x: 15.5, base: 18 },
   { clave: 'edificio_madrid', x: 53, base: 18 }, { clave: 'edificio_madrid_2', x: 100.2, base: 18 },
+  { clave: 'casa_pueblo_2', x: 44.5, base: 30.6 }, { clave: 'casa_pueblo', x: 29.6, base: 31 },
+  { clave: 'edificio_madrid_2', x: 66, base: 31.4 }, { clave: 'edificio_madrid', x: 71, base: 31.4 }, { clave: 'edificio_madrid', x: 91, base: 31.4 },
+  { clave: 'edificio_madrid_2', x: 75, base: 13 }, { clave: 'edificio_madrid', x: 117, base: 13 },
+  { clave: 'casa_pueblo_2', x: 136, base: 30.6 }, { clave: 'casa_pueblo', x: 156, base: 30.6 }, { clave: 'casa_pueblo', x: 141.5, base: 30.6 },
   { clave: 'reblan', x: 29, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', vida: 'reblan' },
   { clave: 'soportales', x: 36, base: 13.5, letrero: 'PLAZA MAYOR' },
   { clave: 'casa_plaza_3', x: 21, base: 13.5 }, { clave: 'casa_plaza_1', x: 26.5, base: 13.5 }, { clave: 'casa_plaza_2', x: 46.5, base: 13.5 },
@@ -47,7 +51,7 @@ export const OBJETOS = [
   { clave: 'quiosco', x: 89, base: 18.2 },
   // Madrid
   { clave: 'farola_moderna', x: 60.5, base: 18.2 }, { clave: 'farola_moderna', x: 77.2, base: 18.2 }, { clave: 'farola_moderna', x: 97, base: 18.2 },
-  { clave: 'aparcabicis', x: 74, base: 18.3 }, { clave: 'coche_azul', x: 59, base: 23.6 }, { clave: 'coche_rojo', x: 74.5, base: 23.6 }, { clave: 'coche_blanco', x: 93, base: 23.6 },
+  { clave: 'aparcabicis', x: 74, base: 18.3 }, { clave: 'coche_azul', x: 63.8, base: 23.6 }, { clave: 'coche_rojo', x: 74.5, base: 23.6 }, { clave: 'coche_blanco', x: 93, base: 23.6 },
   // Zona de la uni y de los proyectos
   { clave: 'aparcabicis', x: 117, base: 18.3 }, { clave: 'banco', x: 122, base: 23.8 }, { clave: 'mochila_arana', x: 122.6, base: 23.85, vida: 'arana' },
   { clave: 'farola_moderna', x: 130, base: 18.2 }, { clave: 'veleta', x: 138.6, base: 18.3, vida: 'murcielago' },
@@ -55,14 +59,30 @@ export const OBJETOS = [
   { clave: 'telarana', x: 151.25, base: 16.5, encima: true },
   { clave: 'parada', x: 57, base: 18.4, vida: 'parada', letrero: 'MADRID · 2023' },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
-  { clave: 'campo', x: 104, base: 28, vida: 'futbol' },
-  { clave: 'grada', x: 104, base: 30.6 }, { clave: 'banquillo', x: 99.3, base: 27.2 },
+  { clave: 'estadio', x: 104, base: 29, vida: 'futbol' }, { clave: 'grada', x: 104, base: 31.2 },
+  { clave: 'foco', x: 99.4, base: 23.6 }, { clave: 'foco', x: 108.6, base: 23.6 }, { clave: 'foco', x: 99.4, base: 29.6 }, { clave: 'foco', x: 108.6, base: 29.6 },
+  { clave: 'marcador', x: 111.8, base: 24.6 },
   // huerto del pueblo con una berenjena gigante
   { clave: 'huerto', x: 9.5, base: 13.6 }, { clave: 'berenjena', x: 12.9, base: 13.8, vida: 'berenjena' },
   { clave: 'avion', x: 118.5, base: 26.6, vida: 'tallin', letrero: 'TALLIN' },
   { clave: 'bloque', x: 51, base: 31, vida: 'minecraft', secreto: true },
   { clave: 'cartel', x: 166, base: 18.4, vida: 'fin', letrero: 'FIN… POR AHORA' },
   { clave: 'cartel', x: 21.6, base: 31.6, vida: 'inicio', letrero: 'START' },
+  // Señales de carretera: entrada y salida de Villalpando y entrada a Madrid
+  { clave: 'senal_villalpando', x: 15.8, base: 29.8 }, { clave: 'senal_fin_villalpando', x: 54.2, base: 22.9 }, { clave: 'senal_madrid', x: 60.6, base: 23 },
+  // Recreativos arriba del todo, con cuatro máquinas que se pueden jugar
+  { clave: 'recreativos', x: 162.5, base: 11.2, letrero: 'RECREATIVOS' },
+  { clave: 'maquina_serpiente', x: 158.4, base: 13, arcade: 'serpiente' }, { clave: 'maquina_nave', x: 160.6, base: 13, arcade: 'nave' },
+  { clave: 'maquina_ladrillos', x: 164.4, base: 13, arcade: 'ladrillos' }, { clave: 'maquina_laberinto', x: 166.6, base: 13, arcade: 'laberinto' },
+  // Guiños de programación
+  { clave: 'pato', x: 5, base: 27.7, vida: 'pato' }, { clave: 'cartel404', x: 2.5, base: 19.9, vida: 'error404' },
+  { clave: 'taza_java', x: 154.6, base: 18.5, vida: 'java' }, { clave: 'bicho', x: 131.6, base: 22, vida: 'bug' },
+  // Guiños a The Office
+  { clave: 'remolachas', x: 5.6, base: 13.6, vida: 'remolachas' }, { clave: 'gelatina', x: 147.3, base: 23, vida: 'gelatina' },
+  { clave: 'taza_jefe', x: 30.9, base: 23, vida: 'taza' }, { clave: 'poste_scranton', x: 169, base: 17.6, vida: 'scranton' },
+  // Más casas y vida en cada zona
+  { clave: 'fuente', x: 80, base: 28.4, solido: true }, { clave: 'banco', x: 77, base: 28.6 }, { clave: 'banco', x: 83, base: 28.6 },
+  { clave: 'arbol_plaza', x: 74.6, base: 29.4 }, { clave: 'arbol_plaza', x: 85.4, base: 29.4 }, { clave: 'farola_moderna', x: 80, base: 31.4 },
 ]
 
 // Zonas con suelo especial
@@ -75,7 +95,7 @@ export const SUELOS = [
 ]
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [
-  { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 36, y0: 21, y1: 29 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 },
+  { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 36, y0: 21, y1: 29 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 }, { x: 165, y0: 13, y1: 18 },
 ]
 
 // Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
@@ -87,14 +107,14 @@ const amigos = (lista, x0, y0) => lista.map(([nombre, pelo, ropa, extra = {}], i
 
 export const PERSONAJES = [
   { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'calvo', colorPelo: '#9a8a80', piel: '#ebb995', ropa: '#1f2430', pantalon: '#3a4a66', robusto: true, sonrisa: true, zapatillas: '#e9ecef' }, vida: 'pedro' },
-  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#ebbd99', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
-  { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', logo: '#e8e2d6' }, vida: 'dante' },
+  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#ebbd99', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', chica: true, bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
+  { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', estampado: '#e8e2d6', raya: '#9aa3ad' }, vida: 'dante' },
   ...amigos([
-    ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true }],
-    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera' }],
-    ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo' }],
+    ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true, chica: true }],
+    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera', chica: true, zapatillas: '#f4f4f4' }],
+    ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo', chica: true, estampado: '#ff7fb0', zapatillas: '#f4f4f4' }],
     ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a', tipo: 'sudadera' }],
-    ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4' }],
+    ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4', estampado: '#e05a5a', raya: '#9aa3ad' }],
   ], 62, 21.5),
   ...amigos([
     ['Pablo', '#4a3020', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true }],
@@ -102,13 +122,13 @@ export const PERSONAJES = [
   ], 80, 21.5),
   ...amigos([
     ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' }],
-    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f' }],
+    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' }],
     ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' }],
     ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: 'perilla' }],
     ['Iván', '#7a5a3e', '#1f2124', { pelo: 'degradado', piel: '#ecbf9c', franja: '#8a9099', pantalon: '#3a3f48', zapatillas: '#f4f4f4' }],
     ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' }],
-    ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', logo: '#3a7bd5' }],
-    ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a' }],
+    ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', estampado: '#3a7bd5', raya: '#3a7bd5' }],
+    ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a', chica: true, zapatillas: '#f4f4f4' }],
     ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' }],
   ], 100, 21.4),
 ]
@@ -125,7 +145,7 @@ export const RECORRIDO = [
   { x: 83, y: CAMINO + 0.5, historia: 'medac' },
   { x: 93, y: CAMINO + 0.5, historia: 'anexia' },
   { x: 109, y: CAMINO + 0.5, historia: 'udit' },
-  { x: 104, y: 23.5, historia: 'futbol' },
+  { x: 104, y: 22.9, historia: 'futbol' },
   { x: 118, y: 23.5, historia: 'tallin', via: [[104, CAMINO + 0.5], [118, CAMINO + 0.5]] },
   { x: 125, y: CAMINO + 0.5, historia: 'hackaton' },
   { x: 140, y: CAMINO + 1.5, historia: 'dante_pw' },

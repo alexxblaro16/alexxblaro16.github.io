@@ -238,3 +238,12 @@ a { color: var(--verde); }
   .cl-hero { grid-template-columns: 1fr; padding-top: 28px; } .cl-foto { max-width: 160px; order: -1; }
   .cl-datos, .cl-stack { grid-template-columns: repeat(2, 1fr); } .cl-linea li { grid-template-columns: 1fr; gap: 4px; } .cl-nav div a { display: none; }
 }
+
+/* ------------------------------------------------------------------ recreativos */
+#arcade { position: fixed; inset: 0; z-index: 45; background: rgba(5, 7, 13, .82); display: grid; place-items: center; padding: 12px; }
+.arcade-maquina { background: linear-gradient(180deg, #2a2045, #15101f); border: 3px solid #a970ff; box-shadow: 0 0 0 3px #15101f, 0 12px 0 #000, 0 0 40px rgba(169, 112, 255, .35); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 100%; }
+.arcade-maquina canvas { width: min(640px, calc(100vw - 60px)); aspect-ratio: 4 / 3; image-rendering: pixelated; border: 4px solid #0d1117; border-radius: 6px; background: #0d1117; touch-action: none; }
+.arcade-tactil { display: none; gap: 8px; }
+.arcade-tactil button { font-family: var(--pixel); font-size: 14px; width: 48px; height: 44px; background: #252b36; color: var(--texto); border: 2px solid var(--linea); border-radius: 8px; touch-action: none; }
+.arcade-tactil .arcade-a { background: var(--verde); color: #0f1218; border-color: var(--verde); }
+@media (pointer: coarse) { .arcade-tactil { display: flex; } }

@@ -106,7 +106,7 @@ export function etiqueta(texto, x, y) {
 
 // ---------------------------------------------------------------------------------------------- paneles
 let panelAbierto = false
-export function hayPanel() { return panelAbierto || !$('#clasico').hidden }
+export function hayPanel() { return panelAbierto || !$('#clasico').hidden || document.body.classList.contains('en-arcade') }
 
 function enlaces(p, x) {
   const b = []

@@ -92,6 +92,19 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
   balón, banquillo y una grada con público.
 - **Huerto** en el pueblo con una berenjena gigante (y berenjenas en el puesto de fruta de la plaza).
 
+### 10. Recreativos, estadio y guiños
+- **Recreativos** arriba a la derecha del mapa, con cuatro máquinas que se juegan de verdad (`src/arcade.js`):
+  serpiente, una nave que destruye bugs, un rompe-ladrillos y «Commit Hunt», un laberinto propio en el que se recogen
+  commits mientras te persiguen dos conflictos de merge (no es una copia de ningún juego). Récord guardado por juego.
+- **Estadio**: pista de atletismo alrededor del campo, cuatro torres de focos, marcador «UDIT 3 - 0 RIVAL», banquillos y grada.
+- **Señales de carretera**: entrada a Villalpando, fin de Villalpando tachado al salir y entrada a Madrid.
+- **Guiños de programación**: patito de goma en la laguna, cartel 404 al final del camino, café Java y una mariquita (un bug).
+- **Guiños a The Office**: campo de remolachas, grapadora en gelatina, la taza del mejor jefe del mundo y un poste hacia Scranton.
+- **Ropa más real**: estampados en las camisetas, sudaderas con puños, bolsillo y cordones, chaquetas con cremallera
+  y bolsillos, polos con botones, vaqueros con costuras y bajo vuelto, zapatillas con franja.
+- **Mapa más lleno**: más casas en el pueblo y en la zona de proyectos, bloques y un parque con fuente en Madrid.
+- En el modo clásico, «+10 proyectos».
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

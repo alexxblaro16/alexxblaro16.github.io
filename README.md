@@ -18,8 +18,9 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
   por el arco), la Plaza Mayor con sus soportales, Reblán y su furgoneta, el IES Tierra de Campos, MEDAC Albalá y la UDIT.
 - **Personajes que pasean por su zona**: familia y amigos, con su nombre de pila al pasar el ratón.
 - **Paneles** de trayectoria, proyectos (con repositorio y demo), trofeos, stack y contacto, y **logros** al visitarlos.
+- **Recreativos** con cuatro minijuegos jugables (serpiente, nave, rompe-ladrillos y un laberinto propio).
 - **Secretos**: el robot Jerry, un bloque de Minecraft, DANTE P.W. (que te sigue si se lo pides), el código Konami
-  y algún guiño a Bob Esponja, Batman y Spider-Man.
+  y guiños a la programación, a The Office, a Bob Esponja, a Batman y a Spider-Man.
 - **Español e inglés**, sonido chiptune (apagado por defecto), controles táctiles en el móvil y la partida guardada
   en el navegador.
 
@@ -70,6 +71,7 @@ src/content.js        textos de la web en español e inglés (proyectos, stack, 
 src/historia.js       diálogos del recorrido en español e inglés
 src/estado.js         idioma, sonido, personaje y progreso (localStorage)
 src/sonido.js         efectos y música chiptune con Web Audio
+src/arcade.js         los cuatro minijuegos de los recreativos
 docs/                 documentación del proyecto
 ```
 

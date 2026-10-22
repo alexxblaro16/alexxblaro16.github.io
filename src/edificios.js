@@ -805,6 +805,148 @@ function banquillo() {
   return c
 }
 
+// ---------------------------------------------------------------------------------------------- recreativos
+function recreativos() {
+  const [c, ctx] = lienzo(80, 60)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 8, 80, 52, NEGRO); p(1, 9, 78, 50, '#2a2045'); p(1, 9, 2, 50, '#3a2f5c'); p(76, 9, 3, 50, '#1e1733')
+  p(0, 4, 80, 6, NEGRO); p(1, 5, 78, 4, '#a970ff'); p(1, 5, 78, 1, '#d6c4ff')
+  // letrero de neón
+  p(14, 12, 52, 11, '#15101f'); textoCentrado(ctx, 'ARCADE', 40, 15, '#ff7fd6'); p(14, 12, 52, 1, '#ff7fd6'); p(14, 22, 52, 1, '#3dd9ff')
+  // escaparate con máquinas dentro
+  p(6, 28, 26, 18, NEGRO); p(7, 29, 24, 16, '#1b2440')
+  for (const [x, col] of [[9, '#2fbf71'], [16, '#f2c200'], [23, '#3dd9ff']]) { p(x, 32, 5, 12, '#0d1117'); p(x + 1, 33, 3, 3, col) }
+  p(48, 28, 26, 18, NEGRO); p(49, 29, 24, 16, '#1b2440'); p(51, 31, 20, 1, '#ff7fd6'); p(51, 41, 20, 1, '#3dd9ff')
+  // puerta de cristal
+  p(33, 38, 14, 22, NEGRO); p(34, 39, 12, 21, '#3d4c5c'); p(35, 40, 3, 6, '#6f8aa6'); p(40, 39, 1, 21, NEGRO)
+  p(31, 58, 18, 2, '#9a9a9a')
+  return c
+}
+
+// Máquina recreativa con su pantalla y el nombre del juego arriba
+function maquina(color, nombre, pantalla) {
+  return () => {
+    const [c, ctx] = lienzo(26, 38)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    p(1, 36, 24, 2, 'rgba(0,0,0,0.25)')
+    p(2, 0, 22, 37, NEGRO); p(3, 1, 20, 35, color); p(3, 1, 2, 35, aclarar(color, 0.25)); p(21, 1, 2, 35, oscurecer(color, 0.75))
+    p(3, 2, 20, 7, '#15101f'); textoCentrado(ctx, nombre, 13, 3, '#ffffff')
+    p(6, 10, 14, 11, NEGRO); p(7, 11, 12, 9, '#0d1117')
+    pantalla((x, y, w, h, col) => p(7 + x, 11 + y, w, h, col))
+    p(3, 22, 20, 5, oscurecer(color, 0.6)); p(8, 23, 1, 3, '#2b2f38'); p(7, 22, 3, 1, '#e05a5a'); p(14, 24, 2, 2, '#f2c200'); p(18, 24, 2, 2, '#3dd9ff')
+    p(8, 29, 10, 3, NEGRO); p(9, 30, 3, 1, '#f2c200'); p(14, 30, 3, 1, '#f2c200') // ranura de monedas
+    return c
+  }
+}
+
+// ---------------------------------------------------------------------------------------------- señales de carretera
+function senal(nombre, tachada) {
+  return () => {
+    const ancho = anchoTexto(nombre) + 10
+    const [c, ctx] = lienzo(ancho + 2, 30)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    p(4, 13, 2, 17, '#6a717c'); p(ancho - 4, 13, 2, 17, '#6a717c')
+    p(0, 0, ancho + 2, 15, NEGRO); p(1, 1, ancho, 13, '#ffffff'); p(2, 2, ancho - 2, 11, '#c8202a'); p(3, 3, ancho - 4, 9, '#ffffff')
+    textoCentrado(ctx, nombre, ancho / 2 + 1, 5, '#15171c')
+    if (tachada) for (let i = 0; i < ancho - 4; i++) p(3 + i, 11 - Math.round((i / (ancho - 4)) * 8), 2, 1, '#c8202a')
+    return c
+  }
+}
+
+// ---------------------------------------------------------------------------------------------- estadio
+function foco() {
+  const [c, ctx] = lienzo(16, 60)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(7, 10, 2, 50, '#5b6068'); p(7, 10, 1, 50, '#8a919a'); p(5, 57, 6, 3, '#3a3f48')
+  p(0, 0, 16, 11, NEGRO); p(1, 1, 14, 9, '#3a3f48')
+  for (let y = 2; y < 9; y += 3) for (let x = 2; x < 14; x += 3) p(x, y, 2, 2, '#fff3c4')
+  return c
+}
+
+function marcador() {
+  const [c, ctx] = lienzo(46, 30)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(6, 18, 2, 12, '#5b6068'); p(38, 18, 2, 12, '#5b6068')
+  p(0, 0, 46, 20, NEGRO); p(1, 1, 44, 18, '#15171c'); p(1, 1, 44, 1, '#3a3f48')
+  textoCentrado(ctx, 'UDIT', 12, 4, '#f2c200'); textoCentrado(ctx, 'RIVAL', 34, 4, '#f2c200')
+  textoCentrado(ctx, '3', 12, 12, '#ff7a3c'); textoCentrado(ctx, '0', 34, 12, '#ff7a3c'); p(22, 13, 2, 1, '#ff7a3c')
+  return c
+}
+
+// ---------------------------------------------------------------------------------------------- guiños a The Office
+// Remolachas, como en la granja de Dwight
+function remolachas() {
+  const [c, ctx] = lienzo(40, 22)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 4, 40, 18, NEGRO); p(1, 5, 38, 16, '#6b4a2b')
+  for (let y = 7; y < 20; y += 5) p(1, y + 2, 38, 1, '#4a3220')
+  for (let y = 6; y < 20; y += 5) for (let x = 3; x < 36; x += 6) { p(x + 1, y + 2, 4, 3, '#8a1f4a'); p(x + 2, y + 2, 2, 1, '#b8336a'); p(x + 1, y - 1, 1, 3, '#2f8a3a'); p(x + 3, y - 2, 1, 4, '#3c9a47'); p(x + 4, y - 1, 1, 2, '#2f8a3a') }
+  p(0, 0, 2, 6, '#6b4a2b'); p(38, 0, 2, 6, '#6b4a2b'); p(0, 1, 40, 1, '#8a6040')
+  return c
+}
+
+// Grapadora metida en un molde de gelatina amarilla
+function gelatina() {
+  const [c, ctx] = lienzo(12, 9)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 1, 12, 8, '#c9a400'); p(1, 1, 10, 7, 'rgba(255,214,40,0.85)'); p(1, 1, 10, 1, '#fff3a0')
+  p(3, 3, 6, 2, '#5b6068'); p(3, 3, 6, 1, '#8a919a'); p(3, 5, 6, 1, '#2b2f38')
+  return c
+}
+
+// Taza de «El mejor jefe del mundo»
+function tazaJefe() {
+  const [c, ctx] = lienzo(9, 9)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 1, 7, 8, NEGRO); p(1, 2, 5, 6, '#ffffff'); p(7, 3, 2, 4, NEGRO); p(7, 4, 1, 2, '#ffffff')
+  p(2, 3, 3, 1, '#15171c'); p(2, 5, 3, 1, '#15171c'); p(1, 2, 5, 1, '#e8e8e8')
+  return c
+}
+
+function posteScranton() {
+  const [c, ctx] = lienzo(40, 32)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(19, 4, 3, 28, '#6b4a2b'); p(19, 4, 1, 28, '#8a6040')
+  p(4, 6, 34, 9, NEGRO); p(5, 7, 32, 7, '#e0c58a'); p(37, 8, 2, 5, NEGRO); textoCentrado(ctx, 'SCRANTON', 20, 8, '#3a2a20')
+  p(2, 17, 30, 9, NEGRO); p(3, 18, 28, 7, '#e0c58a'); p(1, 19, 2, 5, NEGRO); textoCentrado(ctx, 'PA 1', 17, 19, '#3a2a20')
+  return c
+}
+
+// ---------------------------------------------------------------------------------------------- guiños de programación
+// Patito de goma para explicarle los bugs
+function pato() {
+  const [c, ctx] = lienzo(12, 10)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 4, 10, 5, '#f2c200'); p(0, 5, 1, 3, '#f2c200'); p(6, 0, 5, 5, '#f2c200'); p(10, 2, 2, 2, '#ff8a00'); p(8, 1, 1, 1, '#15171c')
+  p(2, 5, 4, 1, '#fff3a0'); p(1, 8, 10, 1, '#c99a00'); p(0, 9, 12, 1, 'rgba(255,255,255,0.6)')
+  return c
+}
+
+function cartel404() {
+  const [c, ctx] = lienzo(26, 22)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(12, 10, 2, 12, '#6b4a2b')
+  p(0, 0, 26, 12, NEGRO); p(1, 1, 24, 10, '#1b1f27'); textoCentrado(ctx, '404', 13, 4, '#e05a5a')
+  return c
+}
+
+// Café recién hecho: Java, claro
+function tazaJava() {
+  const [c, ctx] = lienzo(10, 14)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(2, 0, 1, 2, 'rgba(255,255,255,0.6)'); p(4, 1, 1, 3, 'rgba(255,255,255,0.6)'); p(6, 0, 1, 2, 'rgba(255,255,255,0.6)')
+  p(0, 5, 8, 9, NEGRO); p(1, 6, 6, 7, '#e05a5a'); p(1, 6, 6, 1, '#5a3a20'); p(8, 7, 2, 4, NEGRO); p(8, 8, 1, 2, '#e05a5a'); p(2, 9, 4, 2, '#ffffff')
+  return c
+}
+
+// Un bug de verdad: una mariquita
+function bicho() {
+  const [c, ctx] = lienzo(8, 7)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(2, 0, 4, 2, '#15171c'); p(1, 2, 6, 5, '#d6302a'); p(4, 2, 1, 5, '#15171c'); p(2, 3, 1, 1, '#15171c'); p(5, 5, 1, 1, '#15171c'); p(2, 2, 1, 1, '#ff8a80')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -816,7 +958,13 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, veleta, telarana, mochila_arana: mochilaArana,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, recreativos, foco, marcador, remolachas, gelatina, taza_jefe: tazaJefe,
+    poste_scranton: posteScranton, pato, cartel404, taza_java: tazaJava, bicho,
+    senal_villalpando: senal('VILLALPANDO', false), senal_fin_villalpando: senal('VILLALPANDO', true), senal_madrid: senal('MADRID', false),
+    maquina_serpiente: maquina('#1f7a46', 'SNAKE', (p) => { p(1, 2, 6, 1, '#2fbf71'); p(6, 2, 1, 4, '#2fbf71'); p(6, 5, 4, 1, '#2fbf71'); p(10, 6, 1, 1, '#f2c200') }),
+    maquina_nave: maquina('#1f3c9a', 'SHOOT', (p) => { p(5, 6, 2, 2, '#3dd9ff'); p(4, 7, 4, 1, '#3dd9ff'); p(2, 1, 2, 2, '#e05a5a'); p(8, 2, 2, 2, '#e05a5a'); p(6, 3, 1, 2, '#7ee2a8') }),
+    maquina_ladrillos: maquina('#a83a2a', 'BRICK', (p) => { for (let x = 0; x < 12; x += 3) { p(x, 0, 2, 1, '#f2b33d'); p(x + 1, 2, 2, 1, '#2fbf71') } p(5, 7, 3, 1, '#ffffff'); p(6, 5, 1, 1, '#f2c200') }),
+    maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando

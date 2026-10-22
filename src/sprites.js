@@ -222,6 +222,16 @@ export function crearDecorado(scene) {
     // balón
     p(70, 37, 3, 3, '#ffffff'); p(71, 38, 1, 1, '#1b1f27'); p(70, 40, 3, 1, 'rgba(0,0,0,0.25)')
     scene.textures.addCanvas('campo', c)
+
+    // Estadio (144 × 92): pista roja con calles, banquillos a un lado y el campo en el centro
+    const [e, ex] = lienzo(144, 92)
+    const q = (x, y, w, h, col) => px(ex, x, y, col, w, h)
+    q(0, 0, 144, 92, '#1b1f27'); q(1, 1, 142, 90, '#b5523b')
+    for (const d of [4, 8]) { q(d, d, 144 - d * 2, 1, '#e8c1b0'); q(d, 91 - d, 144 - d * 2, 1, '#e8c1b0'); q(d, d, 1, 92 - d * 2, '#e8c1b0'); q(143 - d, d, 1, 92 - d * 2, '#e8c1b0') }
+    q(12, 12, 120, 68, '#2f7a3c')
+    ex.drawImage(c, 16, 14)
+    for (const x of [40, 88]) { q(x, 82, 16, 7, '#1b1f27'); q(x + 1, 83, 14, 3, '#8fc4e8'); q(x + 1, 86, 14, 2, '#2f5fb0') } // banquillos
+    scene.textures.addCanvas('estadio', e)
   }
 
   // Parada de autobús y bloque de tierra (secreto)

@@ -6,6 +6,7 @@ import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD } from '../ui.js'
 import { sfx } from '../sonido.js'
+import { abrirArcade } from '../arcade.js'
 import { lienzo, px, texto, ruido2D } from '../pixel.js'
 
 const VELOCIDAD = 90
@@ -214,13 +215,24 @@ export default class Mundo extends Phaser.Scene {
     }
     for (const o of OBJETOS) {
       const img = this.add.image(o.x * T, o.base * T, o.clave).setOrigin(0.5, 1).setDepth(o.base * T)
-      if (img.width >= 30 && !['campo', 'laguna', 'muelle', 'telarana', 'avion', 'banderas', 'puesto'].includes(o.clave)) this.add.rectangle(o.x * T + 2, o.base * T - 2, img.width - 4, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-450)
+      if (img.width >= 30 && !['campo', 'estadio', 'laguna', 'muelle', 'telarana', 'avion', 'banderas', 'puesto'].includes(o.clave)) this.add.rectangle(o.x * T + 2, o.base * T - 2, img.width - 4, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-450)
       if (o.puerta) {
         // Las torres son sólidas; por el arco del medio se pasa y se ve al otro lado
         this.solido(o.x * T - 64, o.base * T - 28, 51, 26)
         this.solido(o.x * T + 13, o.base * T - 28, 51, 26)
-      } else if (o.clave === 'campo') {
+      } else if (o.clave === 'campo' || o.clave === 'estadio') {
         img.setDepth(-500)
+      } else if (o.clave === 'pato') {
+        img.setDepth(-460) // flota en la laguna
+        this.tweens.add({ targets: img, y: img.y - 1.5, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
+      } else if (o.clave === 'bicho') {
+        this.tweens.add({ targets: img, x: img.x + 14, duration: 2600, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => img.toggleFlipX(), onRepeat: () => img.toggleFlipX() })
+      } else if (['gelatina', 'taza_jefe'].includes(o.clave)) {
+        img.setDepth(o.base * T + 30)
+      } else if (['taza_java', 'cartel404'].includes(o.clave)) {
+        // objetos pequeños: sin colisión
+      } else if (o.clave.startsWith('senal_') || o.clave === 'foco' || o.clave === 'poste_scranton') {
+        this.solido(o.x * T - 3, o.base * T - 4, 6, 4)
       } else if (o.clave === 'huerto') {
         img.setDepth(-480) // se puede pisar entre los surcos
       } else if (o.clave === 'laguna') {
@@ -243,7 +255,8 @@ export default class Mundo extends Phaser.Scene {
         this.solido(o.x * T - 4, o.base * T - 6, 8, 6)
       }
       if (o.letrero) this.letrero(o.letrero, o.x * T, o.base * T - img.height - 1, o.zona ? '#2fbf71' : '#ffffff')
-      if (o.zona || o.vida) this.interactivos.push({ x: o.x * T, y: o.base * T + (o.clave === 'campo' ? -32 : 4), radio: o.clave === 'campo' ? 40 : 20, zona: o.zona, vida: o.vida, nombre: 'Alejandro' })
+      const grande = o.clave === 'campo' || o.clave === 'estadio'
+      if (o.zona || o.vida || o.arcade) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -40 : 4), radio: grande ? 44 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nombre: 'Alejandro' })
     }
   }
 
@@ -430,6 +443,7 @@ export default class Mundo extends Phaser.Scene {
     }
     const cosa = this.interactivos.find((o) => cerca(o, o.radio))
     if (!cosa) return
+    if (cosa.arcade) return abrirArcade(cosa.arcade)
     if (cosa.zona) return abrirPanel(cosa.zona)
     if (cosa.vida) return decir(cosa.nombre, frases(cosa.vida))
   }
