@@ -12,6 +12,8 @@ function textoGrande(ctx, cadena, cx, y, color, escala = 2) {
 }
 
 // ---------------------------------------------------------------------------------------------- casa genérica
+const p0 = (ctx, x, y, color, w, h) => px(ctx, x, y, color, w, h)
+
 // Ventana con marco claro, cristal en dos tonos, un brillo en diagonal y alféizar
 function ventana(ctx, x, y, o) {
   const cristal = o.cristal || '#9fd3ff'
@@ -20,6 +22,7 @@ function ventana(ctx, x, y, o) {
   px(ctx, x + 2, y + 2, cristal, 4, 5)
   px(ctx, x + 2, y + 5, oscurecer(cristal, 0.82), 4, 2)
   px(ctx, x + 2, y + 2, aclarar(cristal, 0.55), 1, 2); px(ctx, x + 3, y + 2, aclarar(cristal, 0.55))
+  if (o.codigo) { p0(ctx, x + 2, y + 2, '#0d1117', 4, 5); p0(ctx, x + 2, y + 3, '#2fbf71', 3, 1); p0(ctx, x + 3, y + 5, '#7ee2a8', 2, 1); p0(ctx, x + 2, y + 6, '#2fbf71', 1, 1) }
   if (o.cruz) { px(ctx, x + 4, y + 2, o.marco || '#f4f1ea', 1, 5); px(ctx, x + 2, y + 4, o.marco || '#f4f1ea', 4, 1) }
   px(ctx, x - 1, y + 9, NEGRO, 10, 1); px(ctx, x, y + 9, oscurecer(o.pared, 0.75), 8, 1)
   if (o.macetas) { px(ctx, x + 1, y + 8, '#b4553a', 6, 1); px(ctx, x + 1, y + 7, '#e05a5a'); px(ctx, x + 3, y + 7, '#f6e05e'); px(ctx, x + 5, y + 7, '#e05a5a') }
@@ -82,6 +85,33 @@ function casa(ctx, w, h, o) {
   if (o.farol) { px(ctx, x0 - 4, h - 17, NEGRO, 2, 3); px(ctx, x0 - 4, h - 16, '#ffe58a', 2, 1) }
 }
 
+// Detalles propios de cada edificio genérico, encima de la casa base
+const EXTRAS = {
+  // placas solares en la azotea del laboratorio de proyectos
+  laboratorio(ctx, w) {
+    for (let x = 4; x < w - 12; x += 14) { px(ctx, x, 0, NEGRO, 12, 5); px(ctx, x + 1, 1, '#1d3d7a', 10, 3); for (let i = x + 3; i < x + 11; i += 3) px(ctx, i, 1, '#5f86c8', 1, 3) }
+  },
+  // copa dorada sobre la puerta de los trofeos
+  trofeos(ctx, w, h) {
+    const x = w / 2 - 4, y = h - 29
+    px(ctx, x, y, NEGRO, 9, 7); px(ctx, x + 1, y + 1, '#f2c200', 7, 3); px(ctx, x + 3, y + 4, '#f2c200', 3, 1); px(ctx, x + 2, y + 5, '#c9962b', 5, 1); px(ctx, x + 2, y + 1, '#fff3a0', 1, 2)
+  },
+  // antena parabólica en la terminal del stack
+  terminal(ctx, w) { px(ctx, w - 12, 0, '#9aa3ad', 7, 4); px(ctx, w - 11, 1, '#cfd5db', 5, 2); px(ctx, w - 9, 4, '#5b6068', 1, 2) },
+  // neón </> sobre la puerta de los hackatones
+  hackaton(ctx, w, h) {
+    const x = w / 2 - 8, y = h - 28, c = '#e0c9ff'
+    px(ctx, x - 1, y - 1, '#2a2045', 18, 7)
+    px(ctx, x + 2, y + 2, c); px(ctx, x + 1, y + 1, c); px(ctx, x + 1, y + 3, c); px(ctx, x, y + 2, c)
+    px(ctx, x + 8, y, c); px(ctx, x + 7, y + 2, c); px(ctx, x + 6, y + 4, c)
+    px(ctx, x + 13, y + 2, c); px(ctx, x + 14, y + 1, c); px(ctx, x + 14, y + 3, c); px(ctx, x + 15, y + 2, c)
+  },
+  // aparatos de aire acondicionado en la fachada de la residencia
+  residencia(ctx) { for (const [x, y] of [[14, 22], [62, 34], [38, 46], [86, 22]]) { px(ctx, x, y, NEGRO, 7, 5); px(ctx, x + 1, y + 1, '#d9dee4', 5, 3); px(ctx, x + 2, y + 2, '#9aa3ad', 3, 1) } },
+  // buzón amarillo junto a la puerta de contacto
+  correos(ctx, w, h) { const x = w / 2 + 10; px(ctx, x, h - 14, NEGRO, 7, 11); px(ctx, x + 1, h - 13, '#f6d01a', 5, 6); px(ctx, x + 2, h - 11, NEGRO, 3, 1); px(ctx, x + 3, h - 7, '#3a3f48', 1, 4) },
+}
+
 const GENERICOS = {
   casa_pueblo: [48, 48, { pared: '#ecdcba', tejado: '#b4553a', pisos: 2, cruz: true, macetas: true, farol: true }],
   casa_pueblo_2: [48, 48, { pared: '#f2efe6', tejado: '#9b4a35', pisos: 2, cruz: true, marco: '#3c7a4a', macetas: true }],
@@ -92,7 +122,7 @@ const GENERICOS = {
   anexia: [48, 48, { pared: '#2b2f38', tejado: '#3d7be0', pisos: 2, plano: true, cristal: '#7fc8ff', marco: '#4a5160' }],
   laboratorio: [64, 56, { pared: '#dfe6ee', tejado: '#2fbf71', pisos: 2, plano: true, franja: '#2fbf71', puertaAncha: true }],
   trofeos: [64, 56, { pared: '#f6e7b4', tejado: '#c9962b', pisos: 2, puertaAncha: true, marco: '#c9962b', farol: true }],
-  terminal: [48, 48, { pared: '#1b1f27', tejado: '#2fbf71', plano: true, cristal: '#2fbf71', pisos: 2, marco: '#2b2f38' }],
+  terminal: [48, 48, { pared: '#1b1f27', tejado: '#2fbf71', plano: true, cristal: '#2fbf71', pisos: 2, marco: '#2b2f38', codigo: true }],
   correos: [64, 48, { pared: '#f2c200', tejado: '#1f4e9b', plano: true, franja: '#1f4e9b', puertaAncha: true }],
   hackaton: [64, 56, { pared: '#3a2f5c', tejado: '#a970ff', plano: true, cristal: '#e0c9ff', pisos: 2, puertaAncha: true, marco: '#5a4a8a' }],
 }
@@ -732,6 +762,7 @@ export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
     casa(ctx, w, h, o)
+    EXTRAS[nombre]?.(ctx, w, h)
     scene.textures.addCanvas(nombre, c)
   }
   const especiales = {

@@ -278,14 +278,22 @@ function cara(p, C, dir, r) {
     return
   }
   if (dir === 'lado') {
-    p(7, 10, 1, 3, r.robot ? C.A : C.E0); p(8, 10, 1, 1, '#ffffff'); p(8, 11, 1, 2, ojos)
+    if (r.robot) { p(7, 10, 1, 3, C.A); p(8, 10, 1, 1, '#ffffff'); p(8, 11, 1, 2, ojos) }
+    else { p(7, 10, 2, 1, C.E0); p(7, 11, 1, 1, ojos); p(8, 11, 1, 1, '#ffffff'); p(7, 12, 2, 1, ojos); p(8, 12, 1, 1, C.E0) }
     p(7, 9, 2, 1, C.h); p(9, 12, 1, 1, C.rubor); p(7, 14, 2, 1, C.m)
     return
   }
-  p(8, 10, 1, 3, r.robot ? C.A : C.E0); p(9, 10, 1, 1, '#ffffff'); p(9, 11, 1, 2, ojos)
-  p(15, 10, 1, 3, r.robot ? C.A : C.E0); p(14, 10, 1, 1, '#ffffff'); p(14, 11, 1, 2, ojos)
+  if (r.robot) {
+    p(8, 10, 1, 3, C.A); p(9, 10, 1, 1, '#ffffff'); p(9, 11, 1, 2, ojos)
+    p(15, 10, 1, 3, C.A); p(14, 10, 1, 1, '#ffffff'); p(14, 11, 1, 2, ojos)
+  } else {
+    // párpado, iris con brillo y el borde de abajo un poco más oscuro
+    p(8, 10, 2, 1, C.E0); p(8, 11, 1, 1, ojos); p(9, 11, 1, 1, '#ffffff'); p(8, 12, 2, 1, ojos); p(9, 12, 1, 1, C.E0)
+    p(14, 10, 2, 1, C.E0); p(14, 11, 1, 1, '#ffffff'); p(15, 11, 1, 1, ojos); p(14, 12, 2, 1, ojos); p(14, 12, 1, 1, C.E0)
+  }
   p(8, 9, 2, 1, C.h); p(14, 9, 2, 1, C.h) // cejas
-  p(12, 12, 1, 1, C.s) // nariz
+  p(12, 12, 1, 1, C.s); p(11, 12, 1, 1, C.SL) // nariz con su luz
+  p(10, 15, 4, 1, C.s) // sombra de la barbilla
   if (r.sonrisa) { p(10, 14, 4, 1, r.labios || C.m); p(11, 14, 2, 1, '#ffffff'); p(10, 13, 1, 1, C.s); p(13, 13, 1, 1, C.s) }
   else p(11, 14, 2, 1, C.m) // boca
   p(7, 12, 1, 1, C.rubor); p(16, 12, 1, 1, C.rubor)
@@ -318,8 +326,13 @@ function piernas(p0, C, dir, paso, r) {
   p(8, 24, 4, izq, C.P); p(8, 24, 1, izq, C.Pl); p(11, 25, 1, izq - 1, C.p)
   p(12, 24, 4, der, C.P); p(15, 24, 1, der, C.p); p(12, 25, 1, der - 1, C.p)
   if (r.anchos) { p(7, 26, 5, izq - 2, C.P); p(12, 26, 5, der - 2, C.P); p(16, 26, 1, der - 2, C.p); p(7, 26, 1, izq - 2, C.Pl) }
-  p(7, 24 + izq, 5, 2, C.B); p(7, 25 + izq, 5, 1, C.b)
-  p(12, 24 + der, 5, 2, C.B); p(12, 25 + der, 5, 1, C.b)
+  p(7, 24 + izq, 5, 2, C.B); p(7, 25 + izq, 5, 1, C.b); p(8, 24 + izq, 2, 1, aclarar(C.B, 0.35))
+  p(12, 24 + der, 5, 2, C.B); p(12, 25 + der, 5, 1, C.b); p(13, 24 + der, 2, 1, aclarar(C.B, 0.35))
+  if (dir === 'frente' && !r.corto) {
+    p(8, 24, 8, 1, C.p); p(11, 24, 2, 1, '#c9b37a') // cinturón con hebilla
+    p(8, 25, 1, 1, C.Pl); p(15, 25, 1, 1, C.p) // bolsillos
+    if (izq === 5) p(9, 27, 1, 1, C.Pl); if (der === 5) p(14, 27, 1, 1, C.Pl) // rodillas
+  }
 }
 
 function capucha(p, C, dir) {
@@ -342,6 +355,8 @@ function cuerpo(p, C, dir, r) {
   p(8, 17, 8, 1, C.T); p(7, 18, 10, 6, C.T)
   if (r.robusto) { p(7, 17, 10, 1, C.T); p(6, 18, 12, 6, C.T); p(16, 18, 2, 6, C.t); p(6, 23, 12, 1, C.t); p(7, 18, 1, 3, C.Tl) }
   else { p(15, 18, 2, 6, C.t); p(7, 23, 10, 1, C.t); p(8, 18, 1, 3, C.Tl) }
+  // pliegues: dos trazos en diagonal y el dobladillo de abajo con algo de luz
+  p(9, 21, 1, 1, C.t); p(10, 22, 1, 1, C.t); p(14, 20, 1, 2, C.t); p(8, 23, 7, 1, oscurecer(C.T, 0.7))
   if (r.rayasV) for (const x of [8, 11, 14]) p(x, 18, 1, 6, r.rayasV)
   if (r.franja) p(r.robusto ? 6 : 7, 19, r.robusto ? 12 : 10, 2, r.franja)
   if (dir === 'espalda') return
@@ -367,8 +382,9 @@ function brazos(p, C, dir, paso, r) {
   }
   for (const [x, sombra] of r.robusto ? [[3, 3], [19, 20]] : [[4, 4], [18, 19]]) {
     p(x, 18, 2, corta ? 2 : 5, C.T); p(sombra, 18, 1, corta ? 2 : 5, C.t)
-    if (corta) { p(x, 20, 2, 3, C.S); p(sombra, 20, 1, 3, C.s) }
-    p(x, 23, 2, 1, C.S)
+    if (corta) { p(x, 19, 2, 1, C.t); p(x, 20, 2, 3, C.S); p(sombra, 20, 1, 3, C.s) }
+    else p(x, 22, 2, 1, C.t) // puño de la manga larga
+    p(x, 23, 2, 1, C.S); p(sombra, 23, 1, 1, C.s)
   }
 }
 
@@ -411,15 +427,18 @@ function accesorios(p, C, dir, r) {
 
 function dibujar(ctx, dir, paso, r, C) {
   const p = (x, y, w, h, c) => px(ctx, x, y, c, w, h)
+  // en cada paso el cuerpo baja un píxel y las piernas se quedan: así se nota el peso al andar
+  const baja = paso ? 1 : 0
+  const q = (x, y, w, h, c) => px(ctx, x, y + baja, c, w, h)
   const pelo = PELO[r.pelo] || PELO.corto
-  if (r.tipo === 'sudadera') capucha(p, C, dir)
   piernas(p, C, dir, paso, r)
-  cuerpo(p, C, dir, r)
-  brazos(p, C, dir, paso, r)
-  cabeza(p, C, dir)
-  cara(p, C, dir, r)
-  pelo[dir](p, C)
-  accesorios(p, C, dir, r)
+  if (r.tipo === 'sudadera') capucha(q, C, dir)
+  cuerpo(q, C, dir, r)
+  brazos(q, C, dir, paso, r)
+  cabeza(q, C, dir)
+  cara(q, C, dir, r)
+  pelo[dir](q, C)
+  accesorios(q, C, dir, r)
 }
 
 // Hoja de 3 columnas (quieto, paso 1, paso 2) × 4 filas (abajo, izquierda, derecha, arriba)

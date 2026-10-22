@@ -67,6 +67,7 @@ export const SUELOS = [
   { tipo: 'piedra', x0: 20, x1: 47, y0: 13, y1: 20 }, { tipo: 'piedra', x0: 24, x1: 47, y0: 21, y1: 26 }, // Plaza Mayor
   { tipo: 'baldosa', x0: 100, x1: 130, y0: 21, y1: 21 },
   { tipo: 'asfalto', x0: 62, x1: 96, y0: CAMINO, y1: CAMINO + 1 }, // Madrid
+  { tipo: 'acera', x0: 60, x1: 98, y0: CAMINO - 1, y1: CAMINO - 1 }, { tipo: 'acera', x0: 60, x1: 98, y0: CAMINO + 2, y1: CAMINO + 2 },
   { tipo: 'arena', x0: 2, x1: 11, y0: 21, y1: 31 }, // rincón de la piña
 ]
 // Caminos verticales hacia los edificios de abajo

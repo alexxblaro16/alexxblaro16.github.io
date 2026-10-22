@@ -49,6 +49,29 @@ export function crearSuelos(scene) {
       for (let i = 0; i < 18; i++) px(ctx, (r() * 16) | 0, (r() * 16) | 0, r() > 0.5 ? '#63b457' : '#519a47')
       for (let i = 0; i < 2; i++) mata(ctx, 1 + ((r() * 12) | 0), 2 + ((r() * 12) | 0), '#76c768', '#3f8a3a')
     },
+    hierba_osc: (ctx, r) => {
+      px(ctx, 0, 0, '#4f9a46', 16, 16)
+      for (let i = 0; i < 18; i++) px(ctx, (r() * 16) | 0, (r() * 16) | 0, r() > 0.5 ? '#58a34d' : '#468c3e')
+      for (let i = 0; i < 2; i++) mata(ctx, 1 + ((r() * 12) | 0), 2 + ((r() * 12) | 0), '#66b45a', '#3a7d35')
+    },
+    hierba_clara: (ctx, r) => {
+      px(ctx, 0, 0, '#64b257', 16, 16)
+      for (let i = 0; i < 18; i++) px(ctx, (r() * 16) | 0, (r() * 16) | 0, r() > 0.5 ? '#70bd62' : '#5aa84f')
+      for (let i = 0; i < 2; i++) mata(ctx, 1 + ((r() * 12) | 0), 2 + ((r() * 12) | 0), '#86d276', '#4a9443')
+    },
+    // matas de hierba alta, con briznas de tres tonos
+    hierba_alta: (ctx, r) => {
+      tipos.hierba(ctx, r)
+      for (let k = 0; k < 4; k++) {
+        const x = 1 + ((r() * 12) | 0), y = 4 + ((r() * 8) | 0)
+        px(ctx, x, y, '#3a7d35', 1, 4); px(ctx, x + 1, y - 2, '#4f9e4a', 1, 6); px(ctx, x + 2, y - 1, '#76c768', 1, 5); px(ctx, x + 3, y + 1, '#3f8a3a', 1, 3)
+      }
+    },
+    acera: (ctx) => {
+      px(ctx, 0, 0, '#c9ced4', 16, 16)
+      for (const [x, y] of [[0, 0], [8, 0], [0, 8], [8, 8]]) { px(ctx, x + 1, y + 1, '#d6dade', 7, 7); px(ctx, x + 1, y + 1, '#e2e5e8', 7, 1) }
+      px(ctx, 0, 7, '#aab1b9', 16, 1); px(ctx, 7, 0, '#aab1b9', 1, 16); px(ctx, 0, 15, '#aab1b9', 16, 1); px(ctx, 15, 0, '#aab1b9', 1, 16)
+    },
     hierba2: (ctx, r) => {
       tipos.hierba(ctx, r)
       const flor = r() > 0.5 ? '#f6e05e' : '#ffffff'
@@ -69,7 +92,11 @@ export function crearSuelos(scene) {
         for (let x = -d; x < 16; x += 4) pieza(Math.max(0, x), y, Math.min(16, x + 3) - Math.max(0, x), 3)
       }
     },
-    asfalto: (ctx, r) => { px(ctx, 0, 0, '#5b6068', 16, 16); for (let i = 0; i < 12; i++) px(ctx, (r() * 16) | 0, (r() * 16) | 0, r() > 0.5 ? '#666b74' : '#52575e') },
+    asfalto: (ctx, r) => {
+      px(ctx, 0, 0, '#575c64', 16, 16)
+      for (let i = 0; i < 22; i++) px(ctx, (r() * 16) | 0, (r() * 16) | 0, r() > 0.5 ? '#636871' : '#4e535a')
+      if (r() > 0.7) { const x = (r() * 10) | 0, y = (r() * 12) | 0; px(ctx, x, y, '#45494f', 3, 1); px(ctx, x + 2, y + 1, '#45494f', 2, 1) } // grieta
+    },
     agua: (ctx) => {
       px(ctx, 0, 0, '#3576d6', 16, 16); px(ctx, 0, 0, '#3d82e6', 16, 8)
       px(ctx, 2, 4, '#9cc6ff', 4, 1); px(ctx, 3, 3, '#cfe3ff', 2, 1); px(ctx, 9, 11, '#9cc6ff', 4, 1); px(ctx, 10, 10, '#cfe3ff', 2, 1)
@@ -100,6 +127,64 @@ export function crearSuelos(scene) {
   const verdes = { O: '#1b2a1e', M: '#3c9a47', L: '#5cbf5f', D: '#2a7535' }
   copa.forEach((fila, y) => [...fila].forEach((ch, x) => { if (verdes[ch]) px(ctx, x + 2, y + 2, verdes[ch]) }))
   scene.textures.addCanvas('arbol', c)
+
+  // Pino (20 × 38): pisos de ramas oscuras con algo de luz a la izquierda
+  {
+    const [c, ctx] = lienzo(20, 38)
+    ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.beginPath(); ctx.ellipse(10, 36, 7, 2, 0, 0, Math.PI * 2); ctx.fill()
+    px(ctx, 8, 28, '#1b1f27', 4, 9); px(ctx, 9, 28, '#6b4a2b', 2, 8)
+    for (const [y, mitad] of [[1, 2], [4, 3], [7, 5], [11, 6], [15, 7], [19, 8], [23, 9]]) {
+      for (let i = 0; i < 5; i++) {
+        const w = Math.max(1, Math.round((mitad * (i + 2)) / 6))
+        px(ctx, 10 - w - 1, y + i, '#14261a', w * 2 + 2, 1); px(ctx, 10 - w, y + i, i > 2 ? '#1f5a2c' : '#2a7535', w * 2, 1)
+        px(ctx, 10 - w, y + i, '#3c9a47', Math.max(1, Math.round(w * 0.6)), 1)
+      }
+    }
+    scene.textures.addCanvas('pino', c)
+  }
+  // Chopo (16 × 40): alto y estrecho, verde claro, con el tronco blanquecino; el árbol típico de Castilla
+  {
+    const [c, ctx] = lienzo(16, 40)
+    ctx.fillStyle = 'rgba(0,0,0,0.16)'; ctx.beginPath(); ctx.ellipse(8, 38, 5, 1.6, 0, 0, Math.PI * 2); ctx.fill()
+    px(ctx, 7, 26, '#1b1f27', 3, 13); px(ctx, 7, 27, '#d9d4c8', 2, 11); px(ctx, 8, 30, '#6a6458', 1, 1); px(ctx, 7, 34, '#6a6458', 1, 1)
+    for (let y = 0; y < 30; y++) {
+      const mitad = Math.round(Math.sin(((y + 2) / 32) * Math.PI) * 6)
+      if (mitad < 1) continue
+      px(ctx, 8 - mitad - 1, y, '#1d3a1f', mitad * 2 + 2, 1); px(ctx, 8 - mitad, y, y % 4 < 2 ? '#6fae4a' : '#5f9e40', mitad * 2, 1)
+      px(ctx, 8 - mitad, y, '#9ccc5a', Math.max(1, Math.round(mitad * 0.5)), 1)
+      if (y % 5 === 2) px(ctx, 8 + Math.round(mitad * 0.3), y, '#4a8434', 2, 1)
+    }
+    scene.textures.addCanvas('chopo', c)
+  }
+  // Mariposas (dos colores, dos fotogramas: alas abiertas y cerradas)
+  for (const [nombre, ala, punto] of [['mariposa_a', '#f6f0d0', '#f2c200'], ['mariposa_b', '#ff9a3c', '#3a2a20']]) {
+    const [c, ctx] = lienzo(12, 6)
+    px(ctx, 2, 1, '#2b2f38', 1, 4); px(ctx, 0, 0, ala, 2, 3); px(ctx, 3, 0, ala, 2, 3); px(ctx, 1, 3, ala, 1, 2); px(ctx, 3, 3, ala, 1, 2); px(ctx, 0, 1, punto); px(ctx, 4, 1, punto)
+    px(ctx, 8, 1, '#2b2f38', 1, 4); px(ctx, 7, 1, ala, 1, 3); px(ctx, 9, 1, ala, 1, 3)
+    const tex = scene.textures.addCanvas(nombre, c)
+    tex.add(0, 0, 0, 0, 6, 6); tex.add(1, 0, 6, 0, 6, 6)
+  }
+  // Pájaro en vuelo (alas arriba y abajo)
+  {
+    const [c, ctx] = lienzo(18, 6)
+    const ave = '#2b2f38'
+    px(ctx, 0, 0, ave, 2, 1); px(ctx, 2, 1, ave, 2, 1); px(ctx, 4, 2, ave, 1, 1); px(ctx, 5, 1, ave, 2, 1); px(ctx, 7, 0, ave, 2, 1)
+    px(ctx, 9, 3, ave, 2, 1); px(ctx, 11, 2, ave, 2, 1); px(ctx, 13, 2, ave, 1, 2); px(ctx, 14, 2, ave, 2, 1); px(ctx, 16, 3, ave, 2, 1)
+    const tex = scene.textures.addCanvas('pajaro', c)
+    tex.add(0, 0, 0, 0, 9, 6); tex.add(1, 0, 9, 0, 9, 6)
+  }
+  // Sombra de nube: mancha oscura muy suave, con tramado en el borde para que no tenga corte
+  {
+    const [c, ctx] = lienzo(200, 104)
+    for (let y = 0; y < 104; y++) for (let x = 0; x < 200; x++) {
+      const dx = (x - 100) / 96, dy = (y - 52) / 48
+      const bulto = 0.12 * Math.sin(x / 13) + 0.1 * Math.cos(y / 9)
+      const d = dx * dx + dy * dy - bulto
+      if (d < 0.7) px(ctx, x, y, 'rgba(20,32,48,0.10)')
+      else if (d < 1 && (x + y) % 2 === 0) px(ctx, x, y, 'rgba(20,32,48,0.07)')
+    }
+    scene.textures.addCanvas('sombra_nube', c)
+  }
 }
 
 // ---------------------------------------------------------------------------------------------- decorado pequeño

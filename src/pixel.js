@@ -28,6 +28,22 @@ export function azar(semilla) {
   return () => ((s = (s * 9301 + 49297) % 233280) / 233280)
 }
 
+// Ruido suave en 2D (de 0 a 1) para repartir manchas de hierba o tipos de árbol por zonas, siempre igual
+export function ruido2D(semilla) {
+  const h = (x, y) => {
+    let n = (Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(semilla, 1442695041)) | 0
+    n = Math.imul(n ^ (n >>> 13), 1274126177)
+    return ((n ^ (n >>> 16)) >>> 0) / 4294967295
+  }
+  const suave = (t) => t * t * (3 - 2 * t)
+  return (x, y, escala) => {
+    const gx = x / escala, gy = y / escala, x0 = Math.floor(gx), y0 = Math.floor(gy)
+    const u = suave(gx - x0), v = suave(gy - y0)
+    const a = h(x0, y0), b = h(x0 + 1, y0), c = h(x0, y0 + 1), d = h(x0 + 1, y0 + 1)
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v
+  }
+}
+
 // Contorno de 1 px alrededor de todo lo pintado, del color de lo que rodea pero mucho más oscuro
 export function contorno(ctx, w, h, fuerza = 0.38) {
   const img = ctx.getImageData(0, 0, w, h)

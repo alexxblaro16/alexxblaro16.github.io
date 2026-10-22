@@ -70,6 +70,11 @@ elige todo al azar. Cada cambio vuelve a dibujar la hoja, así que lo que se ve 
 
 ## Ambiente
 
+- **Suelo**: `pintarSuelo()` guarda en una cuadrícula qué hay en cada casilla y dibuja cada borde según el vecino
+  (mordiscos de hierba en el camino, bordillo en la plaza y en la acera, arena irregular). Luego oscurece o aclara la
+  hierba píxel a píxel con `ruido2D` y una matriz de Bayer, para que las manchas no sigan la forma de las casillas.
+- **Árboles**: tres especies elegidas con ruido por zonas (`pintarArboles`).
+- **Ambiente** (`ambiente()`): mariposas con tweens encadenados, bandadas de pájaros cada pocos segundos y sombras de nube.
 - **Sombras**: un rectángulo semitransparente bajo cada edificio y objeto grande, por encima del suelo y por debajo de todo lo demás.
 - **Bordes del camino**: una línea más oscura y matas de hierba que se meten un poco, pintadas en el mismo canvas del suelo.
 - **Vida**: palomas que picotean (dos fotogramas) y se desplazan a saltos, medusas en la laguna, banderas que ondean y olas animadas.

@@ -69,6 +69,18 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Mapa: sombras bajo los edificios, bordes en el camino, árboles en alcorques en la plaza, palomas que picotean,
   flores por la hierba y una niebla suave en las esquinas de la pantalla.
 
+### 8. Un mapa trabajado como un juego
+- **Personajes**: ojos con párpado y brillo, nariz con luz, sombra en la barbilla, pliegues en la camiseta, dobladillo
+  y puños, cinturón con hebilla, bolsillos y rodillas en el pantalón, brillo en las zapatillas, y el cuerpo baja un píxel
+  en cada paso para que se note el peso al andar.
+- **Suelo**: manchas de luz y sombra en la hierba calculadas píxel a píxel con ruido suave y tramado de Bayer (sin
+  cuadrados de casilla), matas altas, bordes del camino irregulares, bordillo en la plaza y arena que se mete en la hierba.
+- **Madrid**: aceras con bordillo, línea discontinua y dos pasos de cebra.
+- **Árboles**: encinas, pinos y chopos (más chopos en el pueblo, como en Castilla).
+- **Vida**: mariposas, bandadas de pájaros con su sombra y sombras de nubes que cruzan el mapa despacio.
+- **Edificios**: placas solares en el laboratorio, copa en los trofeos, código en las ventanas y antena en la terminal,
+  neón `</>` en los hackatones, aires acondicionados en la residencia y buzón en contacto.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

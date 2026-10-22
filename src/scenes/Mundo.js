@@ -6,7 +6,7 @@ import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD } from '../ui.js'
 import { sfx } from '../sonido.js'
-import { lienzo, px, texto } from '../pixel.js'
+import { lienzo, px, texto, ruido2D } from '../pixel.js'
 
 const VELOCIDAD = 90
 // Sacado de sus fotos: pelo oscuro ondulado, piel morena clara, camiseta blanca, cadena plateada,
@@ -28,6 +28,7 @@ export default class Mundo extends Phaser.Scene {
     this.pintarArboles()
     this.colocarEdificios()
     this.colocarPersonajes()
+    this.ambiente()
 
     this.physics.world.setBounds(0, 0, ANCHO * T, ALTO * T)
     this.cameras.main.setBounds(0, 0, ANCHO * T, ALTO * T)
@@ -78,16 +79,77 @@ export default class Mundo extends Phaser.Scene {
     const img = (k) => this.textures.get(k).getSourceImage()
     let s = 11
     const azar = () => ((s = (s * 9301 + 49297) % 233280) / 233280)
-    for (let y = 0; y < ALTO; y++) for (let x = 0; x < ANCHO; x++) ctx.drawImage(img(azar() > 0.93 ? 'hierba2' : 'hierba'), x * T, y * T)
-    for (let x = CAMINO_INICIO; x < ANCHO - 2; x++) for (const y of [CAMINO, CAMINO + 1]) ctx.drawImage(img('camino'), x * T, y * T)
-    for (const sd of SENDAS) for (let y = sd.y0; y <= sd.y1; y++) ctx.drawImage(img('camino'), sd.x * T, y * T)
-    const borde = (x, y, w, h) => { ctx.fillStyle = '#b8995c'; ctx.fillRect(x, y, w, h) }
-    for (let x = CAMINO_INICIO * T; x < (ANCHO - 2) * T; x += 1) {
-      borde(x, CAMINO * T, 1, 1); borde(x, (CAMINO + 2) * T - 1, 1, 1)
-      if (azar() > 0.86) { ctx.fillStyle = '#4f9e4a'; ctx.fillRect(x, CAMINO * T, 2, 2); ctx.fillRect(x, (CAMINO + 2) * T - 2, 2, 2) }
+    const ruido = ruido2D(7)
+    const rect = (x, y, w, h, color) => { ctx.fillStyle = color; ctx.fillRect(x, y, w, h) }
+
+    // Qué hay en cada casilla: hierba, camino o el tipo de suelo de cada zona
+    const tipo = Array.from({ length: ALTO }, () => Array(ANCHO).fill('hierba'))
+    for (let x = CAMINO_INICIO; x < ANCHO - 2; x++) tipo[CAMINO][x] = tipo[CAMINO + 1][x] = 'camino'
+    for (const sd of SENDAS) for (let y = sd.y0; y <= sd.y1; y++) tipo[y][sd.x] = 'camino'
+    for (const z of SUELOS) for (let y = z.y0; y <= z.y1; y++) for (let x = z.x0; x <= z.x1; x++) tipo[y][x] = z.tipo
+    const es = (x, y, t) => y >= 0 && y < ALTO && x >= 0 && x < ANCHO && tipo[y][x] === t
+
+    // Hierba en tres tonos que cambian por zonas (ruido suave), con matas altas y alguna flor
+    for (let y = 0; y < ALTO; y++) for (let x = 0; x < ANCHO; x++) {
+      if (tipo[y][x] !== 'hierba') { ctx.drawImage(img(tipo[y][x]), x * T, y * T); continue }
+      const r = azar()
+      ctx.drawImage(img(r > 0.955 ? 'hierba2' : r > 0.9 && ruido(x, y, 6) > 0.42 ? 'hierba_alta' : 'hierba'), x * T, y * T)
     }
-    for (const sd of SENDAS) for (let y = sd.y0 * T; y < (sd.y1 + 1) * T; y++) { borde(sd.x * T, y, 1, 1); borde((sd.x + 1) * T - 1, y, 1, 1) }
-    for (const z of SUELOS) for (let y = z.y0; y <= z.y1; y++) for (let x = z.x0; x <= z.x1; x++) ctx.drawImage(img(z.tipo), x * T, y * T)
+
+    // Manchas de luz y sombra en la hierba, píxel a píxel y con tramado (matriz de Bayer) en las juntas:
+    // así no se notan los cuadrados de las casillas
+    const bayer = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
+    const datos = ctx.getImageData(0, 0, ANCHO * T, ALTO * T)
+    const d = datos.data
+    for (let py = 0; py < ALTO * T; py++) {
+      const fila = tipo[Math.floor(py / T)]
+      for (let pxl = 0; pxl < ANCHO * T; pxl++) {
+        if (fila[Math.floor(pxl / T)] !== 'hierba') continue
+        const v = ruido(pxl, py, 88) * 0.8 + ruido(pxl + 999, py + 999, 30) * 0.2 + (bayer[(py & 3) * 4 + (pxl & 3)] / 16 - 0.5) * 0.09
+        const i = (py * ANCHO * T + pxl) * 4
+        if (v < 0.4) { d[i] *= 0.86; d[i + 1] *= 0.9; d[i + 2] *= 0.86 }
+        else if (v > 0.62) { d[i] = d[i] * 1.06 + 6; d[i + 1] = d[i + 1] * 1.05 + 6; d[i + 2] = d[i + 2] * 1.02 }
+      }
+    }
+    ctx.putImageData(datos, 0, 0)
+
+    // Bordes de cada casilla según lo que tenga al lado
+    for (let y = 0; y < ALTO; y++) for (let x = 0; x < ANCHO; x++) {
+      const t = tipo[y][x], X = x * T, Y = y * T
+      const lados = [[0, -1], [0, 1], [-1, 0], [1, 0]].filter(([dx, dy]) => !es(x + dx, y + dy, t))
+      for (const [dx, dy] of lados) {
+        const vecino = (y + dy >= 0 && y + dy < ALTO && x + dx >= 0 && x + dx < ANCHO) ? tipo[y + dy][x + dx] : 'hierba'
+        for (let i = 0; i < T; i++) {
+          // (bx, by) recorre el lado de la casilla; (ix, iy) apunta hacia dentro
+          const bx = dx === 0 ? X + i : dx < 0 ? X : X + T - 1
+          const by = dy === 0 ? Y + i : dy < 0 ? Y : Y + T - 1
+          const ix = -dx, iy = -dy
+          if (t === 'camino' && vecino === 'hierba') {
+            // la hierba se come el borde del camino a mordiscos y el borde queda algo más oscuro
+            const prof = azar() < 0.5 ? 0 : 1 + Math.floor(azar() * 3)
+            for (let k = 0; k < prof; k++) rect(bx + ix * k, by + iy * k, 1, 1, azar() < 0.5 ? '#4f9e4a' : '#5aa84f')
+            rect(bx + ix * prof, by + iy * prof, 1, 1, '#c2a468')
+          } else if (t === 'piedra') {
+            // bordillo de la plaza: canto claro por dentro y sombra por fuera
+            rect(bx, by, 1, 1, '#9e9686'); rect(bx + ix, by + iy, 1, 1, '#f2eee4')
+          } else if (t === 'arena' && vecino !== 'arena') {
+            // la arena se mete en la hierba de forma irregular
+            const prof = Math.floor(azar() * 3)
+            for (let k = 1; k <= prof; k++) rect(bx - ix * k, by - iy * k, 1, 1, azar() < 0.6 ? '#e3cd8e' : '#ecd9a0')
+            if (azar() < 0.15) rect(bx + ix, by + iy, 1, 1, '#5aa84f')
+          } else if (t === 'acera') {
+            if (vecino === 'asfalto') { rect(bx, by, 1, 1, '#8a9099'); rect(bx + ix, by + iy, 1, 1, '#eef1f4') } // bordillo
+            else rect(bx, by, 1, 1, '#aab1b9')
+          }
+        }
+      }
+    }
+
+    // Carretera: línea discontinua y dos pasos de cebra
+    const cebras = [71, 88]
+    for (let x = 62 * T; x < 97 * T; x += 12) if (!cebras.some((c) => x >= c * T - 4 && x < (c + 2) * T + 4)) rect(x, (CAMINO + 1) * T - 1, 7, 2, '#e9ecef')
+    for (const c of cebras) for (let y = CAMINO * T + 2; y < (CAMINO + 2) * T - 2; y += 4) rect(c * T + 2, y, 2 * T - 4, 2, '#eef1f4')
+
     if (this.textures.exists('suelo')) this.textures.remove('suelo')
     this.textures.addCanvas('suelo', lienzo)
     this.add.image(0, 0, 'suelo').setOrigin(0).setDepth(-1000)
@@ -112,6 +174,7 @@ export default class Mundo extends Phaser.Scene {
   }
 
   pintarArboles() {
+    const ruidoArboles = ruido2D(23)
     let s = 5
     const azar = () => ((s = (s * 9301 + 49297) % 233280) / 233280)
     for (let y = 1; y < ALTO; y += 2) {
@@ -120,7 +183,9 @@ export default class Mundo extends Phaser.Scene {
         if ((borde && azar() > 0.15) || (!borde && azar() > 0.9)) {
           const ax = x + (azar() - 0.5)
           if (!borde && this.ocupado(ax, y)) continue
-          this.add.image(ax * T, y * T, 'arbol').setOrigin(0.5, 1).setDepth(y * T)
+          const n = ruidoArboles(x, y, 5)
+          const especie = x < 50 ? (n < 0.45 ? 'chopo' : n < 0.75 ? 'arbol' : 'pino') : borde ? (n < 0.5 ? 'pino' : n < 0.8 ? 'arbol' : 'chopo') : (n < 0.6 ? 'arbol' : n < 0.8 ? 'pino' : 'chopo')
+          this.add.image(ax * T, y * T, especie).setOrigin(0.5, 1).setDepth(y * T)
           this.solido(ax * T - 4, y * T - 6, 8, 6)
         } else if (!borde && azar() > 0.82) {
           const bx = x + (azar() - 0.5) * 1.5
@@ -196,6 +261,30 @@ export default class Mundo extends Phaser.Scene {
       this.tweens.add({ targets: m, x: m.x + (i % 2 ? 6 : -6), duration: 4000 + i * 600, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
       m.setInteractive({ useHandCursor: true }).on('pointerover', (ptr) => etiqueta(estado.idioma === 'en' ? 'Jellyfish' : 'Medusa', ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     }
+  }
+
+  // Vida en el mapa: mariposas que revolotean, pájaros que cruzan con su sombra y sombras de nubes que pasan
+  ambiente() {
+    const aleatorio = (a, b) => a + Math.random() * (b - a)
+    const sitios = [[14, 16], [26, 30], [55, 24], [66, 26], [98, 27], [127, 25], [150, 27], [9, 18], [42, 30], [112, 29], [158, 24], [78, 26]]
+    sitios.forEach(([x, y], i) => {
+      const m = this.add.sprite(x * T, y * T, i % 2 ? 'mariposa_a' : 'mariposa_b', 0).setDepth(9200)
+      this.time.addEvent({ delay: 130 + i * 9, loop: true, callback: () => m.setFrame(m.frame.name == 0 ? 1 : 0) })
+      const vuela = () => this.tweens.add({ targets: m, x: x * T + aleatorio(-30, 30), y: y * T + aleatorio(-18, 18), duration: aleatorio(1200, 2600), ease: 'Sine.inOut', onComplete: vuela })
+      vuela()
+    })
+    this.nubes = [0, 1, 2, 3, 4].map((i) => this.add.image(aleatorio(0, ANCHO * T), aleatorio(4, ALTO - 4) * T, 'sombra_nube').setDepth(9300).setScale(i % 2 ? 1.4 : 1))
+    this.time.addEvent({ delay: 50, loop: true, callback: () => this.nubes.forEach((n, i) => { n.x += 0.35 + i * 0.05; if (n.x > ANCHO * T + 160) n.x = -160 }) })
+    this.time.addEvent({ delay: 6500, loop: true, callback: () => {
+      const vista = this.cameras.main.worldView
+      const y = vista.y + aleatorio(30, vista.height * 0.6)
+      for (let k = 0; k < (Math.random() < 0.5 ? 1 : 3); k++) {
+        const ave = this.add.sprite(vista.x - 20 - k * 14, y + k * 8, 'pajaro', 0).setDepth(9600)
+        const sombra = this.add.ellipse(ave.x, ave.y + 56, 7, 3, 0x000000, 0.16).setDepth(-440)
+        const aleteo = this.time.addEvent({ delay: 160, loop: true, callback: () => ave.setFrame(ave.frame.name == 0 ? 1 : 0) })
+        this.tweens.add({ targets: [ave, sombra], x: `+=${vista.width + 80}`, duration: 7000, onComplete: () => { aleteo.remove(); ave.destroy(); sombra.destroy() } })
+      }
+    } })
   }
 
   // ------------------------------------------------------------------------------------------ personajes
