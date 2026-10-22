@@ -40,6 +40,7 @@ export const OBJETOS = [
   { clave: 'puesto', x: 41.5, base: 23.6 },
   // Guiño a Bob Esponja junto al agua
   { clave: 'casa_cabeza', x: 4.5, base: 25, vida: 'cabeza' }, { clave: 'casa_pina', x: 8.5, base: 25, vida: 'pina' }, { clave: 'casa_roca', x: 9.2, base: 30.6, vida: 'roca' },
+  { clave: 'laguna', x: 5, base: 29.5 }, { clave: 'muelle', x: 6.6, base: 28, vida: 'medusas' },
   { clave: 'palmera', x: 11, base: 23.5 }, { clave: 'palmera', x: 2.6, base: 31.5 },
   { clave: 'quiosco', x: 89, base: 18.2 },
   // Madrid
@@ -65,7 +66,6 @@ export const SUELOS = [
   { tipo: 'baldosa', x0: 100, x1: 130, y0: 21, y1: 21 },
   { tipo: 'asfalto', x0: 62, x1: 96, y0: CAMINO, y1: CAMINO + 1 }, // Madrid
   { tipo: 'arena', x0: 2, x1: 11, y0: 21, y1: 31 }, // rincón de la piña
-  { tipo: 'agua', x0: 3, x1: 6, y0: 26, y1: 30 },
 ]
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [

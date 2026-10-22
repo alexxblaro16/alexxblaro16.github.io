@@ -48,7 +48,8 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 
 ### 6. El rincón de arena y más pueblo
 - Un rincón de arena junto al agua con tres casas de guiño a Bob Esponja: la piña, la roca con veleta y la cabeza
-  de piedra, con palmeras.
+  de piedra, con palmeras, y una laguna redondeada con olas animadas, medusas flotando y un muelle de madera por el
+  que se puede andar (sustituye al estanque cuadrado del principio).
 - Más casas en el pueblo a lo largo del camino y edificios nuevos en Madrid, con un quiosco.
 - El CV (en sus seis versiones) y el perfil de GitHub enlazan ya a esta web.
 

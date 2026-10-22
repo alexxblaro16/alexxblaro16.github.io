@@ -74,9 +74,6 @@ export default class Mundo extends Phaser.Scene {
     if (this.textures.exists('suelo')) this.textures.remove('suelo')
     this.textures.addCanvas('suelo', lienzo)
     this.add.image(0, 0, 'suelo').setOrigin(0).setDepth(-1000)
-    // El agua no se pisa
-    const agua = SUELOS.find((z) => z.tipo === 'agua')
-    this.solido((agua.x0) * T, agua.y0 * T, (agua.x1 - agua.x0 + 1) * T, (agua.y1 - agua.y0 + 1) * T)
   }
 
   solido(x, y, w, h) {
@@ -140,6 +137,10 @@ export default class Mundo extends Phaser.Scene {
         this.solido(o.x * T + 13, o.base * T - 28, 51, 26)
       } else if (o.clave === 'campo') {
         img.setDepth(-500)
+      } else if (o.clave === 'laguna') {
+        this.laguna(img, o)
+      } else if (o.clave === 'muelle') {
+        img.setDepth(-480) // se anda por encima
       } else if (o.encima) {
         img.setDepth(o.base * T + 40) // pegado a la pared de un edificio
       } else if (o.clave === 'arbusto') {
@@ -153,6 +154,24 @@ export default class Mundo extends Phaser.Scene {
       }
       if (o.letrero) this.letrero(o.letrero, o.x * T, o.base * T - img.height - 1, o.zona ? '#2fbf71' : '#ffffff')
       if (o.zona || o.vida) this.interactivos.push({ x: o.x * T, y: o.base * T + (o.clave === 'campo' ? -32 : 4), radio: o.clave === 'campo' ? 40 : 20, zona: o.zona, vida: o.vida, nombre: 'Alejandro' })
+    }
+  }
+
+  // La laguna: olas animadas, medusas flotando y agua que no se pisa salvo por el muelle
+  laguna(img, o) {
+    img.setDepth(-490)
+    let f = 0
+    this.time.addEvent({ delay: 500, loop: true, callback: () => { f = (f + 1) % 3; img.setTexture(['laguna', 'laguna_1', 'laguna_2'][f]) } })
+    const x0 = o.x * T - 40, y0 = o.base * T - 64
+    // el muelle entra por la derecha a la altura de la fila 27-28: ahí queda un pasillo sin colisión
+    this.solido(x0 + 6, y0 + 6, 68, 20)
+    this.solido(x0 + 6, y0 + 41, 68, 18)
+    this.solido(x0 + 6, y0 + 26, 40, 15)
+    for (let i = 0; i < 5; i++) {
+      const m = this.add.image(x0 + 18 + (i * 11) % 44, y0 + 16 + (i * 17) % 34, 'medusa').setDepth(-470).setAlpha(0.92)
+      this.tweens.add({ targets: m, y: m.y - 3, duration: 900 + i * 170, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
+      this.tweens.add({ targets: m, x: m.x + (i % 2 ? 6 : -6), duration: 4000 + i * 600, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
+      m.setInteractive({ useHandCursor: true }).on('pointerover', (ptr) => etiqueta(estado.idioma === 'en' ? 'Jellyfish' : 'Medusa', ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     }
   }
 

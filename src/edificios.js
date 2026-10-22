@@ -595,6 +595,54 @@ function quiosco() {
   return c
 }
 
+// ---------------------------------------------------------------------------------------------- laguna, medusas y muelle
+// Laguna de 80 × 64 con forma redondeada: arena mojada, espuma, agua somera y agua profunda.
+// Se dibujan tres fotogramas con las olas desplazadas para animarla.
+function laguna(fotograma) {
+  return () => {
+    const [c, ctx] = lienzo(80, 64)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    const cx = 40, cy = 32
+    const dentro = (x, y, rx, ry) => Math.pow(Math.abs(x - cx) / rx, 2.4) + Math.pow(Math.abs(y - cy) / ry, 2.4) <= 1
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 80; x++) {
+      // un poco de irregularidad en la orilla
+      const ondula = Math.sin(x / 5) * 1.2 + Math.cos(y / 4) * 1.2
+      if (dentro(x, y, 30 + ondula * 0.6, 24 + ondula * 0.5)) p(x, y, 1, 1, '#2f6fd0')
+      else if (dentro(x, y, 35 + ondula * 0.6, 28 + ondula * 0.5)) p(x, y, 1, 1, '#4a8fe8')
+      else if (dentro(x, y, 37 + ondula * 0.6, 30 + ondula * 0.5)) p(x, y, 1, 1, '#e8f4ff')
+      else if (dentro(x, y, 39.5 + ondula * 0.6, 31.8 + ondula * 0.5)) p(x, y, 1, 1, '#d2bd86')
+    }
+    // fondo con arena clara en la parte somera y olas que se mueven en cada fotograma
+    const desfase = fotograma * 3
+    for (let y = 10; y < 56; y += 7) for (let x = 10 + ((y / 7) % 2) * 6; x < 70; x += 13) {
+      const xx = x + desfase
+      if (dentro(xx, y, 28, 22)) { p(xx, y, 4, 1, '#7fb6f5'); p(xx + 1, y - 1, 2, 1, '#cfe3ff') }
+    }
+    p(30, 22, 3, 1, '#9fc8ff'); p(48, 38, 2, 1, '#9fc8ff')
+    return c
+  }
+}
+
+function medusa() {
+  const [c, ctx] = lienzo(10, 12)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(2, 0, 6, 1, '#ff8fc8'); p(1, 1, 8, 3, '#ff8fc8'); p(0, 3, 10, 2, '#ff8fc8')
+  p(2, 1, 3, 1, '#ffd1e8'); p(3, 2, 1, 1, '#ffffff'); p(6, 2, 2, 1, '#e25aa0'); p(2, 4, 2, 1, '#e25aa0'); p(7, 4, 1, 1, '#e25aa0')
+  for (const x of [1, 3, 6, 8]) { p(x, 5, 1, 3, 'rgba(255,143,200,0.85)'); p(x + (x % 2 ? 1 : -1), 8, 1, 3, 'rgba(255,143,200,0.6)') }
+  return c
+}
+
+// Muelle de tablones con postes, que entra en el agua desde la orilla de la derecha
+function muelle() {
+  const [c, ctx] = lienzo(40, 16)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  for (const x of [1, 13, 25]) { p(x, 9, 3, 7, '#4a3220'); p(x, 14, 3, 2, 'rgba(20,40,80,0.35)') }
+  p(0, 2, 40, 9, '#1b1f27')
+  for (let x = 1; x < 39; x += 4) { p(x, 3, 3, 7, '#b07a44'); p(x, 3, 3, 1, '#d29a5e'); p(x, 9, 3, 1, '#8a5a32') }
+  p(0, 0, 2, 4, '#4a3220'); p(0, 0, 2, 1, '#6b4a2b')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -605,7 +653,7 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, veleta, telarana, mochila_arana: mochilaArana,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, veleta, telarana, mochila_arana: mochilaArana,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
 }
