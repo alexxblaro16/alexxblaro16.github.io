@@ -10,8 +10,8 @@ import { sfx } from '../sonido.js'
 const VELOCIDAD = 90
 // Sacado de sus fotos: pelo oscuro ondulado, piel morena clara, camiseta blanca, cadena plateada,
 // vaqueros anchos y zapatillas blancas, y el portátil con pegatinas
-const ALEJANDRO = { pelo: 'rizado', colorPelo: '#241812', piel: '#dfa47e', ropa: '#eef1f4', pantalon: '#3a4a66', zapatillas: '#f4f4f4', cadena: true, portatil: true }
-const DANTE_PW = { pelo: 'corto', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', antena: true }
+const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#d99e78', ropa: '#f2f3f5', pantalon: '#4f6d9a', anchos: true, zapatillas: '#f4f4f4', cadena: true, portatil: true }
+const DANTE_PW = { pelo: 'corto', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', robot: true }
 
 const frases = (clave) => HISTORIA[estado.idioma][clave] || []
 
@@ -132,11 +132,13 @@ export default class Mundo extends Phaser.Scene {
       const img = this.add.image(o.x * T, o.base * T, o.clave).setOrigin(0.5, 1).setDepth(o.base * T)
       if (o.puerta) {
         // La puerta de la villa: solo son sólidas las torres, por el arco se pasa
-        this.solido(o.x * T - 48, o.base * T - 40, 30, 22)
-        this.solido(o.x * T + 18, o.base * T - 40, 30, 22)
+        this.solido(o.x * T - 64, o.base * T - 30, 50, 28)
+        this.solido(o.x * T + 14, o.base * T - 30, 50, 28)
         img.setDepth(o.base * T + 20)
       } else if (o.clave === 'campo') {
         img.setDepth(-500)
+      } else if (o.clave === 'farola') {
+        this.solido(o.x * T - 3, o.base * T - 5, 6, 5)
       } else if (o.clave !== 'cartel' && o.clave !== 'bloque') {
         this.solido(o.x * T - img.width / 2 + 2, o.base * T - img.height / 2, img.width - 4, img.height / 2)
       } else {
@@ -154,7 +156,7 @@ export default class Mundo extends Phaser.Scene {
       const clave = `npc-${i}`
       crearPersonaje(this, clave, p.rasgos)
       const s = this.physics.add.sprite(p.x * T, p.y * T, clave, 0).setOrigin(0.5, 1).setImmovable(true)
-      s.body.setSize(10, 6).setOffset(3, 18)
+      s.body.setSize(10, 6).setOffset(7, 25)
       s.setInteractive({ useHandCursor: true })
       s.on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointermove', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
@@ -169,7 +171,7 @@ export default class Mundo extends Phaser.Scene {
 
     // Alejandro, el guía
     this.guia = this.physics.add.sprite(12 * T, (CAMINO + 0.5) * T, 'alejandro', 0).setOrigin(0.5, 1)
-    this.guia.body.setSize(10, 6).setOffset(3, 18)
+    this.guia.body.setSize(10, 6).setOffset(7, 25)
     this.guia.setInteractive({ useHandCursor: true })
     this.guia.on('pointerover', (ptr) => etiqueta('Alejandro', ptr.x, ptr.y))
     this.guia.on('pointerout', () => etiqueta(null))
@@ -181,7 +183,7 @@ export default class Mundo extends Phaser.Scene {
 
     // DANTE P.W., la IA con cara de robot de Dante
     this.dantePW = this.physics.add.sprite(140 * T, (CAMINO + 2.6) * T, 'dante_pw', 0).setOrigin(0.5, 1)
-    this.dantePW.body.setSize(10, 6).setOffset(3, 18)
+    this.dantePW.body.setSize(10, 6).setOffset(7, 25)
     this.dantePW.setInteractive({ useHandCursor: true }).on('pointerover', (ptr) => etiqueta('DANTE P.W.', ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     this.dantePWsigue = false
   }
@@ -192,7 +194,7 @@ export default class Mundo extends Phaser.Scene {
     crearPersonaje(this, 'jugador', p.rasgos)
     crearAnimaciones(this, 'jugador')
     this.jugador = this.physics.add.sprite(8 * T, (CAMINO + 1.2) * T, 'jugador', 0).setOrigin(0.5, 1)
-    this.jugador.body.setSize(10, 6).setOffset(3, 18)
+    this.jugador.body.setSize(10, 6).setOffset(7, 25)
     this.jugador.setCollideWorldBounds(true)
     this.physics.add.collider(this.jugador, this.solidos)
     this.jugador.setInteractive().on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
@@ -315,7 +317,7 @@ export default class Mundo extends Phaser.Scene {
 
     // «!» encima de Alejandro cuando te está esperando para contarte algo
     const esperando = this.paso < RECORRIDO.length && !this.guiaEnMarcha && !this.contando
-    this.aviso.setVisible(esperando).setPosition(this.guia.x, this.guia.y - 26 + Math.sin(this.time.now / 150) * 1.5)
+    this.aviso.setVisible(esperando).setPosition(this.guia.x, this.guia.y - 34 + Math.sin(this.time.now / 150) * 1.5)
     if (esperando && !pausado && Phaser.Math.Distance.Between(j.x, j.y, this.guia.x, this.guia.y) < 30) this.contarPaso()
   }
 }

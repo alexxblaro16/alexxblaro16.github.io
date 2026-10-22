@@ -144,7 +144,7 @@ a { color: var(--verde); }
 .cuadro h2 { font-family: var(--pixel); font-size: 13px; color: var(--verde); margin: 0; text-align: center; }
 .cuadro p { margin: 0; font-size: 22px; }
 .creador { max-height: calc(100vh - 32px); overflow: auto; }
-#vista { width: 96px; height: 144px; image-rendering: pixelated; align-self: center; background: #4f9e4a; border: 3px solid var(--linea); }
+#vista { width: 108px; height: 144px; image-rendering: pixelated; align-self: center; background: #4f9e4a; border: 3px solid var(--linea); }
 .fila-creador { display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 10px; }
 .fila-creador > span { font-family: var(--pixel); font-size: 9px; color: var(--suave); }
 .fila-creador > div { display: flex; flex-wrap: wrap; gap: 6px; }
