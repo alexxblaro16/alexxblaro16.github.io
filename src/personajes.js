@@ -20,7 +20,7 @@ function colores(r) {
     T, t: oscurecer(T, 0.8), Tl: aclarar(T, 0.2), I: r.interior || '#d9dde2',
     P, p: oscurecer(P, 0.75), Pl: aclarar(P, 0.15),
     B, b: r.zapatillas ? oscurecer(B, 0.8) : '#e6e8ec', Bo: oscurecer(B, 0.78),
-    E0: r.ojos || '#1d1820', E: r.ojos || '#4a3326', G: '#3a3d46', A: '#3dd9ff', metal: '#8d98a5',
+    E0: r.ojos || '#1d1820', E: r.ojos || '#4a3326', G: typeof r.gafas === 'string' ? r.gafas : '#3a3d46', A: '#3dd9ff', metal: '#8d98a5',
   }
 }
 
@@ -175,6 +175,24 @@ const PELO = {
       p(15, 5, 3, 9, C.h); p(11, 3, 1, 2, C.h)
     },
   },
+  // Melena lisa con raya al medio hasta los hombros
+  larga: {
+    frente(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 3], [6, 7, 5, 1], [6, 8, 3, 1], [13, 7, 5, 1], [15, 8, 3, 1], [4, 6, 3, 12], [17, 6, 3, 12], [5, 18, 2, 1], [17, 18, 2, 1]])
+      p(8, 3, 3, 1, C.L); p(7, 4, 2, 1, C.L); p(14, 4, 2, 1, C.L); p(5, 9, 1, 7, C.L)
+      p(11, 3, 1, 4, C.h); p(6, 9, 1, 9, C.h); p(17, 9, 1, 9, C.h); p(19, 8, 1, 10, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 3], [5, 7, 4, 1], [5, 8, 2, 1], [12, 7, 7, 11], [13, 18, 5, 1]])
+      p(8, 3, 3, 1, C.L); p(13, 9, 1, 8, C.L)
+      p(16, 4, 3, 14, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [4, 7, 16, 11], [5, 18, 14, 1]])
+      p(9, 3, 3, 1, C.L); p(7, 8, 2, 9, C.L)
+      p(11, 3, 2, 15, C.h); p(17, 7, 3, 11, C.h)
+    },
+  },
   rapado: {
     frente(p, C) {
       mechones(p, C, [[8, 3, 8, 1], [6, 4, 12, 3], [6, 7, 1, 2], [17, 7, 1, 2]], true)
@@ -305,7 +323,11 @@ function brazos(p, C, dir, paso, r) {
 
 function accesorios(p, C, dir, r) {
   if (r.barba && dir !== 'espalda') {
-    if (dir === 'lado') { p(7, 13, 6, 2, C.barba); p(8, 15, 5, 1, C.barba); p(11, 11, 2, 2, C.barba) }
+    // barba poco poblada: puntos sueltos por la mandíbula y un bigote fino
+    const rala = mezclar(C.barba, C.S, 0.35)
+    if (r.barba === 'rala' && dir === 'lado') { for (const [x, y] of [[7, 13], [9, 13], [8, 14], [10, 14], [12, 13], [11, 12], [8, 15], [10, 15], [12, 15]]) p(x, y, 1, 1, rala) }
+    else if (r.barba === 'rala') { for (const [x, y] of [[6, 12], [17, 12], [7, 13], [16, 13], [8, 14], [15, 14], [9, 15], [14, 15], [11, 15], [12, 15], [10, 13], [13, 13]]) p(x, y, 1, 1, rala) }
+    else if (dir === 'lado') { p(7, 13, 6, 2, C.barba); p(8, 15, 5, 1, C.barba); p(11, 11, 2, 2, C.barba) }
     else if (r.barba === 'perilla') { p(10, 13, 4, 1, C.barba); p(10, 15, 4, 1, C.barba); p(11, 14, 2, 1, C.barba) }
     else { p(6, 12, 1, 2, C.barba); p(17, 12, 1, 2, C.barba); p(7, 13, 10, 2, C.barba); p(8, 15, 8, 1, C.barba) }
     if (dir === 'lado') p(7, 14, 2, 1, C.m); else p(11, 14, 2, 1, C.m)
