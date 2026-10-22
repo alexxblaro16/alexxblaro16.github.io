@@ -154,7 +154,7 @@ export default class Mundo extends Phaser.Scene {
       const clave = `npc-${i}`
       crearPersonaje(this, clave, p.rasgos)
       const s = this.physics.add.sprite(p.x * T, p.y * T, clave, 0).setOrigin(0.5, 1).setImmovable(true)
-      s.body.setSize(10, 6).setOffset(3, 10)
+      s.body.setSize(10, 6).setOffset(3, 18)
       s.setInteractive({ useHandCursor: true })
       s.on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointermove', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
@@ -169,7 +169,7 @@ export default class Mundo extends Phaser.Scene {
 
     // Alejandro, el guía
     this.guia = this.physics.add.sprite(12 * T, (CAMINO + 0.5) * T, 'alejandro', 0).setOrigin(0.5, 1)
-    this.guia.body.setSize(10, 6).setOffset(3, 10)
+    this.guia.body.setSize(10, 6).setOffset(3, 18)
     this.guia.setInteractive({ useHandCursor: true })
     this.guia.on('pointerover', (ptr) => etiqueta('Alejandro', ptr.x, ptr.y))
     this.guia.on('pointerout', () => etiqueta(null))
@@ -181,7 +181,7 @@ export default class Mundo extends Phaser.Scene {
 
     // DANTE P.W., la IA con cara de robot de Dante
     this.dantePW = this.physics.add.sprite(140 * T, (CAMINO + 2.6) * T, 'dante_pw', 0).setOrigin(0.5, 1)
-    this.dantePW.body.setSize(10, 6).setOffset(3, 10)
+    this.dantePW.body.setSize(10, 6).setOffset(3, 18)
     this.dantePW.setInteractive({ useHandCursor: true }).on('pointerover', (ptr) => etiqueta('DANTE P.W.', ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     this.dantePWsigue = false
   }
@@ -192,7 +192,7 @@ export default class Mundo extends Phaser.Scene {
     crearPersonaje(this, 'jugador', p.rasgos)
     crearAnimaciones(this, 'jugador')
     this.jugador = this.physics.add.sprite(8 * T, (CAMINO + 1.2) * T, 'jugador', 0).setOrigin(0.5, 1)
-    this.jugador.body.setSize(10, 6).setOffset(3, 10)
+    this.jugador.body.setSize(10, 6).setOffset(3, 18)
     this.jugador.setCollideWorldBounds(true)
     this.physics.add.collider(this.jugador, this.solidos)
     this.jugador.setInteractive().on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
@@ -315,7 +315,7 @@ export default class Mundo extends Phaser.Scene {
 
     // «!» encima de Alejandro cuando te está esperando para contarte algo
     const esperando = this.paso < RECORRIDO.length && !this.guiaEnMarcha && !this.contando
-    this.aviso.setVisible(esperando).setPosition(this.guia.x, this.guia.y - 17 + Math.sin(this.time.now / 150) * 1.5)
+    this.aviso.setVisible(esperando).setPosition(this.guia.x, this.guia.y - 26 + Math.sin(this.time.now / 150) * 1.5)
     if (esperando && !pausado && Phaser.Math.Distance.Between(j.x, j.y, this.guia.x, this.guia.y) < 30) this.contarPaso()
   }
 }

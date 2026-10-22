@@ -55,12 +55,12 @@ const amigos = (lista, x0, y0) => lista.map(([nombre, pelo, ropa, extra = {}], i
 }))
 
 export const PERSONAJES = [
-  { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'rapado', colorPelo: '#d29a7a', piel: '#e8b48f', ropa: '#1f2430', pantalon: '#3a4a66' }, vida: 'pedro' },
+  { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'calvo', colorPelo: '#6a5a50', piel: '#e8b48f', ropa: '#1f2430', pantalon: '#3a4a66' }, vida: 'pedro' },
   { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'largo', colorPelo: '#5a3a24', piel: '#d79d76', ropa: '#f2b8c6', pantalon: '#9fb4d0' }, vida: 'marta' },
   { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'corto', colorPelo: '#6b4a2e', piel: '#f0c6a2', ropa: '#4a4448', pantalon: '#c9c3b5', zapatillas: '#f4f4f4' }, vida: 'dante' },
   ...amigos([
     ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, pantalon: '#8fa3bf' }],
-    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'largo' }],
+    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena' }],
     ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo' }],
     ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a' }],
     ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado' }],
@@ -76,8 +76,8 @@ export const PERSONAJES = [
     ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: true }],
     ['Iván', '#5a4030', '#eef1f4', { piel: '#ecb68f' }],
     ['Pablo', '#7a4a26', '#2b2f38'],
-    ['Rodrigo', '#141212', '#eef1f4', { gafas: true, piel: '#f0c8a0' }],
-    ['Andrea', '#141212', '#e8c8c0', { pelo: 'rizado', gafas: true, piel: '#d9a07a' }],
+    ['Rodrigo', '#141212', '#eef1f4', { piel: '#f0c8a0' }],
+    ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a' }],
     ['Gabriel', '#4a3020', '#1f2a44', { piel: '#ecb68f' }],
   ], 100, 21.4),
 ]
