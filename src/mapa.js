@@ -4,10 +4,12 @@
 export const ANCHO = 172
 export const ALTO = 34
 export const CAMINO = 19 // fila del camino principal (ocupa 19 y 20)
-export const CAMINO_INICIO = 15 // el camino empieza detrás de la Puerta de la Villa
+export const CAMINO_INICIO = 3 // el camino recorre el pueblo de punta a punta
 
 // Edificios: x es el centro, «base» es la fila donde apoya. «vida» = diálogo de la historia; «zona» = abre un panel
 export const EDIFICIOS = [
+  { clave: 'casa_pueblo', x: 5, base: 18 }, { clave: 'casa_pueblo_2', x: 10, base: 18 }, { clave: 'casa_pueblo', x: 15.5, base: 18 },
+  { clave: 'edificio_madrid', x: 53, base: 18 }, { clave: 'edificio_madrid_2', x: 100.2, base: 18 },
   { clave: 'reblan', x: 29, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', vida: 'reblan' },
   { clave: 'soportales', x: 36, base: 13.5, letrero: 'PLAZA MAYOR' },
   { clave: 'casa_plaza_3', x: 21, base: 13.5 }, { clave: 'casa_plaza_1', x: 26.5, base: 13.5 }, { clave: 'casa_plaza_2', x: 46.5, base: 13.5 },
@@ -37,7 +39,9 @@ export const OBJETOS = [
   { clave: 'papelera', x: 41.2, base: 16.4 }, { clave: 'macetero', x: 22.5, base: 18.2 }, { clave: 'macetero', x: 22.5, base: 24.3 }, { clave: 'macetero', x: 44.5, base: 24 },
   { clave: 'puesto', x: 41.5, base: 23.6 },
   // Guiño a Bob Esponja junto al agua
-  { clave: 'casa_pina', x: 8.5, base: 25, vida: 'pina' },
+  { clave: 'casa_cabeza', x: 4.5, base: 25, vida: 'cabeza' }, { clave: 'casa_pina', x: 8.5, base: 25, vida: 'pina' }, { clave: 'casa_roca', x: 9.2, base: 30.6, vida: 'roca' },
+  { clave: 'palmera', x: 11, base: 23.5 }, { clave: 'palmera', x: 2.6, base: 31.5 },
+  { clave: 'quiosco', x: 89, base: 18.2 },
   // Madrid
   { clave: 'farola_moderna', x: 60.5, base: 18.2 }, { clave: 'farola_moderna', x: 77.2, base: 18.2 }, { clave: 'farola_moderna', x: 97, base: 18.2 },
   { clave: 'aparcabicis', x: 74, base: 18.3 }, { clave: 'coche_azul', x: 59, base: 23.6 }, { clave: 'coche_rojo', x: 74.5, base: 23.6 }, { clave: 'coche_blanco', x: 93, base: 23.6 },
@@ -60,6 +64,7 @@ export const SUELOS = [
   { tipo: 'piedra', x0: 20, x1: 47, y0: 13, y1: 20 }, { tipo: 'piedra', x0: 24, x1: 47, y0: 21, y1: 26 }, // Plaza Mayor
   { tipo: 'baldosa', x0: 100, x1: 130, y0: 21, y1: 21 },
   { tipo: 'asfalto', x0: 62, x1: 96, y0: CAMINO, y1: CAMINO + 1 }, // Madrid
+  { tipo: 'arena', x0: 2, x1: 11, y0: 21, y1: 31 }, // rincón de la piña
   { tipo: 'agua', x0: 3, x1: 6, y0: 26, y1: 30 },
 ]
 // Caminos verticales hacia los edificios de abajo

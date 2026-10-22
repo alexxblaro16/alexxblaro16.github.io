@@ -74,6 +74,10 @@ export function crearSuelos(scene) {
       px(ctx, 0, 0, '#3576d6', 16, 16); px(ctx, 0, 0, '#3d82e6', 16, 8)
       px(ctx, 2, 4, '#9cc6ff', 4, 1); px(ctx, 3, 3, '#cfe3ff', 2, 1); px(ctx, 9, 11, '#9cc6ff', 4, 1); px(ctx, 10, 10, '#cfe3ff', 2, 1)
     },
+    arena: (ctx, r) => {
+      px(ctx, 0, 0, '#ecd9a0', 16, 16)
+      for (let i = 0; i < 14; i++) px(ctx, (r() * 16) | 0, (r() * 16) | 0, r() > 0.5 ? '#f6e7bd' : '#d9c184')
+    },
     cesped: (ctx) => { px(ctx, 0, 0, '#3f9e4f', 16, 16); px(ctx, 0, 0, '#46a957', 16, 8) },
     baldosa: (ctx) => { px(ctx, 0, 0, '#d8dde3', 16, 16); px(ctx, 1, 1, '#e4e8ed', 14, 6); px(ctx, 0, 0, '#bfc6ce', 16, 1); px(ctx, 0, 0, '#bfc6ce', 1, 16); px(ctx, 8, 0, '#bfc6ce', 1, 16) },
   }

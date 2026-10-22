@@ -60,5 +60,5 @@ Al terminar el recorrido se puede explorar libremente. Al visitar todas las zona
 ## Secretos
 - Código Konami (↑↑↓↓←→←→ B A): todo pasa a verde de terminal.
 - DANTE P.W. te sigue si le hablas (y deja de seguirte si le vuelves a hablar).
-- Casa-piña junto al agua (guiño a Bob Esponja), murciélago en la veleta (Batman) y mochila con una araña (Spider-Man).
+- Rincón de arena junto al agua con la casa-piña, la casa-roca y la casa-cabeza de piedra (guiños a Bob Esponja), murciélago en la veleta (Batman) y mochila con una araña (Spider-Man).
 - Bloque de tierra en Villalpando.

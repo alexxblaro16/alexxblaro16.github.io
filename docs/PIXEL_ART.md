@@ -51,7 +51,7 @@ que más llevan. A 24 × 32 no se ve una cara, pero sí lo que hace reconocible 
   - **IES Tierra de Campos**, **MEDAC Albalá** y **UDIT**: los materiales y colores de cada fachada (ladrillo y revoco,
     paneles plateados y pancarta azul, cristal y terraza con pérgola).
 - El decorado (bancos, farolas, coches, maceteros, el puesto de fruta, el aparcabicis…) son funciones pequeñas.
-- Los guiños a Bob Esponja, Batman y Spider-Man son formas sencillas (una casa-piña, un murciélago en una veleta,
+- Los guiños a Bob Esponja, Batman y Spider-Man son formas sencillas (una casa-piña, una roca con veleta, una cabeza de piedra, un murciélago en una veleta,
   una telaraña y una mochila roja y azul), homenajes y no copias de los personajes.
 
 ## Cómo añadir algo

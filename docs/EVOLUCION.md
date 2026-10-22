@@ -46,6 +46,12 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
   flequillo) y DANTE P.W. lleva el flequillo de mi hermano.
 - **Guiños** a Bob Esponja (en el DAM hice un juego suyo en Unity), Batman y Spider-Man (la W y la P de DANTE P.W.).
 
+### 6. El rincón de arena y más pueblo
+- Un rincón de arena junto al agua con tres casas de guiño a Bob Esponja: la piña, la roca con veleta y la cabeza
+  de piedra, con palmeras.
+- Más casas en el pueblo a lo largo del camino y edificios nuevos en Madrid, con un quiosco.
+- El CV (en sus seis versiones) y el perfil de GitHub enlazan ya a esta web.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

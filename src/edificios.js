@@ -83,6 +83,10 @@ function casa(ctx, w, h, o) {
 }
 
 const GENERICOS = {
+  casa_pueblo: [48, 48, { pared: '#ecdcba', tejado: '#b4553a', pisos: 2, cruz: true, macetas: true, farol: true }],
+  casa_pueblo_2: [48, 48, { pared: '#f2efe6', tejado: '#9b4a35', pisos: 2, cruz: true, marco: '#3c7a4a', macetas: true }],
+  edificio_madrid: [48, 64, { pared: '#b8735a', tejado: '#5b2f25', pisos: 3, ladrillo: true, plano: true, macetas: true }],
+  edificio_madrid_2: [48, 64, { pared: '#d9d2c4', tejado: '#6a6f78', pisos: 3, plano: true, cristal: '#9fd3ff' }],
   piso: [48, 64, { pared: '#e3cfa6', tejado: '#9b4a35', pisos: 3, plano: true, cruz: true, macetas: true }],
   residencia: [96, 72, { pared: '#c96b4f', tejado: '#5b2f25', pisos: 4, ladrillo: true, plano: true, puertaAncha: true, macetas: true }],
   anexia: [48, 48, { pared: '#2b2f38', tejado: '#3d7be0', pisos: 2, plano: true, cristal: '#7fc8ff', marco: '#4a5160' }],
@@ -535,6 +539,62 @@ function mochilaArana() {
   return c
 }
 
+// Casa-roca con una veleta (guiño a la casa de Patricio)
+function casaRoca() {
+  const [c, ctx] = lienzo(40, 30)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(19, 0, 1, 9, '#5b6068'); p(15, 2, 9, 1, '#5b6068'); p(14, 1, 2, 3, '#8a919a'); p(23, 1, 2, 3, '#8a919a')
+  const filas = [[14, 26], [10, 30], [7, 33], [5, 35], [3, 37], [2, 38], [1, 39], [1, 39], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40], [0, 40]]
+  filas.forEach(([a, b], i) => {
+    const y = 9 + i
+    p(a, y, b - a, 1, '#1b1f27'); if (b - a > 2) p(a + 1, y, b - a - 2, 1, '#9a6a44')
+    if (i > 1 && b - a > 6) { p(a + 2, y, 4, 1, '#b8875c'); p(b - 6, y, 4, 1, '#7a5034') }
+  })
+  p(9, 13, 6, 3, '#b8875c'); p(26, 20, 5, 2, '#7a5034'); p(14, 22, 3, 2, '#7a5034')
+  p(0, 28, 40, 2, 'rgba(0,0,0,0.18)')
+  return c
+}
+
+// Casa con forma de cabeza de piedra (guiño a la casa de Calamardo)
+function casaCabeza() {
+  const [c, ctx] = lienzo(30, 46)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  const piedra = '#7f90a6', luz = '#a3b2c4', sombra = '#5e6d82'
+  p(5, 0, 20, 46, '#1b1f27'); p(4, 3, 22, 43, '#1b1f27'); p(6, 1, 18, 44, piedra); p(5, 4, 20, 41, piedra)
+  p(5, 4, 3, 41, luz); p(22, 4, 3, 41, sombra)
+  p(1, 14, 4, 12, '#1b1f27'); p(2, 15, 3, 10, piedra); p(25, 14, 4, 12, '#1b1f27'); p(25, 15, 3, 10, sombra) // orejas
+  p(6, 11, 18, 2, sombra) // ceja
+  for (const x of [8, 17]) { p(x, 14, 6, 6, '#1b1f27'); p(x + 1, 15, 4, 4, '#7fc8ff'); p(x + 1, 15, 1, 1, '#d6ecfa') }
+  p(13, 14, 4, 16, sombra); p(14, 14, 2, 15, luz) // nariz larga
+  p(11, 34, 8, 12, '#1b1f27'); p(12, 35, 6, 11, '#6b4a2b'); p(16, 40, 1, 1, '#f2c200')
+  return c
+}
+
+function palmera() {
+  const [c, ctx] = lienzo(28, 44)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(6, 42, 16, 2, 'rgba(0,0,0,0.18)')
+  for (let y = 12; y < 43; y++) { const x = 12 + Math.round(Math.sin(y / 9) * 2); p(x, y, 4, 1, (y % 4 < 2) ? '#9a6a3a' : '#7a5232'); p(x - 1, y, 1, 1, '#1b1f27'); p(x + 4, y, 1, 1, '#1b1f27') }
+  const hoja = (pts) => pts.forEach(([x, y]) => { p(x, y, 3, 2, '#2f8a3a'); p(x, y, 3, 1, '#5cbf5f') })
+  hoja([[13, 10], [10, 9], [7, 9], [4, 10], [2, 12], [1, 14]])
+  hoja([[14, 10], [17, 9], [20, 9], [23, 10], [25, 12], [26, 14]])
+  hoja([[13, 9], [12, 6], [11, 3], [9, 1]]); hoja([[14, 9], [16, 6], [18, 4], [20, 3]])
+  hoja([[12, 11], [9, 13], [7, 16]]); hoja([[15, 11], [18, 13], [20, 16]])
+  p(12, 10, 4, 3, '#6b4a2b'); p(12, 12, 2, 2, '#4a3220')
+  return c
+}
+
+function quiosco() {
+  const [c, ctx] = lienzo(32, 34)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 0, 30, 6, '#1b1f27'); p(2, 1, 28, 4, '#2f7d4a'); p(2, 1, 28, 1, '#4fa56a')
+  p(3, 6, 26, 26, '#1b1f27'); p(4, 6, 24, 26, '#3c9a5a'); p(4, 6, 2, 26, '#4fa56a')
+  p(6, 9, 20, 10, '#f4f1ea')
+  for (let x = 7; x < 25; x += 4) { p(x, 10, 3, 4, ['#e05a5a', '#3d7be0', '#f2b33d', '#a970ff', '#2fbf71'][((x - 7) / 4) % 5]); p(x, 15, 3, 3, '#cfd5db') }
+  p(6, 21, 20, 2, '#2b2f38'); p(8, 24, 16, 8, '#2f6f45'); p(0, 32, 32, 2, 'rgba(0,0,0,0.18)')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -545,7 +605,7 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, veleta, telarana, mochila_arana: mochilaArana,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, veleta, telarana, mochila_arana: mochilaArana,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
 }

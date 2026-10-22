@@ -144,7 +144,7 @@ export default class Mundo extends Phaser.Scene {
         img.setDepth(o.base * T + 40) // pegado a la pared de un edificio
       } else if (o.clave === 'arbusto') {
         // se puede pisar
-      } else if (['farola', 'farola_moderna', 'veleta', 'papelera'].includes(o.clave)) {
+      } else if (['farola', 'farola_moderna', 'veleta', 'papelera', 'palmera'].includes(o.clave)) {
         this.solido(o.x * T - 3, o.base * T - 5, 6, 5)
       } else if (o.clave !== 'cartel' && o.clave !== 'bloque') {
         this.solido(o.x * T - img.width / 2 + 2, o.base * T - img.height / 2, img.width - 4, img.height / 2)
