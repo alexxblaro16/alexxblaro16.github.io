@@ -117,12 +117,14 @@ export function crearPersonaje(scene, clave, rasgos) {
   const [c, ctx] = lienzo(48, 64)
   const paleta = {
     O: '#1b1f27', H: rasgos.colorPelo, S: rasgos.piel, E: rasgos.ojos || '#1b1f27', T: rasgos.ropa,
-    D: oscurecer(rasgos.ropa), P: rasgos.pantalon || '#2c3e66', B: '#141414', G: '#1b1f27', A: '#3dd9ff',
+    D: oscurecer(rasgos.ropa), P: rasgos.pantalon || '#2c3e66', B: rasgos.zapatillas || '#141414', G: '#1b1f27', A: '#3dd9ff',
   }
   const filas = [['abajo', false], ['izquierda', false], ['izquierda', true], ['arriba', false]]
   filas.forEach(([dir, espejo], fila) => {
     for (let paso = 0; paso < 3; paso++) matriz(ctx, fotograma(dir, paso, rasgos), paleta, paso * 16, fila * 16, espejo)
   })
+  // Cadena plateada al cuello (de frente)
+  if (rasgos.cadena) for (let paso = 0; paso < 3; paso++) { px(ctx, paso * 16 + 6, 9, '#c9d1d9', 4, 1); px(ctx, paso * 16 + 7, 10, '#c9d1d9', 2, 1) }
   // Portátil con pegatinas bajo el brazo (solo Alejandro)
   if (rasgos.portatil) {
     for (let paso = 0; paso < 3; paso++) {

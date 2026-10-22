@@ -8,7 +8,9 @@ import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, tecl
 import { sfx } from '../sonido.js'
 
 const VELOCIDAD = 90
-const ALEJANDRO = { pelo: 'corto', colorPelo: '#3b2a20', piel: '#f2c29b', ropa: '#eef1f4', pantalon: '#2c3e66', portatil: true }
+// Sacado de sus fotos: pelo oscuro ondulado, piel morena clara, camiseta blanca, cadena plateada,
+// vaqueros anchos y zapatillas blancas, y el portátil con pegatinas
+const ALEJANDRO = { pelo: 'rizado', colorPelo: '#241812', piel: '#dfa47e', ropa: '#eef1f4', pantalon: '#3a4a66', zapatillas: '#f4f4f4', cadena: true, portatil: true }
 const DANTE_PW = { pelo: 'corto', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', antena: true }
 
 const frases = (clave) => HISTORIA[estado.idioma][clave] || []
