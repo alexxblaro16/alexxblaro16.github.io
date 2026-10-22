@@ -41,6 +41,12 @@ Cada NPC guarda su sitio de origen y un radio. Cada pocos segundos elige un punt
 anda hasta él con su animación y espera. Si el jugador se acerca, se para y le mira, para que se pueda hablar con él.
 El punto de interacción de los NPC con diálogo se calcula con *getters*, así sigue al personaje allá donde vaya.
 
+## Tecla «E»
+
+`cercano()` devuelve lo más próximo con lo que se puede interactuar, con la misma prioridad que `interactuar()`
+(Jerry, DANTE P.W., el guía y después edificios, objetos y NPC). Encima aparece una tecla dibujada en píxeles
+(«E», o «A» en pantallas táctiles) que flota; se oculta durante los diálogos y cuando el guía ya muestra su «!».
+
 ## Recorrido guiado
 
 El guía (Alejandro) espera con un «!» encima en cada parada. Cuando el jugador se acerca, cuenta su parte

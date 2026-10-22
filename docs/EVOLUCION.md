@@ -55,6 +55,8 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Las banderas de España y Colombia ondean junto a la casa de mi familia (mi madre es colombiana). Mi madre lleva
   flequillo de lado, puntas más claras, labios pintados y bolso cruzado; Dante, flequillo desfilado con mechones claros;
   Rodrigo, pelo liso con raya al medio y flequillo de cortina.
+- Cuando te acercas a algo con lo que se puede interactuar (personas, edificios, objetos, Jerry, DANTE P.W.) aparece
+  encima una tecla «E» que flota; en el móvil sale «A», el botón táctil.
 
 ## Ideas para más adelante
 

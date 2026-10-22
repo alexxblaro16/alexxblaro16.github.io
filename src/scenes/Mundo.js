@@ -6,6 +6,7 @@ import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD } from '../ui.js'
 import { sfx } from '../sonido.js'
+import { lienzo, px, texto } from '../pixel.js'
 
 const VELOCIDAD = 90
 // Sacado de sus fotos: pelo oscuro ondulado, piel morena clara, camiseta blanca, cadena plateada,
@@ -36,6 +37,16 @@ export default class Mundo extends Phaser.Scene {
     this.teclas = this.input.keyboard.addKeys('W,A,S,D,UP,DOWN,LEFT,RIGHT,E,SPACE,ENTER')
     this.aviso = this.add.text(0, 0, '!', { fontFamily: '"Press Start 2P"', fontSize: '8px', color: '#f2c200', resolution: 4 })
       .setOrigin(0.5, 1).setDepth(10000).setVisible(false)
+    // Tecla «E» (o «A» en el móvil) encima de lo que tienes cerca y puedes usar
+    for (const letra of ['E', 'A']) {
+      if (this.textures.exists(`tecla_${letra}`)) continue
+      const [c, ctx] = lienzo(11, 12)
+      px(ctx, 0, 0, '#1b1f27', 11, 12); px(ctx, 1, 1, '#f4f4f0', 9, 8); px(ctx, 1, 9, '#aeb6c0', 9, 2)
+      texto(ctx, letra, 4, 3, '#1b1f27')
+      this.textures.addCanvas(`tecla_${letra}`, c)
+    }
+    const tactil = this.sys.game.device.input.touch && !this.sys.game.device.os.desktop
+    this.tecla = this.add.image(0, 0, tactil ? 'tecla_A' : 'tecla_E').setOrigin(0.5, 1).setDepth(10001).setVisible(false)
 
     // En la portada la cámara recorre el mapa despacio, de fondo del menú
     this.cameras.main.scrollX = 0
@@ -283,6 +294,19 @@ export default class Mundo extends Phaser.Scene {
   }
 
   // ------------------------------------------------------------------------------------------ interacción
+  // Lo más cercano con lo que se puede interactuar (mismo orden de prioridad que interactuar)
+  cercano() {
+    const j = this.jugador
+    const cerca = (o, r) => Phaser.Math.Distance.Between(j.x, j.y, o.x, o.y) < r
+    if (cerca(this.jerry, 24)) return { x: this.jerry.x, y: this.jerry.y - 18 }
+    if (cerca(this.dantePW, 22)) return { x: this.dantePW.x, y: this.dantePW.y - 34 }
+    if (cerca(this.guia, 24) && !this.guiaEnMarcha) return { x: this.guia.x, y: this.guia.y - 34 }
+    const cosa = this.interactivos.find((o) => cerca(o, o.radio))
+    if (!cosa) return null
+    // los NPC tienen getters (se mueven); los edificios y objetos, un punto fijo junto a la puerta
+    return { x: cosa.x, y: cosa.y - (Object.getOwnPropertyDescriptor(cosa, 'x')?.get ? 34 : 26) }
+  }
+
   async interactuar() {
     const j = this.jugador
     const cerca = (o, r = 22) => Phaser.Math.Distance.Between(j.x, j.y, o.x, o.y) < r
@@ -382,5 +406,9 @@ export default class Mundo extends Phaser.Scene {
     const esperando = this.paso < RECORRIDO.length && !this.guiaEnMarcha && !this.contando
     this.aviso.setVisible(esperando).setPosition(this.guia.x, this.guia.y - 34 + Math.sin(this.time.now / 150) * 1.5)
     if (esperando && !pausado && Phaser.Math.Distance.Between(j.x, j.y, this.guia.x, this.guia.y) < 30) this.contarPaso()
+
+    const objetivo = pausado ? null : this.cercano()
+    this.tecla.setVisible(!!objetivo && !esperando)
+    if (objetivo) this.tecla.setPosition(Math.round(objetivo.x), Math.round(objetivo.y + Math.sin(this.time.now / 180) * 1.5))
   }
 }
