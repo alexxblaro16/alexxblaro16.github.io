@@ -139,6 +139,10 @@ export default class Mundo extends Phaser.Scene {
         img.setDepth(-500)
       } else if (o.clave === 'laguna') {
         this.laguna(img, o)
+      } else if (o.clave === 'banderas') {
+        let f = 0
+        this.time.addEvent({ delay: 400, loop: true, callback: () => { f = 1 - f; img.setTexture(f ? 'banderas_1' : 'banderas') } })
+        this.solido(o.x * T - 18, o.base * T - 4, 36, 4)
       } else if (o.clave === 'muelle') {
         img.setDepth(-480) // se anda por encima
       } else if (o.encima) {

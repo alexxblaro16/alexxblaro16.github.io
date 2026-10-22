@@ -33,6 +33,7 @@ export const OBJETOS = [
   { clave: 'muralla', x: 13, base: 27.5 }, { clave: 'muralla', x: 25, base: 27.5 },
   // Plaza Mayor
   { clave: 'fuente', x: 32, base: 15.5, solido: true },
+  { clave: 'banderas', x: 49.4, base: 18.3, vida: 'banderas' },
   { clave: 'furgoneta', x: 34.6, base: 18.4 },
   { clave: 'farola', x: 24.5, base: 17.6 }, { clave: 'farola', x: 41.5, base: 17.6 }, { clave: 'farola', x: 28, base: 24.2 },
   { clave: 'banco', x: 36.2, base: 16.4 }, { clave: 'banco', x: 39.6, base: 16.4 }, { clave: 'banco', x: 30.5, base: 23.4 },
@@ -81,8 +82,8 @@ const amigos = (lista, x0, y0) => lista.map(([nombre, pelo, ropa, extra = {}], i
 
 export const PERSONAJES = [
   { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'calvo', colorPelo: '#9a8a80', piel: '#ebb995', ropa: '#1f2430', pantalon: '#3a4a66', robusto: true, sonrisa: true, zapatillas: '#e9ecef' }, vida: 'pedro' },
-  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'media', colorPelo: '#5a3a24', piel: '#d49a72', ropa: '#f2b8c6', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#7aa0d0', pantalon: '#a9bfdc', anchos: true, sonrisa: true }, vida: 'marta' },
-  { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'flequillo', colorPelo: '#7a5236', piel: '#f0c6a2', ropa: '#3a3638', pantalon: '#cfc8b8', anchos: true, zapatillas: '#f4f4f4' }, vida: 'dante' },
+  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#d49a72', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
+  { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', logo: '#e8e2d6' }, vida: 'dante' },
   ...amigos([
     ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true }],
     ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera' }],
@@ -101,7 +102,7 @@ export const PERSONAJES = [
     ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: 'perilla' }],
     ['Iván', '#5a4030', '#eef1f4', { piel: '#ecb68f', zapatillas: '#f4f4f4' }],
     ['Pablo', '#7a4a26', '#2b2f38'],
-    ['Rodrigo', '#141212', '#eef1f4', { pelo: 'flequillo', piel: '#f3d2ae', ojosFinos: true }],
+    ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', logo: '#3a7bd5' }],
     ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a' }],
     ['Gabriel', '#4a3020', '#1f2a44', { piel: '#ecb68f', logo: '#7fc8ff', zapatillas: '#f4f4f4' }],
   ], 100, 21.4),

@@ -643,6 +643,26 @@ function muelle() {
   return c
 }
 
+// Banderas de España y Colombia (la madre de Alejandro es colombiana). Dos fotogramas para que ondeen.
+function banderas(fotograma) {
+  return () => {
+    const [c, ctx] = lienzo(40, 34)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    const bandera = (x0, franjas) => {
+      p(x0, 2, 1, 30, '#cfd5db'); p(x0 + 1, 2, 1, 30, '#8a919a'); p(x0, 0, 2, 2, '#f2c200'); p(x0 - 1, 31, 4, 3, '#5b6068')
+      for (let x = 0; x < 15; x++) {
+        const onda = Math.round(Math.sin((x + fotograma * 3) / 2.4) * 1.2)
+        let y = 3 + onda
+        for (const [alto, color] of franjas) { p(x0 + 2 + x, y, 1, alto, onda > 0 ? oscurecer(color, 0.86) : color); y += alto }
+        p(x0 + 2 + x, y, 1, 1, 'rgba(0,0,0,0.15)')
+      }
+    }
+    bandera(1, [[3, '#c8202a'], [6, '#f2c200'], [3, '#c8202a']]) // España
+    bandera(20, [[6, '#f6d01a'], [3, '#1f3c9a'], [3, '#c8202a']]) // Colombia
+    return c
+  }
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -653,7 +673,7 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, veleta, telarana, mochila_arana: mochilaArana,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), veleta, telarana, mochila_arana: mochilaArana,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
 }
