@@ -60,6 +60,22 @@ por los puntos `via`. El progreso se guarda en `localStorage`, así que al volve
 - El modo clásico es una página normal con la misma información, para reclutadores con prisa.
 - En móvil aparece una cruceta táctil que escribe en `teclasTactiles`, que la escena lee igual que el teclado.
 
+## Creador de personaje (`pantallas.js`)
+
+Los rasgos del personaje son un objeto plano (`pelo`, `colorPelo`, `piel`, `ropa`, `tipo`, `pantalon`, `anchos`,
+`zapatillas`, `barba`, `gafas`, `cadena`, `sonrisa`) que se guarda tal cual en `localStorage` y que `crearPersonaje()`
+convierte en una hoja de sprites. El creador tiene tres pestañas (cuerpo, ropa y extras) para no mostrar todas las
+opciones a la vez, una vista previa de 144 × 192 que anda y se puede girar a las cuatro direcciones, y un botón que
+elige todo al azar. Cada cambio vuelve a dibujar la hoja, así que lo que se ve es exactamente lo que saldrá en el juego.
+
+## Ambiente
+
+- **Sombras**: un rectángulo semitransparente bajo cada edificio y objeto grande, por encima del suelo y por debajo de todo lo demás.
+- **Bordes del camino**: una línea más oscura y matas de hierba que se meten un poco, pintadas en el mismo canvas del suelo.
+- **Vida**: palomas que picotean (dos fotogramas) y se desplazan a saltos, medusas en la laguna, banderas que ondean y olas animadas.
+- **Niebla**: un `div` fijo (`#niebla`) con cuatro degradados radiales en las esquinas que respira despacio con CSS.
+  Va por encima del canvas y por debajo de la interfaz, no captura el ratón y se queda quieta con `prefers-reduced-motion`.
+
 ## Idiomas y estado
 
 `estado.js` guarda idioma, sonido, personaje, zonas visitadas y si el recorrido está hecho. Todos los textos
