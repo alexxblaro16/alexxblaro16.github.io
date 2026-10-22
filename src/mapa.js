@@ -47,26 +47,38 @@ export const SENDAS = [
   { x: 36, y0: 21, y1: 29 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 },
 ]
 
-// Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón)
-const amigos = (lista, x0, y0, colores) => lista.map(([nombre, pelo, ropa, extra = {}], i) => ({
+// Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
+// Rasgos sacados de sus fotos: pelo, piel, gafas, barba y la ropa que más llevan.
+const amigos = (lista, x0, y0) => lista.map(([nombre, pelo, ropa, extra = {}], i) => ({
   nombre, x: x0 + (i % 4) * 2.2 + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
-  rasgos: { pelo: extra.pelo || 'corto', colorPelo: pelo, piel: extra.piel || '#f2c29b', ropa, gafas: extra.gafas },
-  ...colores,
+  rasgos: { pelo: 'corto', piel: '#f2c29b', colorPelo: pelo, ropa, ...extra },
 }))
 
 export const PERSONAJES = [
-  { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'rapado', colorPelo: '#5a4a40', piel: '#e5a97f', ropa: '#2b5ea8', gafas: true }, vida: 'pedro' },
-  { nombre: 'Marta', x: 43.5, y: 19.2, rasgos: { pelo: 'largo', colorPelo: '#1d1a19', piel: '#c98a5e', ropa: '#e05a5a' }, vida: 'marta' },
-  { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'corto', colorPelo: '#3b2a20', piel: '#f2c29b', ropa: '#3d7be0' }, vida: 'dante' },
+  { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'rapado', colorPelo: '#d29a7a', piel: '#e8b48f', ropa: '#1f2430', pantalon: '#3a4a66' }, vida: 'pedro' },
+  { nombre: 'Martha', x: 43.5, y: 19.2, rasgos: { pelo: 'largo', colorPelo: '#5a3a24', piel: '#d79d76', ropa: '#f2b8c6', pantalon: '#9fb4d0' }, vida: 'marta' },
+  { nombre: 'Dante', x: 46.5, y: 19.2, rasgos: { pelo: 'corto', colorPelo: '#6b4a2e', piel: '#f0c6a2', ropa: '#4a4448', pantalon: '#c9c3b5', zapatillas: '#f4f4f4' }, vida: 'dante' },
   ...amigos([
-    ['Beatriz', '#7a4a26', '#ff7fb0', { pelo: 'largo' }], ['Natalia', '#1d1a19', '#a970ff', { pelo: 'largo' }],
-    ['Andrea', '#d8a64a', '#2fbf71', { pelo: 'largo' }], ['Hugo', '#3b2a20', '#f2b33d'], ['Jorge', '#1d1a19', '#e05a5a'],
+    ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, pantalon: '#8fa3bf' }],
+    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'largo' }],
+    ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo' }],
+    ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a' }],
+    ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado' }],
   ], 62, 21.5),
-  ...amigos([['Pablo', '#3b2a20', '#3d7be0'], ['Héctor', '#1d1a19', '#2b2f38']], 80, 21.5),
   ...amigos([
-    ['Manuel', '#1d1a19', '#e05a5a'], ['Carlos', '#3b2a20', '#3d7be0'], ['Gonzalo', '#7a4a26', '#2fbf71'], ['Hugo', '#3b2a20', '#f2b33d'],
-    ['Iván', '#1d1a19', '#f2b33d', { piel: '#e5a97f' }], ['Pablo', '#7a4a26', '#2b2f38'], ['Rodrigo', '#1d1a19', '#a970ff'],
-    ['Andrea', '#3b2a20', '#ff7fb0', { pelo: 'largo' }], ['Gabriel', '#3b2a20', '#eef1f4'],
+    ['Pablo', '#4a3020', '#1f2430', { pelo: 'rizado', cadena: true, pantalon: '#3a3f48' }],
+    ['Héctor', '#3b2a20', '#24324f', { pelo: 'rizado', piel: '#d9a07a' }],
+  ], 80, 21.5),
+  ...amigos([
+    ['Manuel', '#5a4030', '#1f2430', { pantalon: '#cfc6b0' }],
+    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f' }],
+    ['Gonzalo', '#2a1d16', '#3d7be0', { piel: '#e0a984', barba: true }],
+    ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: true }],
+    ['Iván', '#5a4030', '#eef1f4', { piel: '#ecb68f' }],
+    ['Pablo', '#7a4a26', '#2b2f38'],
+    ['Rodrigo', '#141212', '#eef1f4', { gafas: true, piel: '#f0c8a0' }],
+    ['Andrea', '#141212', '#e8c8c0', { pelo: 'rizado', gafas: true, piel: '#d9a07a' }],
+    ['Gabriel', '#4a3020', '#1f2a44', { piel: '#ecb68f' }],
   ], 100, 21.4),
 ]
 

@@ -18,7 +18,7 @@ Se cruza la **Puerta de la Villa de San Andrés** y se llega a la **Plaza Mayor*
 
 - **Reblán Electrodomésticos**, la tienda de su padre. **Pedro** en la puerta.
   > Esta es la tienda de mi padre. Aquí he trabajado todos los veranos, atendiendo y echando una mano con las averías.
-- **Su casa** (un bloque de pisos, sin dirección). **Marta**, su madre, y **Dante**, su hermano.
+- **Su casa** (un bloque de pisos, sin dirección). **Martha**, su madre, y **Dante**, su hermano.
   > Aquí vive mi familia. Mi hermano Dante tiene 15 años… y luego te presento a alguien que se parece mucho a él.
 - **IES Tierra de Campos**:
   > En el instituto hice mis primeras cosas con Scratch y un Arduino, en 3.º de la ESO, y me encantó.
