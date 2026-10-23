@@ -136,7 +136,7 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Letreros en los edificios de proyectos: Laboratorio, Sala de trofeos, Terminal y Correos.
 - La parada del autobús cuenta el viaje: «2023. Con 18 años me subí a este autobús y me fui yo solo a Madrid».
 - Anexia (de Alquiler Seguro) con sus colores, naranja y blanco, en un edificio de dos plantas más grande.
-- Pablo y Héctor del MEDAC hablan de CHAP Games, el proyecto final que hicieron con Alejandro; Héctor, además, de las prácticas.
+- Pablo, Héctor y Cristian (nuevo, entre Héctor y Gabriel de aspecto) hablan de CHAP Games, el proyecto final que hicieron con Alejandro en el MEDAC; Héctor, además, de las prácticas.
 
 ## Ideas para más adelante
 
