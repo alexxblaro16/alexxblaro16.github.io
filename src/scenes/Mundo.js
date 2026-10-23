@@ -233,6 +233,9 @@ export default class Mundo extends Phaser.Scene {
         this.tweens.add({ targets: img, y: img.y - 1.5, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
       } else if (o.clave === 'bicho') {
         this.tweens.add({ targets: img, x: img.x + 14, duration: 2600, yoyo: true, repeat: -1, ease: 'Sine.inOut', onYoyo: () => img.toggleFlipX(), onRepeat: () => img.toggleFlipX() })
+      } else if (o.clave === 'banco') {
+        // el banco entero es sólido, así no se atraviesa lo que hay encima (la taza, la gelatina…)
+        this.solido(o.x * T - img.width / 2 + 1, o.base * T - img.height + 2, img.width - 2, img.height - 2)
       } else if (['gelatina', 'taza_jefe'].includes(o.clave)) {
         img.setDepth(o.base * T + 30)
       } else if (['taza_java', 'cartel404'].includes(o.clave)) {

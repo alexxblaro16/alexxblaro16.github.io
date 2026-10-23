@@ -2,7 +2,7 @@
 // arranque con «Hello, World!», menú principal, opciones, créditos y creador de personaje.
 import { ENLACES } from './content.js'
 import { estado, t, cambiarIdioma, guardar } from './estado.js'
-import { sfx, alternarSonido } from './sonido.js'
+import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
 import { abrirClasico, pintarHUD } from './ui.js'
 import { PALETAS, crearPersonaje } from './sprites.js'
 
@@ -12,7 +12,7 @@ const caja = () => $('#pantalla')
 const TXT = {
   es: {
     nueva: 'NUEVA PARTIDA', continuar: 'CONTINUAR', clasico: 'MODO CLÁSICO', opciones: 'OPCIONES', creditos: 'CRÉDITOS',
-    sonido: 'SONIDO', idioma: 'IDIOMA', volver: 'VOLVER', crea: 'CREA TU PERSONAJE', nombre: 'TU NOMBRE',
+    sonido: 'SONIDO', musica: 'MÚSICA', idioma: 'IDIOMA', volver: 'VOLVER', crea: 'CREA TU PERSONAJE', nombre: 'TU NOMBRE',
     pelo: 'PEINADO', colorPelo: 'COLOR DE PELO', piel: 'PIEL', ropa: 'COLOR', gafas: 'GAFAS', si: 'SÍ', no: 'NO', jugar: 'A JUGAR',
     estilos: { corto: 'CORTO', ondulado: 'ONDULADO', rizado: 'RIZADO', flequillo: 'FLEQUILLO', cortina: 'CORTINA', media: 'MEDIA MELENA', largo: 'LARGO', larga: 'LARGA LISA', melena: 'MELENA RIZADA', rapado: 'RAPADO', calvo: 'CALVO' },
     soy: 'SOY', generos: { '': 'CHICO', 1: 'CHICA' }, abajo: 'ABAJO', abajos: { pantalon: 'PANTALON', falda: 'FALDA', corto: 'CORTO' },
@@ -28,7 +28,7 @@ const TXT = {
   },
   en: {
     nueva: 'NEW GAME', continuar: 'CONTINUE', clasico: 'CLASSIC MODE', opciones: 'OPTIONS', creditos: 'CREDITS',
-    sonido: 'SOUND', idioma: 'LANGUAGE', volver: 'BACK', crea: 'CREATE YOUR CHARACTER', nombre: 'YOUR NAME',
+    sonido: 'SOUND', musica: 'MUSIC', idioma: 'LANGUAGE', volver: 'BACK', crea: 'CREATE YOUR CHARACTER', nombre: 'YOUR NAME',
     pelo: 'HAIRSTYLE', colorPelo: 'HAIR COLOUR', piel: 'SKIN', ropa: 'COLOUR', gafas: 'GLASSES', si: 'YES', no: 'NO', jugar: 'PLAY',
     estilos: { corto: 'SHORT', ondulado: 'WAVY', rizado: 'CURLY', flequillo: 'FRINGE', cortina: 'CURTAIN', media: 'BOB', largo: 'LONG', larga: 'STRAIGHT LONG', melena: 'CURLY LONG', rapado: 'BUZZED', calvo: 'BALD' },
     soy: 'I AM', generos: { '': 'BOY', 1: 'GIRL' }, abajo: 'BOTTOM', abajos: { pantalon: 'TROUSERS', falda: 'SKIRT', corto: 'SHORTS' },
@@ -121,6 +121,7 @@ function opciones() {
   caja().innerHTML = `<div class="cuadro"><h2>${x().opciones}</h2><ul class="menu"></ul></div>`
   menu([
     { texto: () => `${x().sonido}: ${estado.sonido ? 'ON' : 'OFF'}`, accion: () => { alternarSonido(); opciones() } },
+    { texto: () => `${x().musica}: ${nombreMusica()}`, accion: () => { cambiarMusica(); opciones() } },
     { texto: () => `${x().idioma}: ${estado.idioma.toUpperCase()}`, accion: () => { cambiarIdioma(); pintarHUD(); opciones() } },
     { texto: () => x().volver, accion: () => principal() },
   ])

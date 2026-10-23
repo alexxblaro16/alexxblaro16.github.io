@@ -140,6 +140,14 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 
 - Créditos: agradecimiento a los profesores del MEDAC y de la UDIT y a mis padres, Pedro y Martha, y dedicado a mi hermano Dante.
 
+### 14. Música a elegir y recorrido más claro
+- Cuatro estilos de música hechos con Web Audio: Aventura, Pueblo (un vals), Lo-fi y Arcade. Se eligen en Opciones o con el
+  botón ♫ de la barra de arriba, y la elección se recuerda.
+- En el recorrido, Alejandro presenta a su padre en la tienda («Y aquí está él, Pedro») y en casa al resto de la familia;
+  en el MEDAC cuenta que conoció a Pablo, Héctor y Cristian, con los que hizo CHAP Games.
+- Los bancos son sólidos enteros (la taza del mejor jefe del mundo ya no se atraviesa); la furgoneta, solo rojo, azul y blanco;
+  Héctor, con el pelo más oscuro.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

@@ -14,6 +14,7 @@ const idiomaNavegador = (navigator.language || 'es').startsWith('es') ? 'es' : '
 export const estado = {
   idioma: guardado.idioma || idiomaNavegador,
   sonido: false, // siempre apagado al entrar
+  musica: guardado.musica || 'aventura', // estilo de música elegido
   personaje: guardado.personaje || null,
   visitados: new Set(guardado.visitados || []),
   recorridoHecho: !!guardado.recorridoHecho,
@@ -23,7 +24,7 @@ export const estado = {
 export function guardar() {
   try {
     localStorage.setItem(CLAVE, JSON.stringify({
-      idioma: estado.idioma, personaje: estado.personaje,
+      idioma: estado.idioma, personaje: estado.personaje, musica: estado.musica,
       visitados: [...estado.visitados], recorridoHecho: estado.recorridoHecho,
     }))
   } catch { /* modo privado: no pasa nada */ }

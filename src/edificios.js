@@ -238,8 +238,8 @@ function furgoneta() {
   // vinilo azul con la onda
   p(2, 13, 42, 11, azul); p(2, 21, 42, 3, azulOsc)
   for (let x = 2; x < 44; x++) { const y = 15 + Math.round(2.5 * Math.sin(x / 6)); p(x, y, 1, 2, '#ffffff'); p(x, y + 2, 1, 1, '#8fb0e8') }
-  // rótulo REBLÁN en rojo con borde amarillo, sobre la parte blanca
-  textoCentrado(ctx, 'REBLAN', 23, 7, '#f2c200'); textoCentrado(ctx, 'REBLAN', 22, 6, '#c8202a')
+  // rótulo REBLÁN en rojo sobre la parte blanca
+  textoCentrado(ctx, 'REBLAN', 22, 6, '#c8202a')
   p(26, 4, 1, 1, '#c8202a')
   // puerta corredera y su tirador
   p(31, 6, 1, 21, '#b9c0c8'); p(33, 15, 3, 1, '#5b6068')

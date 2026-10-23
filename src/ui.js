@@ -2,7 +2,7 @@
 // el ratón, mando táctil y modo clásico. En HTML para que los enlaces funcionen y se lea bien.
 import { ENLACES, PROYECTOS, STACK } from './content.js'
 import { estado, t, cambiarIdioma, alCambiarIdioma, guardar } from './estado.js'
-import { sfx, alternarSonido } from './sonido.js'
+import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
 
 const $ = (s) => document.querySelector(s)
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
@@ -18,6 +18,7 @@ export function pintarHUD() {
   $('#btn-idioma').textContent = x.hud.idioma
   $('#btn-clasico').textContent = x.hud.clasico
   $('#btn-sonido').textContent = estado.sonido ? '♪ ON' : '♪ OFF'
+  $('#btn-musica').textContent = `♫ ${nombreMusica()}`
   $('#hud-zonas').textContent = `${x.hud.misiones} ${estado.visitados.size}/6`
   $('#ayuda').textContent = x.hud.ayuda
   $('#btn-accion').textContent = x.accion
@@ -26,6 +27,7 @@ export function pintarHUD() {
 export function iniciarUI() {
   $('#btn-idioma').onclick = () => { cambiarIdioma(); pintarHUD() }
   $('#btn-sonido').onclick = () => { alternarSonido(); pintarHUD() }
+  $('#btn-musica').onclick = () => { cambiarMusica(); pintarHUD() }
   $('#btn-clasico').onclick = () => abrirClasico()
   $('#clasico-volver').onclick = () => cerrarClasico()
   $('#panel-cerrar').onclick = () => cerrarPanel()
