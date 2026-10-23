@@ -153,7 +153,7 @@ a { color: var(--verde); }
 .cuadro { background: var(--editor); border: 3px solid var(--linea); box-shadow: 0 8px 0 #000; padding: 18px 22px; width: min(560px, 100%); display: flex; flex-direction: column; gap: 14px; }
 .cuadro h2 { font-family: var(--pixel); font-size: 13px; color: var(--verde); margin: 0; text-align: center; }
 .cuadro p { margin: 0; font-size: 22px; }
-.creador { max-height: calc(100vh - 32px); overflow: auto; }
+.creador { max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow: auto; }
 #vista { width: 144px; height: 192px; image-rendering: pixelated; background: #4f9e4a; border: 3px solid var(--linea); box-shadow: 0 6px 0 #000; }
 .creador { width: min(860px, 100%); }
 .creador-cuerpo { display: grid; grid-template-columns: 170px 1fr; gap: 18px; align-items: start; }
@@ -242,9 +242,31 @@ a { color: var(--verde); }
 /* ------------------------------------------------------------------ recreativos */
 #arcade { position: fixed; inset: 0; z-index: 45; background: rgba(5, 7, 13, .82); display: grid; place-items: center; padding: 12px; }
 .arcade-maquina { background: linear-gradient(180deg, #2a2045, #15101f); border: 3px solid #a970ff; box-shadow: 0 0 0 3px #15101f, 0 12px 0 #000, 0 0 40px rgba(169, 112, 255, .35); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 100%; }
-.arcade-maquina canvas { width: min(640px, calc(100vw - 60px)); aspect-ratio: 4 / 3; image-rendering: pixelated; border: 4px solid #0d1117; border-radius: 6px; background: #0d1117; touch-action: none; }
+.arcade-maquina canvas { width: min(640px, calc(100vw - 60px), calc((100dvh - 190px) * 4 / 3)); aspect-ratio: 4 / 3; image-rendering: pixelated; border: 4px solid #0d1117; border-radius: 6px; background: #0d1117; touch-action: none; }
 .arcade-tactil { display: none; gap: 8px; }
 .arcade-tactil button { font-family: var(--pixel); font-size: 14px; width: 48px; height: 44px; background: #252b36; color: var(--texto); border: 2px solid var(--linea); border-radius: 8px; touch-action: none; }
 .arcade-tactil .arcade-a { background: var(--verde); color: #0f1218; border-color: var(--verde); }
 @media (pointer: coarse) { .arcade-tactil { display: flex; } }
 .cuadro .dedicatoria { color: var(--verde); text-align: center; font-style: italic; }
+
+/* ------------------------------------------------------------------ móvil y tableta */
+/* barra superior en una sola fila que se desliza con el dedo, para no tapar medio juego */
+@media (max-width: 720px) {
+  #hud { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-top: max(6px, env(safe-area-inset-top)); }
+  #hud::-webkit-scrollbar { display: none; }
+  .hud-izq, .hud-der { flex-wrap: nowrap; flex-shrink: 0; }
+  .boton { white-space: nowrap; }
+}
+/* el mando respeta la zona segura de los móviles con muesca o barra de gestos */
+@media (pointer: coarse) {
+  #mando.visible { bottom: max(14px, env(safe-area-inset-bottom)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+}
+/* móvil en horizontal: el diálogo va abajo entre la cruceta y el botón, y los paneles caben en la altura */
+@media (pointer: coarse) and (max-height: 500px) {
+  #dialogo { bottom: 10px; width: calc(100% - 340px); min-height: 0; padding: 10px 12px 12px; }
+  .cruceta { grid-template-columns: repeat(3, 44px); grid-template-rows: repeat(3, 44px); }
+  #btn-accion { width: 70px; height: 70px; }
+  .arcade-maquina { flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 8px; }
+  .arcade-maquina canvas { width: min(640px, calc(100vw - 220px), calc((100dvh - 40px) * 4 / 3)); }
+  .arcade-tactil { flex-wrap: wrap; width: 160px; justify-content: center; }
+}

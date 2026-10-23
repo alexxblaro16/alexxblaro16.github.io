@@ -148,6 +148,12 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Los bancos son sólidos enteros (la taza del mejor jefe del mundo ya no se atraviesa); la furgoneta, solo rojo, azul y blanco;
   Héctor, con el pelo más oscuro.
 
+### 15. Móvil y tableta, y documento técnico
+- Probado en móvil vertical (390 × 844), horizontal (844 × 390) y tableta (768 × 1024): la barra superior va en una fila que se
+  desliza con el dedo, en horizontal el diálogo se coloca entre la cruceta y el botón, los recreativos caben en la altura y
+  todo respeta la muesca y la barra de gestos. Se puede añadir a la pantalla de inicio como una app.
+- `docs/Portfolio_lenguajes_y_tecnologias.pdf`: lenguajes, tecnologías y cómo se usa cada una (4 páginas).
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.
