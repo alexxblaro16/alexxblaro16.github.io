@@ -248,6 +248,7 @@ a { color: var(--verde); }
 .arcade-tactil .arcade-a { background: var(--verde); color: #0f1218; border-color: var(--verde); }
 @media (pointer: coarse) { .arcade-tactil { display: flex; } }
 .cuadro .dedicatoria { color: var(--verde); text-align: center; font-style: italic; }
+.cuadro .privacidad { color: var(--suave, #9aa3b2); font-size: 0.8em; text-align: center; }
 
 /* ------------------------------------------------------------------ móvil y tableta */
 /* barra superior en una sola fila que se desliza con el dedo, para no tapar medio juego */

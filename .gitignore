@@ -1,3 +1,6 @@
 node_modules
 dist
 COMANDOS CLAUDE/
+registro/node_modules
+registro/.wrangler
+registro/.dev.vars

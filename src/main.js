@@ -5,6 +5,7 @@ import Mundo from './scenes/Mundo.js'
 import { iniciarUI, iniciarMando } from './ui.js'
 import { iniciarPantallas } from './pantallas.js'
 import { estado } from './estado.js'
+import { empezarRegistro } from './registro.js'
 
 document.documentElement.lang = estado.idioma
 
@@ -26,6 +27,7 @@ window.__juego = juego // útil para depurar desde la consola
 
 iniciarUI()
 iniciarMando()
+empezarRegistro()
 
 juego.events.once('ready', () => {
   const mundo = juego.scene.getScene('Mundo')

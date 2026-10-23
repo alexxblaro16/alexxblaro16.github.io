@@ -1,0 +1,56 @@
+/* Pantalla privada de accesos, con los colores del juego */
+:root {
+  --fondo: #0f1218;
+  --panel: #1b1f27;
+  --borde: #2c3340;
+  --texto: #e6e9ef;
+  --suave: #9aa3b2;
+  --verde: #2fbf71;
+  --oro: #f2c200;
+  --rojo: #ff6b6b;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--fondo); color: var(--texto); font: 15px/1.5 Inter, system-ui, sans-serif; }
+#accesos { max-width: 920px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font: 18px 'Press Start 2P', monospace; color: var(--verde); margin: 0; letter-spacing: 1px; }
+
+.boton { font: 600 14px Inter, sans-serif; color: var(--texto); background: var(--panel); border: 2px solid var(--borde); border-radius: 6px; padding: 8px 14px; cursor: pointer; }
+.boton:hover { border-color: var(--verde); }
+.boton.verde { background: var(--verde); border-color: var(--verde); color: #0f1218; }
+
+.entrada { max-width: 340px; margin: 18vh auto 0; background: var(--panel); border: 2px solid var(--borde); border-radius: 10px; padding: 28px; display: grid; gap: 14px; text-align: center; }
+.entrada p { margin: 0; color: var(--suave); }
+.entrada input { font: 16px Inter, sans-serif; padding: 10px 12px; border-radius: 6px; border: 2px solid var(--borde); background: var(--fondo); color: var(--texto); }
+.entrada input:focus { outline: none; border-color: var(--verde); }
+.entrada .error { color: var(--rojo); }
+
+.cabecera { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+.acciones { display: flex; gap: 8px; }
+
+.cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.cifras div { background: var(--panel); border: 2px solid var(--borde); border-radius: 8px; padding: 14px; }
+.cifras b { display: block; font: 20px 'Press Start 2P', monospace; color: var(--oro); margin-bottom: 8px; }
+.cifras span { color: var(--suave); font-size: 13px; }
+.paises { display: flex; flex-wrap: wrap; gap: 8px 16px; color: var(--suave); font-size: 14px; margin: 14px 0 0; }
+.paises b { color: var(--texto); }
+.aviso { color: var(--suave); font-size: 13px; margin: 10px 0 18px; }
+
+.lista { display: grid; gap: 10px; }
+.visita { background: var(--panel); border: 2px solid var(--borde); border-left: 4px solid var(--borde); border-radius: 8px; padding: 14px 16px; }
+.visita.cv { border-left-color: var(--oro); }
+.visita header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.visita h2 { font: 700 17px Inter, sans-serif; margin: 0; overflow-wrap: anywhere; }
+.visita .sin { color: var(--suave); font-weight: 600; }
+.visita time { color: var(--suave); font-size: 13px; white-space: nowrap; }
+.lugar { margin: 2px 0 0; font-weight: 600; }
+.datos { margin: 2px 0 10px; color: var(--suave); font: 12px/1.5 'JetBrains Mono', monospace; }
+.chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.chips li { font-size: 13px; padding: 3px 9px; border-radius: 999px; background: var(--fondo); border: 1px solid var(--borde); }
+.chips li.verde { border-color: var(--verde); color: var(--verde); }
+.chips li.oro { border-color: var(--oro); color: var(--oro); }
+.nada { color: var(--suave); margin: 0; font-size: 14px; }
+
+@media (max-width: 600px) {
+  .cifras { grid-template-columns: repeat(2, 1fr); }
+  h1 { font-size: 15px; }
+}

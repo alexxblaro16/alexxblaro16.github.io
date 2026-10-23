@@ -4,6 +4,7 @@ import { T, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdif
 import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO } from '../mapa.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
+import { registrar } from '../registro.js'
 import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD } from '../ui.js'
 import { sfx } from '../sonido.js'
 import { abrirArcade } from '../arcade.js'
@@ -413,7 +414,7 @@ export default class Mundo extends Phaser.Scene {
     this.guia.setFrame(this.guia.x > this.jugador.x ? 3 : 6)
     await decir('Alejandro', frases(paso.historia))
     this.paso++
-    if (this.paso >= RECORRIDO.length) { estado.recorridoHecho = true; guardar() }
+    if (this.paso >= RECORRIDO.length) { estado.recorridoHecho = true; guardar(); registrar('recorrido', 'completo', true) }
     this.contando = false
     this.siguientePaso()
   }
@@ -421,6 +422,7 @@ export default class Mundo extends Phaser.Scene {
   saltarRecorrido() {
     this.tweens.killTweensOf(this.guia)
     this.paseoGuia = null
+    if (this.paso < RECORRIDO.length) registrar('recorrido', `saltado en el paso ${this.paso + 1}`, true)
     this.paso = RECORRIDO.length
     estado.recorridoHecho = true
     guardar()

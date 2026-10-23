@@ -86,6 +86,20 @@ elige todo al azar. Cada cambio vuelve a dibujar la hoja, así que lo que se ve 
 `estado.js` guarda idioma, sonido, personaje, zonas visitadas y si el recorrido está hecho. Todos los textos
 salen de `content.js` y `historia.js`, que tienen la misma estructura en `es` y `en`.
 
+## Registro de visitas (`registro.js`, `registro/` y `/accesos/`)
+
+`registro.js` avisa al servidor de `registro/` (un Cloudflare Worker con una base de datos D1) cuando alguien
+entra y de lo que hace: el personaje que crea, las zonas, si termina o se salta el recorrido, el modo clásico,
+el CV, las recreativas y los enlaces a otras webs. País y ciudad aproximados los añade Cloudflare; la IP no se
+guarda y no hay cookies. No cuenta en desarrollo, ni a los robots, ni el navegador de Alejandro.
+
+`/accesos/` es una segunda página de Vite (`accesos/index.html` y `accesos.js`) que pide la contraseña
+(secreto `CLAVE_ACCESOS` del Worker) y muestra las últimas 150 visitas, con un resumen de hoy, la semana y los
+países. Se actualiza cada 30 s y, al entrar, marca ese navegador para que no cuente como visita.
+
+Para cambiar el servidor: `cd registro`, `npx wrangler deploy`. Para cambiar la contraseña:
+`npx wrangler secret put CLAVE_ACCESOS`.
+
 ## Publicación
 
 `vite.config.js` usa `BASE` para la ruta de publicación. El flujo de GitHub Actions compila con Node 20 y publica

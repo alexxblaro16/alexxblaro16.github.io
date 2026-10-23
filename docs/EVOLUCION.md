@@ -154,6 +154,12 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
   todo respeta la muesca y la barra de gestos. Se puede añadir a la pantalla de inicio como una app.
 - `docs/Portfolio_lenguajes_y_tecnologias.pdf`: lenguajes, tecnologías y cómo se usa cada una (4 páginas).
 
+### 16. Pantalla de accesos
+
+Registro anónimo de visitas con un Cloudflare Worker y D1, y la página privada `/accesos/` con contraseña para
+ver quién ha entrado: hora, país y ciudad aproximados, dispositivo, de dónde viene, el nombre de su personaje y
+qué ha hecho dentro. Sin IP ni cookies; aviso en los créditos.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

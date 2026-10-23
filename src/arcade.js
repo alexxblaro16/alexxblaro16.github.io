@@ -2,6 +2,7 @@
 // Serpiente, una nave que destruye bugs, un rompe-ladrillos y un laberinto en el que se recogen commits.
 // Se juegan con flechas/WASD + espacio, o con los botones táctiles. El récord de cada uno se guarda en el navegador.
 import { estado } from './estado.js'
+import { registrar } from './registro.js'
 
 const W = 320, H = 240
 const TEXTOS = {
@@ -221,6 +222,7 @@ const JUEGOS = { serpiente, nave, ladrillos, laberinto }
 // ---------------------------------------------------------------------------------------------- ventana del juego
 export function abrirArcade(id) {
   if (actual || !JUEGOS[id]) return
+  registrar('arcade', id)
   const caja = document.createElement('div')
   caja.id = 'arcade'
   caja.innerHTML = `<div class="arcade-maquina">

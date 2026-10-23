@@ -2,6 +2,7 @@
 // arranque con «Hello, World!», menú principal, opciones, créditos y creador de personaje.
 import { ENLACES } from './content.js'
 import { estado, t, cambiarIdioma, guardar } from './estado.js'
+import { registrar } from './registro.js'
 import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
 import { abrirClasico, pintarHUD } from './ui.js'
 import { PALETAS, crearPersonaje } from './sprites.js'
@@ -21,6 +22,7 @@ const TXT = {
     tipos: { camiseta: 'CAMISETA', polo: 'POLO', sudadera: 'SUDADERA', chaqueta: 'CHAQUETA' }, cortes: { '': 'RECTO', 1: 'ANCHO' },
     barbas: { '': 'NO', rala: 'POCA', perilla: 'PERILLA', completa: 'COMPLETA' }, visitante: 'Visitante',
     pulsa: 'PULSA ENTER O TOCA PARA EMPEZAR', subtitulo: 'Desarrollador Full Stack Junior · mi vida en píxeles',
+    privacidad: 'Esta web cuenta las visitas de forma anónima (país, dispositivo y qué partes se visitan) para que yo sepa si le interesa a alguien. No usa cookies ni guarda tu IP.',
     textoCreditos: 'Diseñado y programado por Alejandro Blanco Rodríguez con Phaser 3, Vite y mucho Java en el corazón. Todo el pixel art está dibujado con código.',
     rapido: '¿Tienes prisa?', practicas: 'Abierto a prácticas',
     gracias: 'Gracias a mis profesores del MEDAC y de la UDIT, por enseñarme a programar y a no rendirme. Y a mis padres, Pedro y Martha, por apoyarme en todo.',
@@ -37,6 +39,7 @@ const TXT = {
     tipos: { camiseta: 'T-SHIRT', polo: 'POLO', sudadera: 'HOODIE', chaqueta: 'JACKET' }, cortes: { '': 'SLIM', 1: 'BAGGY' },
     barbas: { '': 'NO', rala: 'LIGHT', perilla: 'GOATEE', completa: 'FULL' }, visitante: 'Visitor',
     pulsa: 'PRESS ENTER OR TAP TO START', subtitulo: 'Junior Full Stack Developer · my life in pixels',
+    privacidad: 'This site counts visits anonymously (country, device and which parts are visited) so I know if anyone finds it useful. It uses no cookies and does not store your IP.',
     textoCreditos: 'Designed and coded by Alejandro Blanco Rodríguez with Phaser 3, Vite and a lot of Java at heart. All the pixel art is drawn with code.',
     rapido: 'In a hurry?', practicas: 'Open to internships',
     gracias: 'Thanks to my teachers at MEDAC and UDIT, for teaching me to code and to never give up. And to my parents, Pedro and Martha, for supporting me in everything.',
@@ -128,7 +131,7 @@ function opciones() {
 }
 
 function creditos() {
-  caja().innerHTML = `<div class="cuadro"><h2>${x().creditos}</h2><p>${x().textoCreditos}</p><p>${x().gracias}</p><p class="dedicatoria">${x().dedicatoria}</p><ul class="menu"></ul></div>`
+  caja().innerHTML = `<div class="cuadro"><h2>${x().creditos}</h2><p>${x().textoCreditos}</p><p>${x().gracias}</p><p class="dedicatoria">${x().dedicatoria}</p><p class="privacidad">${x().privacidad}</p><ul class="menu"></ul></div>`
   menu([{ texto: () => x().volver, accion: () => principal() }])
 }
 
@@ -225,6 +228,7 @@ function creador() {
     estado.recorridoHecho = false
     estado.visitados.clear()
     guardar()
+    registrar('personaje', estado.personaje.nombre)
     sfx.aceptar()
     jugar()
   }

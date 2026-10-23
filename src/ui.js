@@ -2,6 +2,7 @@
 // el ratón, mando táctil y modo clásico. En HTML para que los enlaces funcionen y se lea bien.
 import { ENLACES, PROYECTOS, STACK } from './content.js'
 import { estado, t, cambiarIdioma, alCambiarIdioma, guardar } from './estado.js'
+import { registrar } from './registro.js'
 import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
 
 const $ = (s) => document.querySelector(s)
@@ -162,6 +163,7 @@ export function abrirPanel(zona) {
   $('#panel').hidden = false
   panelAbierto = true
   sfx.puerta()
+  registrar('zona', zona, true)
   if (!estado.visitados.has(zona)) {
     estado.visitados.add(zona)
     guardar()
@@ -227,7 +229,7 @@ function pintarClasico() {
     <footer class="cl-pie">${esc(c.pie)}</footer>`
   $('#cl-idioma').onclick = () => { cambiarIdioma(); pintarClasico(); pintarHUD() }
 }
-export function abrirClasico() { pintarClasico(); $('#clasico').hidden = false; document.body.classList.add('en-clasico') }
+export function abrirClasico() { registrar('clasico', null, true); pintarClasico(); $('#clasico').hidden = false; document.body.classList.add('en-clasico') }
 export function cerrarClasico() { $('#clasico').hidden = true; document.body.classList.remove('en-clasico') }
 
 // ---------------------------------------------------------------------------------------------- mando táctil
