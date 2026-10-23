@@ -119,7 +119,7 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 
 ### 12. Prensa enlazada y amigos que hablan
 - En MedScan (panel de trofeos y modo clásico) cada medio enlaza a su noticia: UDIT, RNE, Za49, Hipertextual, IT User,
-  Revista Byte y Zona Movilidad. Antena 3, El Español, El Periódico de España y El Día de Zamora siguen sin enlace hasta tenerlo.
+  Revista Byte y Zona Movilidad; y después Antena 3, El Español, El Periódico de España y El Día de Zamora (enlaces de Alejandro).
 - La tecla E vuelve a salir siempre: durante el recorrido se escondía en todo el mapa y ahora solo encima del guía cuando muestra su «!».
 - Todos los amigos tienen frase al pulsar E (de qué conocen a Alejandro), con hueco para una frase propia de cada uno.
 - Campo de fútbol universitario normal: sin pista de atletismo, césped artificial alrededor, valla metálica y banquillos; sin marcador.
