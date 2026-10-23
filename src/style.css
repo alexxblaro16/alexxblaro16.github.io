@@ -247,3 +247,4 @@ a { color: var(--verde); }
 .arcade-tactil button { font-family: var(--pixel); font-size: 14px; width: 48px; height: 44px; background: #252b36; color: var(--texto); border: 2px solid var(--linea); border-radius: 8px; touch-action: none; }
 .arcade-tactil .arcade-a { background: var(--verde); color: #0f1218; border-color: var(--verde); }
 @media (pointer: coarse) { .arcade-tactil { display: flex; } }
+.cuadro .dedicatoria { color: var(--verde); text-align: center; font-style: italic; }

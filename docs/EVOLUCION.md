@@ -138,6 +138,8 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Anexia (de Alquiler Seguro) con sus colores, naranja y blanco, en un edificio de dos plantas más grande.
 - Pablo (castaño), Héctor (castaño tirando a rubio) y Cristian, «Valdi» (nuevo: castaño claro, sudadera gris y vaqueros claros) hablan de CHAP Games, el proyecto final que hicieron con Alejandro en el MEDAC; Héctor, además, de las prácticas.
 
+- Créditos: agradecimiento a los profesores del MEDAC y de la UDIT y a mis padres, Pedro y Martha, y dedicado a mi hermano Dante.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

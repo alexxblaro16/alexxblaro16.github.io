@@ -23,6 +23,8 @@ const TXT = {
     pulsa: 'PULSA ENTER O TOCA PARA EMPEZAR', subtitulo: 'Desarrollador Full Stack Junior · mi vida en píxeles',
     textoCreditos: 'Diseñado y programado por Alejandro Blanco Rodríguez con Phaser 3, Vite y mucho Java en el corazón. Todo el pixel art está dibujado con código.',
     rapido: '¿Tienes prisa?', practicas: 'Abierto a prácticas',
+    gracias: 'Gracias a mis profesores del MEDAC y de la UDIT, por enseñarme a programar y a no rendirme. Y a mis padres, Pedro y Martha, por apoyarme en todo.',
+    dedicatoria: 'Dedicado a mi hermano Dante.',
   },
   en: {
     nueva: 'NEW GAME', continuar: 'CONTINUE', clasico: 'CLASSIC MODE', opciones: 'OPTIONS', creditos: 'CREDITS',
@@ -37,6 +39,8 @@ const TXT = {
     pulsa: 'PRESS ENTER OR TAP TO START', subtitulo: 'Junior Full Stack Developer · my life in pixels',
     textoCreditos: 'Designed and coded by Alejandro Blanco Rodríguez with Phaser 3, Vite and a lot of Java at heart. All the pixel art is drawn with code.',
     rapido: 'In a hurry?', practicas: 'Open to internships',
+    gracias: 'Thanks to my teachers at MEDAC and UDIT, for teaching me to code and to never give up. And to my parents, Pedro and Martha, for supporting me in everything.',
+    dedicatoria: 'Dedicated to my brother Dante.',
   },
 }
 // La fuente de píxel no tiene mayúsculas con tilde (salen mal): en los textos en mayúsculas se quitan
@@ -123,7 +127,7 @@ function opciones() {
 }
 
 function creditos() {
-  caja().innerHTML = `<div class="cuadro"><h2>${x().creditos}</h2><p>${x().textoCreditos}</p><ul class="menu"></ul></div>`
+  caja().innerHTML = `<div class="cuadro"><h2>${x().creditos}</h2><p>${x().textoCreditos}</p><p>${x().gracias}</p><p class="dedicatoria">${x().dedicatoria}</p><ul class="menu"></ul></div>`
   menu([{ texto: () => x().volver, accion: () => principal() }])
 }
 
