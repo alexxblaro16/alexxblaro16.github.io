@@ -130,9 +130,9 @@ export const PERSONAJES = [
     ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4', estampado: '#e05a5a', raya: '#9aa3ad' , frases: { es: ['Si vienes tú, ya somos cuatro para el pádel: Hugo, Alejandro, tú y yo. Esta noche, en el Margot.'], en: ['If you come, that makes four for padel: Hugo, Alejandro, you and me. Tonight, at the Margot.'] } }],
   ], 62, 21.5, 'residencia'),
   ...amigos([
-    ['Pablo', '#4a3020', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true, frases: { es: ['Soy integrante, junto a Héctor, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final.'], en: ["Together with Héctor, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment."] } }],
-    ['Héctor', '#4a3020', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy integrante, junto a Pablo, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final. Además, hice las prácticas con Alejandro.'], en: ["Together with Pablo, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment. I also did my internship with Alejandro."] } }],
-    ['Cristian', '#3a2618', '#22304d', { pelo: 'despeinado', piel: '#e4ac85', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Yo también era de CHAP Games, con Pablo, Héctor y Alejandro: el proyecto ambicioso que presentamos como trabajo final.'], en: ["I was part of CHAP Games too, with Pablo, Héctor and Alejandro: the ambitious project we presented as our final assignment."] } }],
+    ['Pablo', '#4e3221', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true, frases: { es: ['Soy integrante, junto a Héctor, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final.'], en: ["Together with Héctor, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment."] } }],
+    ['Héctor', '#a58050', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy integrante, junto a Pablo, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final. Además, hice las prácticas con Alejandro.'], en: ["Together with Pablo, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment. I also did my internship with Alejandro."] } }],
+    ['Cristian', '#7a5236', '#9aa1aa', { pelo: 'despeinado', piel: '#e4ac85', tipo: 'sudadera', pantalon: '#8fa9cc', anchos: true, zapatillas: '#f4f4f4', frases: { es: ['Yo también era de CHAP Games, con Pablo, Héctor y Alejandro: el proyecto ambicioso que presentamos como trabajo final.'], en: ["I was part of CHAP Games too, with Pablo, Héctor and Alejandro: the ambitious project we presented as our final assignment."] } }],
   ], 80, 21.5, 'medac'),
   ...amigos([
     ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' , frases: { es: ['Hicimos MedScan juntos y seguimos en el mismo equipo para los hackatones.'], en: ["We built MedScan together and we're still on the same hackathon team."] } }],
@@ -149,7 +149,7 @@ export const PERSONAJES = [
 
 // El recorrido guiado: adónde va Alejandro y qué cuenta (las frases están en historia.js)
 export const RECORRIDO = [
-  { x: 20.6, y: 30.6, historia: 'bienvenida' },
+  { x: 20.2, y: 31.2, historia: 'bienvenida' },
   { x: 20.9, y: 29.2, historia: 'pueblo' },
   { x: 12.4, y: CAMINO + 1.3, historia: 'reblan', via: [[19, 29.2], [19, CAMINO + 0.5]] },
   { x: 50.5, y: CAMINO + 1.3, historia: 'casa' },

@@ -131,12 +131,12 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Al pulsar E se habla con lo más cercano, no con lo primero de la lista (junto al campo salía la frase del campo en vez de la del amigo).
 
 ### 13. Alejandro pasea y más detalles
-- Al terminar el recorrido, Alejandro no se queda quieto: va andando por el camino de un sitio a otro, se para un rato
+- Al empezar, Alejandro te saluda solo otra vez (estaba un poco lejos para arrancar la presentación). Al terminar el recorrido, no se queda quieto: va andando por el camino de un sitio a otro, se para un rato
   y sigue; si te acercas, se para y te mira para que puedas hablarle.
 - Letreros en los edificios de proyectos: Laboratorio, Sala de trofeos, Terminal y Correos.
 - La parada del autobús cuenta el viaje: «2023. Con 18 años me subí a este autobús y me fui yo solo a Madrid».
 - Anexia (de Alquiler Seguro) con sus colores, naranja y blanco, en un edificio de dos plantas más grande.
-- Pablo, Héctor y Cristian (nuevo, entre Héctor y Gabriel de aspecto) hablan de CHAP Games, el proyecto final que hicieron con Alejandro en el MEDAC; Héctor, además, de las prácticas.
+- Pablo (castaño), Héctor (castaño tirando a rubio) y Cristian, «Valdi» (nuevo: castaño claro, sudadera gris y vaqueros claros) hablan de CHAP Games, el proyecto final que hicieron con Alejandro en el MEDAC; Héctor, además, de las prácticas.
 
 ## Ideas para más adelante
 
