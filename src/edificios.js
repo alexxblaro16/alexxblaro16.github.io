@@ -119,7 +119,6 @@ const GENERICOS = {
   edificio_madrid_2: [48, 64, { pared: '#d9d2c4', tejado: '#6a6f78', pisos: 3, plano: true, cristal: '#9fd3ff' }],
   piso: [48, 64, { pared: '#e3cfa6', tejado: '#9b4a35', pisos: 3, plano: true, cruz: true, macetas: true }],
   residencia: [96, 72, { pared: '#c96b4f', tejado: '#5b2f25', pisos: 4, ladrillo: true, plano: true, puertaAncha: true, macetas: true }],
-  anexia: [48, 48, { pared: '#2b2f38', tejado: '#3d7be0', pisos: 2, plano: true, cristal: '#7fc8ff', marco: '#4a5160' }],
   laboratorio: [64, 56, { pared: '#dfe6ee', tejado: '#2fbf71', pisos: 2, plano: true, franja: '#2fbf71', puertaAncha: true }],
   trofeos: [64, 56, { pared: '#f6e7b4', tejado: '#c9962b', pisos: 2, puertaAncha: true, marco: '#c9962b', farol: true }],
   terminal: [48, 48, { pared: '#1b1f27', tejado: '#2fbf71', plano: true, cristal: '#2fbf71', pisos: 2, marco: '#2b2f38', codigo: true }],
@@ -1015,6 +1014,26 @@ function bicimad() {
   return c
 }
 
+// Anexia (Alquiler Seguro): fachada blanca con naranja, dos plantas, ventanal corrido arriba y cristaleras abajo
+function anexia() {
+  const [c, ctx] = lienzo(80, 56)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  const naranja = '#f28c28', naranjaO = '#c96a12', blanco = '#f6f7f8'
+  p(0, 0, 80, 6, NEGRO); p(1, 1, 78, 4, naranja); p(1, 1, 78, 1, '#ffb066'); p(1, 4, 78, 1, naranjaO)
+  p(0, 6, 80, 50, NEGRO); p(1, 6, 78, 49, blanco); p(1, 6, 2, 49, '#ffffff'); p(76, 6, 3, 49, '#d9dde2')
+  // primera planta: ventanal corrido
+  p(5, 10, 70, 14, NEGRO); p(6, 11, 68, 12, '#9fd3ff'); p(6, 11, 68, 3, '#cfe8f7')
+  for (let x = 6; x < 74; x += 11) p(x, 11, 1, 12, '#2b2f38')
+  for (let x = 9; x < 70; x += 22) { p(x, 15, 2, 1, '#ffffff'); p(x + 1, 16, 2, 1, '#ffffff') }
+  // franja naranja entre plantas con el nombre
+  p(1, 27, 78, 7, naranja); p(1, 33, 78, 1, naranjaO); textoCentrado(ctx, 'ANEXIA', 40, 28, '#ffffff')
+  // planta baja: dos cristaleras y la puerta
+  for (const x of [5, 53]) { p(x, 37, 22, 14, NEGRO); p(x + 1, 38, 20, 12, '#9fd3ff'); p(x + 1, 38, 20, 3, '#cfe8f7'); p(x + 11, 38, 1, 12, '#2b2f38') }
+  p(32, 36, 16, 19, NEGRO); p(33, 37, 14, 18, '#3d4c5c'); p(40, 37, 1, 18, NEGRO); p(34, 38, 3, 6, '#7f9fbf'); p(42, 38, 3, 6, '#7f9fbf')
+  p(1, 52, 78, 3, naranjaO); p(30, 54, 20, 2, '#9a9a9a')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -1026,7 +1045,7 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, recreativos, foco, marcador, mesa_bar: mesaBar, bicimad,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, recreativos, foco, marcador, anexia, mesa_bar: mesaBar, bicimad,
     bar_silvia: casaBar('#e8c99a', 'BAR SILVIA'), bar_garibalde: casaBar('#ecdcb0', 'GARIBALDE'), bar_burgos: casaBar('#e3b98a', 'BAR BURGOS', 96),
     soportal_lado: casaBar('#d9a184', null), soportal_lado_2: casaBar('#ecdcb0', null), soportal_sur: casaBar('#ecdcb0', null), soportal_sur_2: casaBar('#d9a184', null), remolachas, gelatina, taza_jefe: tazaJefe,
     poste_scranton: posteScranton, pato, cartel404, taza_java: tazaJava, bicho,

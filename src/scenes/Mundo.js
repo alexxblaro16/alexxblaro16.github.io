@@ -417,6 +417,7 @@ export default class Mundo extends Phaser.Scene {
 
   saltarRecorrido() {
     this.tweens.killTweensOf(this.guia)
+    this.paseoGuia = null
     this.paso = RECORRIDO.length
     estado.recorridoHecho = true
     guardar()
@@ -455,6 +456,32 @@ export default class Mundo extends Phaser.Scene {
     if (cosa.zona) return abrirPanel(cosa.zona)
     if (cosa.frase) return decir(cosa.nombre, cosa.frase())
     if (cosa.vida) return decir(cosa.nombre, frases(cosa.vida))
+  }
+
+  // Al acabar el recorrido, Alejandro no se queda quieto: va andando por el camino de un sitio a otro,
+  // se para un rato y sigue. Si te acercas, se para y te mira para que puedas hablar con él.
+  pasearGuia(pausado) {
+    if (this.paso < RECORRIDO.length || this.contando) return
+    const g = this.guia, j = this.jugador
+    const cerca = Phaser.Math.Distance.Between(g.x, g.y, j.x, j.y) < 40
+    if (pausado || cerca) {
+      if (this.paseoGuia?.isPlaying()) this.paseoGuia.pause()
+      g.anims.stop()
+      if (cerca) { const dx = j.x - g.x, dy = j.y - g.y; g.setFrame(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 3) : (dy > 0 ? 0 : 9)) }
+      return
+    }
+    if (this.paseoGuia?.isPaused()) { this.paseoGuia.resume(); g.play(this.animGuia, true); return }
+    if (this.paseoGuia || this.time.now < (this.esperaGuia || 0)) return
+    // otro punto del camino principal, ni muy cerca ni muy lejos de donde está
+    const destino = Phaser.Math.Clamp(g.x / T + Phaser.Math.Between(-14, 14), CAMINO_INICIO + 2, ANCHO - 6) * T
+    const y = (CAMINO + Phaser.Math.FloatBetween(0.3, 1.6)) * T
+    const dx = destino - g.x, dy = y - g.y
+    this.animGuia = `alejandro-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`
+    g.play(this.animGuia, true)
+    this.paseoGuia = this.tweens.add({
+      targets: g, x: destino, y, duration: (Math.hypot(dx, dy) / 45) * 1000,
+      onComplete: () => { g.anims.stop(); g.setFrame([0, 3, 6][Phaser.Math.Between(0, 2)]); this.esperaGuia = this.time.now + Phaser.Math.Between(2000, 5000); this.paseoGuia = null },
+    })
   }
 
   // Cada NPC da paseos cortos alrededor de su sitio; si el jugador se acerca, se para y le mira
@@ -520,6 +547,7 @@ export default class Mundo extends Phaser.Scene {
     j.setDepth(j.y)
     this.guia.setDepth(this.guia.y)
     this.npcs.forEach((n) => { this.pasear(n, pausado); n.setDepth(n.y) })
+    this.pasearGuia(pausado)
     this.jerry.setDepth(this.jerry.y)
 
     // DANTE P.W. sigue al jugador si se lo pides
