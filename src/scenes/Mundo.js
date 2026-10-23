@@ -16,6 +16,12 @@ const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#e6b28e', rop
 const DANTE_PW = { pelo: 'flequillo', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', robot: true }
 
 const frases = (clave) => HISTORIA[estado.idioma][clave] || []
+// Lo que dice cada amigo: su frase propia si la tiene y, si no, de qué conoce a Alejandro
+const fraseAmigo = (p) => {
+  const propia = p.frases?.[estado.idioma]
+  if (propia) return propia
+  return [HISTORIA[estado.idioma][`amigo_${p.grupo}`].replace('{nombre}', p.nombre)]
+}
 
 export default class Mundo extends Phaser.Scene {
   constructor() { super('Mundo') }
@@ -321,6 +327,7 @@ export default class Mundo extends Phaser.Scene {
       this.npcs.push(s)
       // el punto para hablar con ellos se mueve con ellos
       if (p.vida) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, vida: p.vida, nombre: p.nombre })
+      else if (p.grupo) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, frase: () => fraseAmigo(p), nombre: p.nombre })
     })
 
     // Palomas que picotean y dan saltitos por la plaza y la terraza de la uni
@@ -423,7 +430,7 @@ export default class Mundo extends Phaser.Scene {
     const cerca = (o, r) => Phaser.Math.Distance.Between(j.x, j.y, o.x, o.y) < r
     if (cerca(this.jerry, 24)) return { x: this.jerry.x, y: this.jerry.y - 18 }
     if (cerca(this.dantePW, 22)) return { x: this.dantePW.x, y: this.dantePW.y - 34 }
-    if (cerca(this.guia, 24) && !this.guiaEnMarcha) return { x: this.guia.x, y: this.guia.y - 34 }
+    if (cerca(this.guia, 24) && !this.guiaEnMarcha) return { x: this.guia.x, y: this.guia.y - 34, guia: true }
     const cosa = this.interactivos.find((o) => cerca(o, o.radio))
     if (!cosa) return null
     // los NPC tienen getters (se mueven); los edificios y objetos, un punto fijo junto a la puerta
@@ -446,6 +453,7 @@ export default class Mundo extends Phaser.Scene {
     if (!cosa) return
     if (cosa.arcade) return abrirArcade(cosa.arcade)
     if (cosa.zona) return abrirPanel(cosa.zona)
+    if (cosa.frase) return decir(cosa.nombre, cosa.frase())
     if (cosa.vida) return decir(cosa.nombre, frases(cosa.vida))
   }
 
@@ -532,7 +540,7 @@ export default class Mundo extends Phaser.Scene {
     if (esperando && !pausado && Phaser.Math.Distance.Between(j.x, j.y, this.guia.x, this.guia.y) < 30) this.contarPaso()
 
     const objetivo = pausado ? null : this.cercano()
-    this.tecla.setVisible(!!objetivo && !esperando)
+    this.tecla.setVisible(!!objetivo && !(esperando && objetivo.guia))
     if (objetivo) this.tecla.setPosition(Math.round(objetivo.x), Math.round(objetivo.y + Math.sin(this.time.now / 180) * 1.5))
   }
 }

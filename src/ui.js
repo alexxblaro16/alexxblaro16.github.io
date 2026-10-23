@@ -116,6 +116,9 @@ function enlaces(p, x) {
   return b.join('')
 }
 
+// Cada medio con su enlace a la noticia si lo tenemos
+const medio = (m) => (m.url ? `<li><a href="${m.url}" target="_blank" rel="noopener">${esc(m.nombre)} ↗</a></li>` : `<li>${esc(m.nombre)}</li>`)
+
 export function htmlZona(zona) {
   const x = t()
   if (zona === 'trayectoria') {
@@ -127,7 +130,7 @@ export function htmlZona(zona) {
   if (zona === 'trofeos') {
     // Copa en píxeles (sin emojis)
     const copa = `<svg class="copa" viewBox="0 0 16 16" shape-rendering="crispEdges"><path fill="#f2c200" d="M4 2h8v1h2v3h-1v1h-1v1h-1v1h-1v2h1v1h1v2H4v-2h1v-1h1V9H5V8H4V7H3V6H2V3h2zM3 4v1h1V4zm9 0v1h1V4z"/><path fill="#c9962b" d="M7 9h2v2H7zM5 13h6v1H5z"/></svg>`
-    return `<div class="trofeo">${copa}<h3>${esc(x.trofeos.titulo)}</h3><p>${esc(x.trofeos.texto)}</p><ul class="medios">${x.trofeos.medios.map((m) => `<li>${esc(m)}</li>`).join('')}</ul></div>`
+    return `<div class="trofeo">${copa}<h3>${esc(x.trofeos.titulo)}</h3><p>${esc(x.trofeos.texto)}</p><ul class="medios">${x.trofeos.medios.map(medio).join('')}</ul></div>`
   }
   if (zona === 'sobre') {
     return `<p>${esc(x.sobreMi)}</p>`
@@ -211,7 +214,7 @@ function pintarClasico() {
     <section id="cl-stack"><h2>${esc(c.stack)}</h2><div class="cl-stack">${STACK.map((g) => `
       <div><h3>${esc(x.grupos[g.grupo])}</h3>${g.items.map(([n, v]) => `<div class="cl-nivel"><span>${esc(n)}</span><i style="--v:${v * 10}%"></i></div>`).join('')}</div>`).join('')}</div></section>
     <section><h2>${esc(c.prensa)}</h2><div class="cl-prensa"><p><b>${esc(x.trofeos.titulo)}</b>. ${esc(x.trofeos.texto)}</p>
-      <ul>${x.trofeos.medios.map((m) => `<li>${esc(m)}</li>`).join('')}</ul></div></section>
+      <ul>${x.trofeos.medios.map(medio).join('')}</ul></div></section>
     <section id="cl-contacto" class="cl-contacto"><h2>${esc(c.contacto)}</h2><p>${esc(x.contacto.texto)}</p>
       <div class="cl-acciones">
         <a class="cl-btn principal" href="${ENLACES.practicas}">${esc(x.contacto.practicas)}</a>

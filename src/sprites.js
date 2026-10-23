@@ -223,14 +223,21 @@ export function crearDecorado(scene) {
     p(70, 37, 3, 3, '#ffffff'); p(71, 38, 1, 1, '#1b1f27'); p(70, 40, 3, 1, 'rgba(0,0,0,0.25)')
     scene.textures.addCanvas('campo', c)
 
-    // Estadio (144 × 92): pista roja con calles, banquillos a un lado y el campo en el centro
+    // Campo universitario (144 × 92): césped artificial alrededor del campo, valla metálica y dos banquillos
     const [e, ex] = lienzo(144, 92)
     const q = (x, y, w, h, col) => px(ex, x, y, col, w, h)
-    q(0, 0, 144, 92, '#1b1f27'); q(1, 1, 142, 90, '#b5523b')
-    for (const d of [4, 8]) { q(d, d, 144 - d * 2, 1, '#e8c1b0'); q(d, 91 - d, 144 - d * 2, 1, '#e8c1b0'); q(d, d, 1, 92 - d * 2, '#e8c1b0'); q(143 - d, d, 1, 92 - d * 2, '#e8c1b0') }
-    q(12, 12, 120, 68, '#2f7a3c')
+    q(0, 0, 144, 92, '#2f7a3c')
+    for (let x = 0; x < 144; x += 12) q(x, 0, 6, 92, '#347f41')
     ex.drawImage(c, 16, 14)
-    for (const x of [40, 88]) { q(x, 82, 16, 7, '#1b1f27'); q(x + 1, 83, 14, 3, '#8fc4e8'); q(x + 1, 86, 14, 2, '#2f5fb0') } // banquillos
+    // valla: postes y malla alrededor de todo
+    q(0, 0, 144, 2, '#9aa3ad'); q(0, 90, 144, 2, '#9aa3ad'); q(0, 0, 2, 92, '#9aa3ad'); q(142, 0, 2, 92, '#9aa3ad')
+    for (let x = 0; x < 144; x += 3) { q(x, 2, 1, 1, 'rgba(200,206,214,0.55)'); q(x, 88, 1, 1, 'rgba(200,206,214,0.55)') }
+    for (let y = 0; y < 92; y += 3) { q(2, y, 1, 1, 'rgba(200,206,214,0.55)'); q(141, y, 1, 1, 'rgba(200,206,214,0.55)') }
+    for (let x = 0; x < 144; x += 16) { q(x, 0, 2, 4, '#5b6068'); q(x, 88, 2, 4, '#5b6068') }
+    for (let y = 0; y < 92; y += 16) { q(0, y, 4, 2, '#5b6068'); q(140, y, 4, 2, '#5b6068') }
+    q(66, 88, 12, 4, '#2f7a3c') // puerta de la valla
+    // banquillos con techo, en el lado de abajo
+    for (const x of [36, 92]) { q(x, 80, 16, 8, '#1b1f27'); q(x + 1, 81, 14, 3, '#8fc4e8'); q(x + 1, 81, 14, 1, '#cfe8f7'); q(x + 1, 85, 14, 2, '#2f5fb0') }
     scene.textures.addCanvas('estadio', e)
   }
 

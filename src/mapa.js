@@ -9,7 +9,7 @@ export const CAMINO_INICIO = 3 // el camino recorre el pueblo de punta a punta
 // Edificios: x es el centro, «base» es la fila donde apoya. «vida» = diálogo de la historia; «zona» = abre un panel
 export const EDIFICIOS = [
   // Villalpando: casas a lo largo del camino y una segunda fila detrás
-  { clave: 'casa_pueblo', x: 5, base: 18 }, { clave: 'casa_pueblo_2', x: 10, base: 18 }, { clave: 'casa_pueblo', x: 15.5, base: 18 },
+  { clave: 'casa_pueblo', x: 5, base: 18 }, 
   { clave: 'casa_pueblo', x: 15, base: 12.5 },
   { clave: 'casa_pueblo_2', x: 44.5, base: 30.6 }, { clave: 'casa_pueblo', x: 26, base: 31.4 },
   // Plaza Mayor, toda rodeada de casas con soportales: arriba el ayuntamiento con el Bar Silvia a su izquierda
@@ -19,7 +19,7 @@ export const EDIFICIOS = [
   { clave: 'bar_garibalde', x: 45.5, base: 13.5, vida: 'bar_garibalde' }, { clave: 'casa_plaza_2', x: 50.5, base: 13.5 },
   { clave: 'soportal_lado', x: 22.8, base: 18.3 }, { clave: 'soportal_lado_2', x: 45.6, base: 18.3 },
   { clave: 'soportal_sur', x: 27.9, base: 26.4 }, { clave: 'bar_burgos', x: 36, base: 26.4, vida: 'bar_burgos' }, { clave: 'soportal_sur_2', x: 44.4, base: 26.4 },
-  { clave: 'reblan', x: 29, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', vida: 'reblan' },
+  { clave: 'reblan', x: 10.4, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', vida: 'reblan' },
   { clave: 'piso', x: 50.5, base: 18, vida: 'casa' },
   // El instituto, con su camino hasta la puerta
   { clave: 'instituto', x: 36, base: 31.6, vida: 'instituto' },
@@ -49,7 +49,7 @@ export const OBJETOS = [
   { clave: 'muralla', x: 13, base: 27.5 }, { clave: 'muralla', x: 25, base: 27.5 },
   // Plaza Mayor
   { clave: 'fuente', x: 32, base: 15.5, solido: true },
-  { clave: 'furgoneta', x: 34.6, base: 18.4 },
+  { clave: 'furgoneta', x: 15.8, base: 18.5 },
   { clave: 'farola', x: 25.3, base: 18.6 }, { clave: 'farola', x: 41.5, base: 17.6 }, { clave: 'farola', x: 30.2, base: 22.3 },
   { clave: 'banco', x: 36.2, base: 16.4 }, { clave: 'banco', x: 39.6, base: 16.4 }, { clave: 'banco', x: 25.2, base: 21.9 },
   { clave: 'papelera', x: 41.2, base: 16.4 }, { clave: 'macetero', x: 22.5, base: 24.3 },
@@ -77,7 +77,6 @@ export const OBJETOS = [
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
   { clave: 'estadio', x: 104, base: 29, vida: 'futbol' }, { clave: 'grada', x: 104, base: 31.2 },
   { clave: 'foco', x: 99.4, base: 23.6 }, { clave: 'foco', x: 108.6, base: 23.6 }, { clave: 'foco', x: 99.4, base: 29.6 }, { clave: 'foco', x: 108.6, base: 29.6 },
-  { clave: 'marcador', x: 111.8, base: 24.6 },
   // huerto del pueblo con una berenjena gigante
   { clave: 'huerto', x: 9.5, base: 13.6 }, { clave: 'berenjena', x: 12.9, base: 13.8, vida: 'berenjena' },
   { clave: 'avion', x: 118.5, base: 26.6, vida: 'tallin', letrero: 'TALLIN' },
@@ -114,13 +113,13 @@ export const SENDAS = [
 
 // Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
 // Rasgos sacados de sus fotos: pelo, piel, gafas, barba y la ropa que más llevan.
-const amigos = (lista, x0, y0) => lista.map(([nombre, pelo, ropa, extra = {}], i) => ({
-  nombre, x: x0 + (i % 4) * 2.2 + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
+const amigos = (lista, x0, y0, grupo) => lista.map(([nombre, pelo, ropa, extra = {}], i) => ({
+  nombre, grupo, x: x0 + (i % 4) * 2.2 + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
   rasgos: { pelo: 'corto', piel: '#f2c29b', colorPelo: pelo, ropa, ...extra },
 }))
 
 export const PERSONAJES = [
-  { nombre: 'Pedro', x: 29, y: 19.2, rasgos: { pelo: 'calvo', colorPelo: '#9a8a80', piel: '#ebb995', ropa: '#1f2430', pantalon: '#3a4a66', robusto: true, sonrisa: true, zapatillas: '#e9ecef' }, vida: 'pedro' },
+  { nombre: 'Pedro', x: 10.4, y: 19.3, rasgos: { pelo: 'calvo', colorPelo: '#9a8a80', piel: '#ebb995', ropa: '#1f2430', pantalon: '#3a4a66', robusto: true, sonrisa: true, zapatillas: '#e9ecef' }, vida: 'pedro' },
   { nombre: 'Martha', x: 48.8, y: 19.3, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#ebbd99', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', chica: true, bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
   { nombre: 'Dante', x: 52.4, y: 19.3, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', estampado: '#e8e2d6', raya: '#9aa3ad' }, vida: 'dante' },
   ...amigos([
@@ -129,11 +128,11 @@ export const PERSONAJES = [
     ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo', chica: true, estampado: '#ff7fb0', zapatillas: '#f4f4f4' }],
     ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a', tipo: 'sudadera' }],
     ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4', estampado: '#e05a5a', raya: '#9aa3ad' }],
-  ], 62, 21.5),
+  ], 62, 21.5, 'residencia'),
   ...amigos([
     ['Pablo', '#4a3020', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true }],
     ['Héctor', '#4a3020', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4' }],
-  ], 80, 21.5),
+  ], 80, 21.5, 'medac'),
   ...amigos([
     ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' }],
     ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' }],
@@ -144,14 +143,14 @@ export const PERSONAJES = [
     ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', estampado: '#3a7bd5', raya: '#3a7bd5' }],
     ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a', chica: true, zapatillas: '#f4f4f4' }],
     ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' }],
-  ], 100, 21.4),
+  ], 100, 21.4, 'uni'),
 ]
 
 // El recorrido guiado: adónde va Alejandro y qué cuenta (las frases están en historia.js)
 export const RECORRIDO = [
   { x: 20.6, y: 30.6, historia: 'bienvenida' },
   { x: 20.9, y: 29.2, historia: 'pueblo' },
-  { x: 29, y: CAMINO + 1.3, historia: 'reblan', via: [[19, 29.2], [19, CAMINO + 0.5]] },
+  { x: 12.4, y: CAMINO + 1.3, historia: 'reblan', via: [[19, 29.2], [19, CAMINO + 0.5]] },
   { x: 50.5, y: CAMINO + 1.3, historia: 'casa' },
   // al instituto se baja por el camino de la izquierda hasta la puerta
   { x: 36, y: 32.3, historia: 'instituto', via: [[31, CAMINO + 0.5], [31, 32.3]] },

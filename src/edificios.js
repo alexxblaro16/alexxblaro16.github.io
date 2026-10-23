@@ -229,27 +229,34 @@ function reblan() {
 }
 
 function furgoneta() {
-  const [c, ctx] = lienzo(60, 34)
+  // Furgoneta de reparto vista de lado: cabina blanca, caja con el vinilo azul y la onda blanca, y REBLÁN en rojo
+  const [c, ctx] = lienzo(66, 36)
   const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
-  const blanco = '#f2f4f6', azul = '#1f3c9a'
-  p(4, 31, 52, 3, 'rgba(0,0,0,0.2)')
-  // carrocería
-  p(2, 7, 44, 1, NEGRO); p(1, 8, 1, 20, NEGRO); p(2, 8, 44, 20, blanco); p(2, 8, 44, 1, '#ffffff')
-  p(44, 11, 12, 17, blanco); p(44, 10, 9, 1, NEGRO); p(53, 11, 2, 1, NEGRO); p(55, 12, 1, 3, NEGRO); p(56, 15, 1, 13, NEGRO)
-  // cristales
-  p(46, 11, 7, 7, '#33476b'); p(53, 12, 2, 6, '#33476b'); p(47, 12, 2, 3, '#7f9fcf')
-  p(37, 11, 7, 6, '#33476b'); p(38, 12, 2, 2, '#7f9fcf')
-  // vinilo azul con la onda blanca y el nombre
-  p(2, 15, 34, 12, azul)
-  for (let x = 2; x < 36; x++) { const y = 19 + Math.round(2.5 * Math.sin(x / 5)); p(x, y, 1, 2, '#ffffff') }
-  textoCentrado(ctx, 'REBLAN', 19, 9, '#c8202a')
-  p(36, 9, 1, 19, '#c9ced5'); p(39, 19, 3, 1, '#9aa3ad')
-  // faro, parachoques y bajos
-  p(54, 18, 2, 2, '#ffe58a'); p(53, 25, 4, 3, '#9aa3ad'); p(2, 26, 54, 2, '#c9ced5'); p(2, 28, 54, 1, NEGRO)
-  // ruedas
-  for (const cx of [12, 46]) {
-    p(cx - 4, 24, 8, 9, NEGRO); p(cx - 5, 26, 10, 5, NEGRO)
-    p(cx - 2, 26, 4, 4, '#9aa3ad'); p(cx - 1, 27, 2, 2, '#5b6068')
+  const blanco = '#f4f6f8', sombra = '#d6dbe1', azul = '#1f3c9a', azulOsc = '#152a6e'
+  ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.beginPath(); ctx.ellipse(33, 33, 31, 3, 0, 0, Math.PI * 2); ctx.fill()
+  // caja de carga
+  p(2, 4, 44, 1, NEGRO); p(1, 5, 1, 23, NEGRO); p(2, 5, 44, 23, blanco); p(2, 5, 44, 2, '#ffffff'); p(2, 24, 44, 4, sombra)
+  // vinilo azul con la onda
+  p(2, 13, 42, 11, azul); p(2, 21, 42, 3, azulOsc)
+  for (let x = 2; x < 44; x++) { const y = 15 + Math.round(2.5 * Math.sin(x / 6)); p(x, y, 1, 2, '#ffffff'); p(x, y + 2, 1, 1, '#8fb0e8') }
+  // rótulo REBLÁN en rojo con borde amarillo, sobre la parte blanca
+  textoCentrado(ctx, 'REBLAN', 23, 7, '#f2c200'); textoCentrado(ctx, 'REBLAN', 22, 6, '#c8202a')
+  p(26, 4, 1, 1, '#c8202a')
+  // puerta corredera y su tirador
+  p(31, 6, 1, 21, '#b9c0c8'); p(33, 15, 3, 1, '#5b6068')
+  // cabina con morro inclinado
+  p(46, 8, 12, 20, blanco); p(46, 7, 8, 1, NEGRO); p(54, 8, 2, 1, NEGRO); p(56, 9, 2, 2, NEGRO); p(58, 11, 1, 4, NEGRO); p(59, 15, 1, 13, NEGRO)
+  p(56, 11, 2, 4, blanco); p(58, 15, 1, 13, blanco); p(46, 24, 13, 4, sombra)
+  p(47, 9, 7, 7, '#2e4466'); p(48, 10, 2, 3, '#7f9fcf'); p(54, 10, 3, 6, '#2e4466'); p(55, 11, 1, 2, '#7f9fcf') // ventanillas y parabrisas
+  p(45, 11, 2, 3, NEGRO) // retrovisor
+  p(51, 17, 3, 1, '#5b6068') // tirador de la puerta
+  p(58, 18, 2, 3, '#ffe58a'); p(57, 25, 4, 3, '#9aa3ad'); p(1, 25, 2, 3, '#e05a5a') // faro, parachoques y piloto
+  p(2, 28, 57, 1, NEGRO)
+  // ruedas con su paso de rueda
+  for (const cx of [13, 50]) {
+    p(cx - 6, 23, 12, 4, '#2b2f38')
+    p(cx - 4, 25, 8, 10, NEGRO); p(cx - 5, 27, 10, 6, NEGRO)
+    p(cx - 2, 27, 4, 4, '#b9c0c8'); p(cx - 1, 28, 2, 2, '#5b6068')
   }
   return c
 }

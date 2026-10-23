@@ -117,6 +117,15 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Al andar, los brazos se balancean al contrario que las piernas y la animación va algo más rápida.
 - Más casas en el pueblo, en Madrid y en la zona de proyectos.
 
+### 12. Prensa enlazada y amigos que hablan
+- En MedScan (panel de trofeos y modo clásico) cada medio enlaza a su noticia: UDIT, RNE, Za49, Hipertextual, IT User,
+  Revista Byte y Zona Movilidad. Antena 3, El Español, El Periódico de España y El Día de Zamora siguen sin enlace hasta tenerlo.
+- La tecla E vuelve a salir siempre: durante el recorrido se escondía en todo el mapa y ahora solo encima del guía cuando muestra su «!».
+- Todos los amigos tienen frase al pulsar E (de qué conocen a Alejandro), con hueco para una frase propia de cada uno.
+- Campo de fútbol universitario normal: sin pista de atletismo, césped artificial alrededor, valla metálica y banquillos; sin marcador.
+- Furgoneta de Reblán redibujada (cabina, puerta corredera, retrovisor, pasos de rueda, rótulo con borde) y la tienda fuera
+  de la plaza, a la entrada del pueblo junto a la Puerta de la Villa.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

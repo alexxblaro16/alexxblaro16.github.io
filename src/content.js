@@ -86,7 +86,16 @@ export const TEXTOS = {
     trofeos: {
       titulo: 'MedScan · 4.º premio OdiseIA4Good',
       texto: 'Lo que empezó como un hackatón acabó en la tele. Con mi equipo creamos una app que usa IA para que la gente mayor no se líe con la medicación. Yo me encargué del frontend y de conectarlo con el backend.',
-      medios: ['RTVE (entrevista en estudio)', 'Antena 3', 'El Español', 'El Periódico de España', 'El Día de Zamora'],
+      medios: [
+        { nombre: 'UDIT', url: 'https://www.udit.es/proyectos-de-exito/asi-es-medscan-la-app-creada-por-estudiantes-de-udit-premiada-en-odiseia4good/' },
+        { nombre: 'RNE (RTVE)', url: 'https://rneaudio.rtve.es/a/17026607' },
+        { nombre: 'Za49', url: 'https://www.za49.es/zamora/joven-zamora-crea-app-ia-puede-evitar-errores-medicamentos_1_5820325.html' },
+        { nombre: 'Hipertextual', url: 'https://hipertextual.com/tecnologia/toma-medicamentos-ia/' },
+        { nombre: 'IT User', url: 'https://www.ituser.es/tecnologias/2026/04/estudiantes-de-udit-crean-medscan-la-app-que-usa-ia-para-evitar-errores-con-los-medicamentos' },
+        { nombre: 'Revista Byte', url: 'https://revistabyte.es/actualidad-it/app-de-estudiantes-medscan-de-udit/' },
+        { nombre: 'Zona Movilidad', url: 'https://www.zonamovilidad.es/unos-estudiantes-espanoles-crean-una-app-con-ia-que-ayuda-a-evitar-errores-al-tomar-medicamentos' },
+        { nombre: 'Antena 3' }, { nombre: 'El Español' }, { nombre: 'El Periódico de España' }, { nombre: 'El Día de Zamora' },
+      ],
     },
     grupos: { front: 'Frontend', back: 'Backend', datos: 'Datos', herramientas: 'Herramientas' },
     contacto: {
@@ -162,7 +171,16 @@ export const TEXTOS = {
     trofeos: {
       titulo: 'MedScan · 4th prize OdiseIA4Good',
       texto: 'What started as a hackathon ended up on TV. With my team we built an app that uses AI so older people don\'t get their medication mixed up. I was in charge of the front end and connecting it to the back end.',
-      medios: ['RTVE (studio interview)', 'Antena 3', 'El Español', 'El Periódico de España', 'El Día de Zamora'],
+      medios: [
+        { nombre: 'UDIT', url: 'https://www.udit.es/proyectos-de-exito/asi-es-medscan-la-app-creada-por-estudiantes-de-udit-premiada-en-odiseia4good/' },
+        { nombre: 'RNE (RTVE)', url: 'https://rneaudio.rtve.es/a/17026607' },
+        { nombre: 'Za49', url: 'https://www.za49.es/zamora/joven-zamora-crea-app-ia-puede-evitar-errores-medicamentos_1_5820325.html' },
+        { nombre: 'Hipertextual', url: 'https://hipertextual.com/tecnologia/toma-medicamentos-ia/' },
+        { nombre: 'IT User', url: 'https://www.ituser.es/tecnologias/2026/04/estudiantes-de-udit-crean-medscan-la-app-que-usa-ia-para-evitar-errores-con-los-medicamentos' },
+        { nombre: 'Revista Byte', url: 'https://revistabyte.es/actualidad-it/app-de-estudiantes-medscan-de-udit/' },
+        { nombre: 'Zona Movilidad', url: 'https://www.zonamovilidad.es/unos-estudiantes-espanoles-crean-una-app-con-ia-que-ayuda-a-evitar-errores-al-tomar-medicamentos' },
+        { nombre: 'Antena 3' }, { nombre: 'El Español' }, { nombre: 'El Periódico de España' }, { nombre: 'El Día de Zamora' },
+      ],
     },
     grupos: { front: 'Front end', back: 'Back end', datos: 'Data', herramientas: 'Tools' },
     contacto: {
