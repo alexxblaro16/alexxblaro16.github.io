@@ -126,6 +126,10 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - Furgoneta de Reblán redibujada (cabina, puerta corredera, retrovisor, pasos de rueda, rótulo con borde) y la tienda fuera
   de la plaza, a la entrada del pueblo junto a la Puerta de la Villa.
 
+- Frases propias: Martha («Quiero muchísimo a mi hijo»), Dante (el fútbol y su hermano), Hugo y Jorge (el pádel en el Margot),
+  y frases para el resto según lo que hemos hecho juntos (MedScan, los hackatones, Front End II, VirtualpH, PyKV, el piso).
+- Al pulsar E se habla con lo más cercano, no con lo primero de la lista (junto al campo salía la frase del campo en vez de la del amigo).
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

@@ -113,8 +113,8 @@ export const SENDAS = [
 
 // Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
 // Rasgos sacados de sus fotos: pelo, piel, gafas, barba y la ropa que más llevan.
-const amigos = (lista, x0, y0, grupo) => lista.map(([nombre, pelo, ropa, extra = {}], i) => ({
-  nombre, grupo, x: x0 + (i % 4) * 2.2 + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
+const amigos = (lista, x0, y0, grupo) => lista.map(([nombre, pelo, ropa, { frases, ...extra } = {}], i) => ({
+  nombre, grupo, frases, x: x0 + (i % 4) * 2.2 + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
   rasgos: { pelo: 'corto', piel: '#f2c29b', colorPelo: pelo, ropa, ...extra },
 }))
 
@@ -123,26 +123,26 @@ export const PERSONAJES = [
   { nombre: 'Martha', x: 48.8, y: 19.3, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#ebbd99', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', chica: true, bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
   { nombre: 'Dante', x: 52.4, y: 19.3, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', estampado: '#e8e2d6', raya: '#9aa3ad' }, vida: 'dante' },
   ...amigos([
-    ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true, chica: true }],
+    ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true, chica: true , frases: { es: ['De la residencia a compartir piso con Alejandro. Canela, mi perra, también se apunta.'], en: ['From the halls of residence to sharing a flat with Alejandro. Canela, my dog, is in too.'] } }],
     ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera', chica: true, zapatillas: '#f4f4f4' }],
-    ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo', chica: true, estampado: '#ff7fb0', zapatillas: '#f4f4f4' }],
-    ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a', tipo: 'sudadera' }],
-    ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4', estampado: '#e05a5a', raya: '#9aa3ad' }],
+    ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo', chica: true, estampado: '#ff7fb0', zapatillas: '#f4f4f4' , frases: { es: ['Empezamos en la misma residencia y ahora compartimos piso. Y seguimos aguantándonos.'], en: ['We started out in the same halls and now we share a flat. And we still put up with each other.'] } }],
+    ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a', tipo: 'sudadera' , frases: { es: ['¿Vamos a jugar un pádel?'], en: ['Fancy a game of padel?'] } }],
+    ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4', estampado: '#e05a5a', raya: '#9aa3ad' , frases: { es: ['Si vienes tú, ya somos cuatro para el pádel: Hugo, Alejandro, tú y yo. Esta noche, en el Margot.'], en: ['If you come, that makes four for padel: Hugo, Alejandro, you and me. Tonight, at the Margot.'] } }],
   ], 62, 21.5, 'residencia'),
   ...amigos([
     ['Pablo', '#4a3020', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true }],
     ['Héctor', '#4a3020', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4' }],
   ], 80, 21.5, 'medac'),
   ...amigos([
-    ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' }],
-    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' }],
-    ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' }],
-    ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: 'perilla' }],
-    ['Iván', '#7a5a3e', '#1f2124', { pelo: 'degradado', piel: '#ecbf9c', franja: '#8a9099', pantalon: '#3a3f48', zapatillas: '#f4f4f4' }],
-    ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' }],
+    ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' , frases: { es: ['Hicimos MedScan juntos y seguimos en el mismo equipo para los hackatones.'], en: ["We built MedScan together and we're still on the same hackathon team."] } }],
+    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' , frases: { es: ['En el equipo de los hackatones yo hago de Product Owner. Alejandro, del front.'], en: ["On our hackathon team I'm the Product Owner. Alejandro takes the front end."] } }],
+    ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' , frases: { es: ['MedScan empezó como un hackatón y acabamos saliendo en la tele.'], en: ['MedScan started as a hackathon and we ended up on TV.'] } }],
+    ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: 'perilla' , frases: { es: ['Yo me encargo del back y Alejandro del front. Así nos entendemos.'], en: ["I handle the back end and Alejandro the front end. That's how we get along."] } }],
+    ['Iván', '#7a5a3e', '#1f2124', { pelo: 'degradado', piel: '#ecbf9c', franja: '#8a9099', pantalon: '#3a3f48', zapatillas: '#f4f4f4' , frases: { es: ['Soy de Lanzarote. En Front End II hicimos juntos toda la parte de cuentas.'], en: ["I'm from Lanzarote. In Front End II we built the whole accounts module together."] } }],
+    ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' , frases: { es: ['Soy el lead de VirtualpH, el proyecto con el CSIC. Las pull requests de Alejandro las reviso yo.'], en: ["I'm the lead on VirtualpH, our project with CSIC. I'm the one who reviews Alejandro's pull requests."] } }],
     ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', estampado: '#3a7bd5', raya: '#3a7bd5' }],
-    ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a', chica: true, zapatillas: '#f4f4f4' }],
-    ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' }],
+    ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a', chica: true, zapatillas: '#f4f4f4' , frases: { es: ['Yo también estoy en el proyecto del CSIC. Alejandro se encarga de que el front quede bien.'], en: ["I'm on the CSIC project too. Alejandro makes sure the front end looks right."] } }],
+    ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' , frases: { es: ['PyKV, el equipo de fútbol de la uni… Alejandro y yo coincidimos en todo.'], en: ['PyKV, the uni football team… Alejandro and I end up together in everything.'] } }],
   ], 100, 21.4, 'uni'),
 ]
 

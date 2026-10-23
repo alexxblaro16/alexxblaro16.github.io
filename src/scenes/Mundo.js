@@ -431,7 +431,7 @@ export default class Mundo extends Phaser.Scene {
     if (cerca(this.jerry, 24)) return { x: this.jerry.x, y: this.jerry.y - 18 }
     if (cerca(this.dantePW, 22)) return { x: this.dantePW.x, y: this.dantePW.y - 34 }
     if (cerca(this.guia, 24) && !this.guiaEnMarcha) return { x: this.guia.x, y: this.guia.y - 34, guia: true }
-    const cosa = this.interactivos.find((o) => cerca(o, o.radio))
+    const cosa = this.interactivos.filter((o) => cerca(o, o.radio)).sort((a, b) => Phaser.Math.Distance.Between(j.x, j.y, a.x, a.y) - Phaser.Math.Distance.Between(j.x, j.y, b.x, b.y))[0] // lo más cercano, no lo primero de la lista
     if (!cosa) return null
     // los NPC tienen getters (se mueven); los edificios y objetos, un punto fijo junto a la puerta
     return { x: cosa.x, y: cosa.y - (Object.getOwnPropertyDescriptor(cosa, 'x')?.get ? 34 : 26) }
@@ -449,7 +449,7 @@ export default class Mundo extends Phaser.Scene {
       if (this.paso < RECORRIDO.length) return this.contarPaso()
       return decir('Alejandro', frases('final').slice(1))
     }
-    const cosa = this.interactivos.find((o) => cerca(o, o.radio))
+    const cosa = this.interactivos.filter((o) => cerca(o, o.radio)).sort((a, b) => Phaser.Math.Distance.Between(j.x, j.y, a.x, a.y) - Phaser.Math.Distance.Between(j.x, j.y, b.x, b.y))[0] // lo más cercano, no lo primero de la lista
     if (!cosa) return
     if (cosa.arcade) return abrirArcade(cosa.arcade)
     if (cosa.zona) return abrirPanel(cosa.zona)
