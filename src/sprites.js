@@ -12,7 +12,7 @@ export function crearAnimaciones(scene, clave) {
   for (const [dir, base] of Object.entries(dirs)) {
     const nombre = `${clave}-${dir}`
     if (scene.anims.exists(nombre)) scene.anims.remove(nombre)
-    scene.anims.create({ key: nombre, frames: [base + 1, base, base + 2, base].map((f) => ({ key: clave, frame: f })), frameRate: 8, repeat: -1 })
+    scene.anims.create({ key: nombre, frames: [base + 1, base, base + 2, base].map((f) => ({ key: clave, frame: f })), frameRate: 10, repeat: -1 })
   }
 }
 

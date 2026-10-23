@@ -105,6 +105,18 @@ Campos, MEDAC Albalá y la UDIT con su terraza.
 - **Mapa más lleno**: más casas en el pueblo y en la zona de proyectos, bloques y un parque con fuente en Madrid.
 - En el modo clásico, «+10 proyectos».
 
+### 11. La Plaza Mayor de verdad
+- La plaza queda **toda rodeada de casas con soportales**: arriba el ayuntamiento con el **Bar Silvia** a su izquierda
+  y **Garibalde** a su derecha, casas a los lados y, enfrente, los soportales del **Bar Burgos** con su terraza.
+  Cada bar tiene su rótulo y luz dentro de los arcos.
+- El piso de la familia sale de la plaza, con las banderas al lado.
+- **Instituto accesible**: se baja por un camino a la izquierda hasta la puerta, y Alejandro se para delante de ella.
+- **UDIT** más alargada, con dos alas a los lados y sin la terraza.
+- **Estaciones de BiciMAD** en Madrid y junto a la uni («la cojo mucho para ir a clase»).
+- Las referencias ya no se atraviesan (huerto, remolachas, café Java, cartel 404) y los árboles no se plantan encima de caminos.
+- Al andar, los brazos se balancean al contrario que las piernas y la animación va algo más rápida.
+- Más casas en el pueblo, en Madrid y en la zona de proyectos.
+
 ## Ideas para más adelante
 
 - Interiores: entrar en algunos edificios.

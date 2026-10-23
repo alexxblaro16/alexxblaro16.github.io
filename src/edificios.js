@@ -356,36 +356,38 @@ function medac() {
 
 // ---------------------------------------------------------------------------------------------- UDIT
 function udit() {
-  const [c, ctx] = lienzo(176, 88)
+  // Cuerpo central con el letrero y dos alas más bajas a los lados: más alargada, sin la terraza
+  const [c, ctx] = lienzo(208, 88)
   const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
   const blanco = '#eef1f4'
-  // edificio principal
-  p(0, 0, 128, 4, '#cfd5db'); p(0, 0, 128, 1, NEGRO)
-  p(0, 4, 128, 84, blanco); p(0, 4, 2, 84, '#ffffff'); p(125, 4, 3, 84, '#c9d0d7')
-  textoGrande(ctx, 'UDIT', 64, 5, '#15171c', 2)
-  for (let y = 18; y < 70; y += 9) {
-    for (let x = 6; x < 122; x += 8) {
-      p(x, y, 7, 8, ((x + y) / 8) % 2 < 1 ? '#9fc4dd' : '#8db6d3')
-      if ((x * 7 + y) % 5 === 0) p(x + 1, y + 1, 2, 1, '#d6ecfa')
+  const cristal = (x0, y0, w, h) => {
+    for (let y = y0; y < y0 + h; y += 9) {
+      for (let x = x0; x < x0 + w; x += 8) {
+        p(x, y, 7, 8, ((x + y) / 8) % 2 < 1 ? '#9fc4dd' : '#8db6d3')
+        if ((x * 7 + y) % 5 === 0) p(x + 1, y + 1, 2, 1, '#d6ecfa')
+      }
+      p(x0, y + 8, w, 1, '#2b2f38')
     }
-    p(6, y + 8, 116, 1, '#2b2f38')
+    for (let x = x0 - 1; x < x0 + w; x += 8) p(x, y0, 1, h, '#2b2f38')
+    p(x0 - 1, y0 - 1, w + 1, 1, '#2b2f38')
   }
-  for (let x = 5; x < 123; x += 8) p(x, 18, 1, 52, '#2b2f38')
-  p(5, 17, 118, 1, '#2b2f38')
-  p(60, 14, 5, 74, '#15171c') // aleta negra
-  // planta baja
-  p(4, 72, 120, 14, '#3d4c5c'); p(4, 72, 120, 1, '#15171c')
-  for (let x = 6; x < 122; x += 10) { p(x, 74, 8, 12, '#5c7389'); p(x + 1, 75, 2, 4, '#9fc4dd') }
-  p(66, 72, 16, 16, '#15171c'); p(68, 74, 12, 14, '#33475e'); p(73, 74, 1, 14, '#15171c')
-  p(0, 86, 128, 2, '#9aa3ad')
-  // terraza con pérgola blanca, suelo de damero y sillas de colores
-  for (let y = 70; y < 88; y += 4) for (let x = 128; x < 176; x += 4) p(x, y, 4, 4, ((x - 128) / 4 + (y - 70) / 4) % 2 ? '#f4f4f4' : '#2b2f38')
-  for (const x of [131, 151, 172]) p(x, 46, 1, 30, '#2b2f38')
-  p(128, 40, 48, 7, '#f4f6f8'); p(128, 46, 48, 1, '#9aa3ad'); p(128, 40, 48, 1, '#ffffff')
-  for (let y = 41; y < 46; y += 2) for (let x = 129 + (y % 4); x < 176; x += 4) p(x, y, 1, 1, '#c3cbd3')
-  const silla = (x, col) => { p(x, 74, 3, 1, col); p(x, 71, 1, 4, col); p(x, 75, 1, 3, col); p(x + 2, 75, 1, 3, col) }
-  silla(134, '#e05a5a'); silla(142, '#2fb8a8'); silla(156, '#ff8fb0'); silla(164, '#e05a5a')
-  for (const x of [138, 160]) { p(x, 75, 5, 1, '#e9ecef'); p(x + 2, 76, 1, 3, '#9aa3ad') }
+  const plantaBaja = (x0, w) => {
+    p(x0, 72, w, 14, '#3d4c5c'); p(x0, 72, w, 1, '#15171c')
+    for (let x = x0 + 2; x < x0 + w - 8; x += 10) { p(x, 74, 8, 12, '#5c7389'); p(x + 1, 75, 2, 4, '#9fc4dd') }
+  }
+  for (const x0 of [0, 168]) {
+    p(x0, 16, 40, 72, NEGRO); p(x0 + 1, 17, 38, 71, blanco); p(x0 + 1, 17, 38, 3, '#cfd5db')
+    cristal(x0 + 5, 24, 30, 45)
+    plantaBaja(x0 + 3, 34)
+  }
+  p(40, 0, 128, 4, '#cfd5db'); p(40, 0, 128, 1, NEGRO)
+  p(40, 4, 128, 84, blanco); p(40, 4, 2, 84, '#ffffff'); p(165, 4, 3, 84, '#c9d0d7')
+  textoGrande(ctx, 'UDIT', 104, 5, '#15171c', 2)
+  cristal(46, 18, 116, 52)
+  p(100, 14, 5, 74, '#15171c') // aleta negra
+  plantaBaja(44, 120)
+  p(106, 72, 16, 16, '#15171c'); p(108, 74, 12, 14, '#33475e'); p(113, 74, 1, 14, '#15171c')
+  p(0, 86, 208, 2, '#9aa3ad')
   return c
 }
 
@@ -947,6 +949,65 @@ function bicho() {
   return c
 }
 
+// ---------------------------------------------------------------------------------------------- casas con soportales y bares
+// Dos plantas con balcones, soportales abajo y, si es un bar, su rótulo encima de los arcos y luz dentro
+function casaBar(pared, nombre, ancho = 48) {
+  return () => {
+    const [c, ctx] = lienzo(ancho, 60)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    tejado(ctx, 0, 2, ancho, 9, '#a84a30')
+    p(0, 13, ancho, 47, pared); p(0, 13, ancho, 2, oscurecer(pared, 0.8)); p(0, 15, 2, 45, aclarar(pared, 0.2)); p(ancho - 3, 15, 3, 45, oscurecer(pared, 0.88))
+    for (let x = 6; x < ancho - 10; x += 16) {
+      p(x, 17, 10, 14, '#f4f1ea'); p(x + 1, 18, 8, 12, '#2a3440'); p(x + 1, 18, 8, 4, '#3d4c5c'); p(x + 5, 18, 1, 12, '#f4f1ea')
+      p(x - 2, 31, 14, 1, '#bfb5a0'); p(x - 2, 28, 14, 1, NEGRO)
+      for (let b = x - 2; b < x + 12; b += 2) p(b, 29, 1, 2, NEGRO)
+      p(x + 1, 27, 2, 1, '#e05a5a'); p(x + 6, 27, 2, 1, '#f6e05e')
+    }
+    if (nombre) {
+      const w = anchoTexto(nombre) + 8, x0 = Math.round(ancho / 2 - w / 2)
+      p(x0, 33, w, 9, NEGRO); p(x0 + 1, 34, w - 2, 7, '#24334f'); textoCentrado(ctx, nombre, ancho / 2, 35, '#f6e05e')
+    }
+    p(0, 43, ancho, 1, aclarar(pared, 0.3)); p(0, 44, ancho, 1, oscurecer(pared, 0.78))
+    for (let x = 0; x < ancho; x += 16) {
+      const ox = x + 4
+      p(ox, 49, 12, 11, '#6b5843'); p(ox + 1, 47, 10, 2, '#6b5843'); p(ox + 3, 46, 6, 1, '#6b5843')
+      p(ox, 49, 12, 3, '#4a3c2e'); p(ox + 1, 47, 10, 2, '#4a3c2e')
+      if (nombre) { p(ox + 2, 52, 8, 6, '#c9a26a'); p(ox + 3, 53, 2, 3, '#7a5232'); p(ox + 7, 53, 2, 3, '#3d7be0') } // luz y botellas
+      p(x, 45, 4, 15, pared); p(x, 45, 1, 15, aclarar(pared, 0.25)); p(x + 3, 45, 1, 15, oscurecer(pared, 0.82))
+    }
+    p(ancho - 4, 45, 4, 15, pared); p(ancho - 1, 45, 1, 15, oscurecer(pared, 0.82))
+    return c
+  }
+}
+
+// Mesa de terraza con su sombrilla
+function mesaBar() {
+  const [c, ctx] = lienzo(18, 20)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 0, 16, 4, NEGRO); for (let x = 2; x < 16; x += 4) p(x, 1, 2, 2, '#e05a5a'); for (let x = 4; x < 16; x += 4) p(x, 1, 2, 2, '#f4f4f0')
+  p(8, 4, 2, 9, '#5b6068')
+  p(3, 12, 12, 3, NEGRO); p(4, 12, 10, 2, '#e9ecef'); p(8, 15, 2, 4, '#5b6068')
+  p(0, 13, 3, 6, '#7a5232'); p(15, 13, 3, 6, '#7a5232')
+  p(2, 18, 14, 2, 'rgba(0,0,0,0.18)')
+  return c
+}
+
+// Estación de BiciMAD: tótem con pantalla y tres bicis ancladas
+function bicimad() {
+  const [c, ctx] = lienzo(48, 28)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 25, 48, 3, '#9aa3ad'); p(0, 25, 48, 1, '#c3cbd3')
+  p(2, 2, 9, 23, NEGRO); p(3, 3, 7, 21, '#eef1f4'); p(4, 5, 5, 6, '#3d7be0'); p(5, 6, 3, 1, '#9fc4f0'); p(4, 14, 5, 2, '#c8202a'); p(3, 3, 7, 1, '#ffffff')
+  const rueda = (x, y) => { p(x + 1, y, 4, 1, NEGRO); p(x, y + 1, 1, 4, NEGRO); p(x + 5, y + 1, 1, 4, NEGRO); p(x + 1, y + 5, 4, 1, NEGRO) }
+  for (const x of [14, 25, 36]) {
+    p(x + 4, 12, 2, 13, '#6a717c') // anclaje
+    rueda(x, 18); rueda(x + 7, 18)
+    p(x + 3, 17, 8, 2, '#eef1f4'); p(x + 3, 18, 8, 1, '#3d7be0'); p(x + 5, 14, 1, 4, '#eef1f4'); p(x + 4, 13, 3, 1, NEGRO); p(x + 10, 14, 1, 4, '#eef1f4'); p(x + 9, 13, 3, 1, '#9aa3ad')
+    p(x + 2, 16, 3, 2, '#c8202a') // cesta
+  }
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -958,7 +1019,9 @@ export function crearEdificios(scene) {
     puerta_villa: puertaVilla, muralla, reblan, furgoneta, soportales: plazaMayor, instituto, medac, udit, farola,
     casa_plaza_1: casaPlaza('#e3b98a'), casa_plaza_2: casaPlaza('#d9a184'), casa_plaza_3: casaPlaza('#ecdcb0'),
     banco, papelera, macetero, puesto, coche_rojo: coche('#c8302a'), coche_azul: coche('#2f5fb0'), coche_blanco: coche('#e9ecef'),
-    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, recreativos, foco, marcador, remolachas, gelatina, taza_jefe: tazaJefe,
+    farola_moderna: farolaModerna, aparcabicis, arbusto, casa_pina: casaPina, casa_roca: casaRoca, casa_cabeza: casaCabeza, palmera, quiosco, laguna: laguna(0), laguna_1: laguna(1), laguna_2: laguna(2), medusa, muelle, banderas: banderas(0), banderas_1: banderas(1), avion, flores, arbol_plaza: arbolPlaza, huerto, berenjena, grada, banquillo, recreativos, foco, marcador, mesa_bar: mesaBar, bicimad,
+    bar_silvia: casaBar('#e8c99a', 'BAR SILVIA'), bar_garibalde: casaBar('#ecdcb0', 'GARIBALDE'), bar_burgos: casaBar('#e3b98a', 'BAR BURGOS', 96),
+    soportal_lado: casaBar('#d9a184', null), soportal_lado_2: casaBar('#ecdcb0', null), soportal_sur: casaBar('#ecdcb0', null), soportal_sur_2: casaBar('#d9a184', null), remolachas, gelatina, taza_jefe: tazaJefe,
     poste_scranton: posteScranton, pato, cartel404, taza_java: tazaJava, bicho,
     senal_villalpando: senal('VILLALPANDO', false), senal_fin_villalpando: senal('VILLALPANDO', true), senal_madrid: senal('MADRID', false),
     maquina_serpiente: maquina('#1f7a46', 'SNAKE', (p) => { p(1, 2, 6, 1, '#2fbf71'); p(6, 2, 1, 4, '#2fbf71'); p(6, 5, 4, 1, '#2fbf71'); p(10, 6, 1, 1, '#f2c200') }),

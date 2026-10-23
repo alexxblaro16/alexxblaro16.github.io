@@ -414,11 +414,15 @@ function brazos(p, C, dir, paso, r) {
     p(mano[0], mano[1], 2, 2, C.S); p(mano[0] + 1, mano[1] + 1, 1, 1, C.s)
     return
   }
-  for (const [x, sombra] of r.robusto ? [[3, 3], [19, 20]] : [[4, 4], [18, 19]]) {
-    p(x, 18, 2, corta ? 2 : 5, C.T); p(sombra, 18, 1, corta ? 2 : 5, C.t)
-    if (corta) { p(x, 19, 2, 1, C.t); p(x, 20, 2, 3, C.S); p(sombra, 20, 1, 3, C.s) }
-    else p(x, 22, 2, 1, C.t) // puño de la manga larga
-    p(x, 23, 2, 1, C.S); p(sombra, 23, 1, 1, C.s)
+  const lados = r.robusto ? [[3, 3, 'izq'], [19, 20, 'der']] : [[4, 4, 'izq'], [18, 19, 'der']]
+  for (const [x, sombra, lado] of lados) {
+    // al andar, el brazo contrario a la pierna que avanza va hacia delante (un píxel más abajo)
+    const d = paso === 0 ? 0 : (paso === 1) === (lado === 'der') ? 1 : -1
+    const q = (xx, y, w, h, c) => p(xx, y + d, w, h, c)
+    q(x, 18, 2, corta ? 2 : 5, C.T); q(sombra, 18, 1, corta ? 2 : 5, C.t)
+    if (corta) { q(x, 19, 2, 1, C.t); q(x, 20, 2, 3, C.S); q(sombra, 20, 1, 3, C.s) }
+    else q(x, 22, 2, 1, C.t) // puño de la manga larga
+    q(x, 23, 2, 1, C.S); q(sombra, 23, 1, 1, C.s)
   }
 }
 

@@ -183,7 +183,7 @@ export default class Mundo extends Phaser.Scene {
         const borde = y < 4 || y > ALTO - 3 || x < 2 || x > ANCHO - 3
         if ((borde && azar() > 0.15) || (!borde && azar() > 0.9)) {
           const ax = x + (azar() - 0.5)
-          if (!borde && this.ocupado(ax, y)) continue
+          if (this.ocupado(ax, y)) continue
           const n = ruidoArboles(x, y, 5)
           const especie = x < 50 ? (n < 0.45 ? 'chopo' : n < 0.75 ? 'arbol' : 'pino') : borde ? (n < 0.5 ? 'pino' : n < 0.8 ? 'arbol' : 'chopo') : (n < 0.6 ? 'arbol' : n < 0.8 ? 'pino' : 'chopo')
           this.add.image(ax * T, y * T, especie).setOrigin(0.5, 1).setDepth(y * T)
@@ -230,11 +230,12 @@ export default class Mundo extends Phaser.Scene {
       } else if (['gelatina', 'taza_jefe'].includes(o.clave)) {
         img.setDepth(o.base * T + 30)
       } else if (['taza_java', 'cartel404'].includes(o.clave)) {
+        this.solido(o.x * T - 4, o.base * T - 5, 8, 5)
         // objetos pequeños: sin colisión
       } else if (o.clave.startsWith('senal_') || o.clave === 'foco' || o.clave === 'poste_scranton') {
         this.solido(o.x * T - 3, o.base * T - 4, 6, 4)
-      } else if (o.clave === 'huerto') {
-        img.setDepth(-480) // se puede pisar entre los surcos
+      } else if (o.clave === 'huerto' || o.clave === 'remolachas') {
+        this.solido(o.x * T - img.width / 2 + 1, o.base * T - img.height + 4, img.width - 2, img.height - 6)
       } else if (o.clave === 'laguna') {
         this.laguna(img, o)
       } else if (o.clave === 'banderas') {
@@ -247,7 +248,7 @@ export default class Mundo extends Phaser.Scene {
         img.setDepth(o.base * T + 40) // pegado a la pared de un edificio
       } else if (o.clave === 'arbusto' || o.clave === 'flores') {
         // se puede pisar
-      } else if (['farola', 'farola_moderna', 'veleta', 'papelera', 'palmera', 'arbol_plaza'].includes(o.clave)) {
+      } else if (['farola', 'farola_moderna', 'veleta', 'papelera', 'palmera', 'arbol_plaza', 'mesa_bar'].includes(o.clave)) {
         this.solido(o.x * T - 3, o.base * T - 5, 6, 5)
       } else if (o.clave !== 'cartel' && o.clave !== 'bloque') {
         this.solido(o.x * T - img.width / 2 + 2, o.base * T - img.height / 2, img.width - 4, img.height / 2)
@@ -323,7 +324,7 @@ export default class Mundo extends Phaser.Scene {
     })
 
     // Palomas que picotean y dan saltitos por la plaza y la terraza de la uni
-    for (const [x0, y0, n] of [[33, 22.5, 4], [38, 17.2, 3], [124, 22.4, 2]]) {
+    for (const [x0, y0, n] of [[27.5, 21.3, 3], [38, 17.2, 3], [124, 22.4, 2]]) {
       for (let i = 0; i < n; i++) {
         const pal = this.add.sprite((x0 + i * 1.3) * T, (y0 + (i % 2) * 0.6) * T, 'paloma', 0).setOrigin(0.5, 1).setDepth(y0 * T)
         if (i % 2) pal.setFlipX(true)
