@@ -592,6 +592,8 @@ export default class Mundo extends Phaser.Scene {
   ventanasNoche() {
     this.ventanas = []
     const claves = new Set([...EDIFICIOS.map((e) => e.clave), 'recreativos', 'quiosco', 'casa_pina', 'casa_cabeza'])
+    // casas cuya piedra o pared se confunde con cristal: solo se encienden los colores de sus ventanas
+    const soloVentanas = { casa_cabeza: ['127,200,255', '214,236,250'] }
     for (const clave of claves) {
       const nombre = `${clave}_luces`
       if (!this.textures.exists(nombre)) {
@@ -601,7 +603,7 @@ export default class Mundo extends Phaser.Scene {
         const datos = ctx.getImageData(0, 0, img.width, img.height), d = datos.data
         for (let i = 0; i < d.length; i += 4) {
           const r = d[i], g = d[i + 1], b = d[i + 2], x = (i / 4) % img.width, y = Math.floor(i / 4 / img.width)
-          const cristal = d[i + 3] > 200 && ((b - r > 30 && b > 120 && g > r) || (b - r > 10 && b - r < 36 && b > 55 && b < 110 && g >= r - 4))
+          const cristal = soloVentanas[clave] ? d[i + 3] > 200 && soloVentanas[clave].includes(`${r},${g},${b}`) : d[i + 3] > 200 && ((b - r > 30 && b > 120 && g > r) || (b - r > 10 && b - r < 36 && b > 55 && b < 110 && g >= r - 4))
           const encendida = ((Math.floor(x / 9) * 7 + Math.floor(y / 11) * 13 + clave.length) % 4) !== 0
           if (cristal && encendida) { const k = (r + g + b) / 765; d[i] = 255; d[i + 1] = 200 + k * 40; d[i + 2] = 110 + k * 60; d[i + 3] = 255 } else d[i + 3] = 0
         }
@@ -609,8 +611,11 @@ export default class Mundo extends Phaser.Scene {
         this.textures.addCanvas(nombre, c)
       }
     }
-    for (const e of EDIFICIOS) this.ventanas.push(this.add.image(e.x * T, e.base * T, `${e.clave}_luces`).setOrigin(0.5, 1).setDepth(9740).setAlpha(0))
-    for (const o of OBJETOS) if (claves.has(o.clave)) this.ventanas.push(this.add.image(o.x * T, o.base * T, `${o.clave}_luces`).setOrigin(0.5, 1).setDepth(9740).setAlpha(0))
+    // la capa de luces va justo encima de su edificio (no de todo): así el jugador que pasa por delante la tapa
+    // y el que pasa por detrás queda oculto, como con el propio edificio
+    const capa = (x, base, clave) => { const v = this.add.image(x * T, base * T, `${clave}_luces`).setOrigin(0.5, 1).setDepth(base * T + 0.5).setAlpha(0); v.esLuz = true; this.ventanas.push(v) }
+    for (const e of EDIFICIOS) capa(e.x, e.base, e.clave)
+    for (const o of OBJETOS) if (claves.has(o.clave)) capa(o.x, o.base, o.clave)
   }
 
   // Momento del día de 0 a 1 y cuánto es de noche (0 = pleno día, 1 = noche cerrada)
@@ -646,7 +651,7 @@ export default class Mundo extends Phaser.Scene {
     const mundo = mezcla(n), gente = mezcla(n * 0.55), yo = mezcla(n * 0.25)
     const personas = new Set([this.guia, this.dantePW, this.jerry, ...this.npcs, ...(this.gente || [])])
     for (const o of this.children.list) {
-      if (!o.setTint || o.blendMode !== Phaser.BlendModes.NORMAL || o.depth >= 9740) continue
+      if (!o.setTint || o.esLuz || o.blendMode !== Phaser.BlendModes.NORMAL || o.depth >= 9740) continue
       o.setTint(o === this.jugador || o === this.nubeJugador ? yo : personas.has(o) ? gente : mundo)
     }
   }

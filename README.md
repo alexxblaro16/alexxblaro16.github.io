@@ -1,6 +1,6 @@
 # alejandro.blanco()
 
-[![Vídeo del portfolio: intro de terminal, creador de personaje, Villalpando, la UDIT por dentro, la noche y los penaltis](docs/portfolio.gif)](https://alexxblaro16.github.io/video/portfolio.mp4)
+[![Vídeo del portfolio: intro de terminal, creador de personaje, Villalpando, su casa y la UDIT por dentro, la noche, los minijuegos y las siete esferas](docs/portfolio.gif)](https://alexxblaro16.github.io/video/portfolio.mp4)
 
 **[Jugar en alexxblaro16.github.io](https://alexxblaro16.github.io)** · [ver el vídeo con sonido](https://alexxblaro16.github.io/video/portfolio.mp4)
 

@@ -208,6 +208,12 @@ Tras probar la versión 17, Alejandro pidió:
   aún), y la luz de las farolas va en el suelo, así no borra a nadie.
 - En el modo clásico, el Alejandro en píxeles se da la vuelta cuando anda hacia atrás.
 
+- **Luces de noche bien colocadas**: las ventanas encendidas iban por encima de todo y tapaban al jugador; ahora van a la
+  altura de su edificio (delante de él se te ve, detrás quedas oculto). La casa-cabeza de piedra ya no se enciende
+  entera: solo sus dos ventanas.
+- **Vídeo de 32 s**: suma tu casa, la entrada de la UDIT con los profes, la planta 3 (git push y git pull), Bit Drop,
+  la nube y el deseo de las esferas.
+
 ## Ideas para más adelante
 
 - Dominio propio.
