@@ -1,5 +1,9 @@
 # alejandro.blanco()
 
+[![Vídeo del portfolio: intro de terminal, creador de personaje, Villalpando, la UDIT por dentro, la noche y los penaltis](docs/portfolio.gif)](https://alexxblaro16.github.io/video/portfolio.mp4)
+
+**[Jugar en alexxblaro16.github.io](https://alexxblaro16.github.io)** · [ver el vídeo con sonido](https://alexxblaro16.github.io/video/portfolio.mp4)
+
 Portfolio de **Alejandro Blanco Rodríguez**, desarrollador full stack junior, hecho como un videojuego de pixel art:
 creas tu personaje, entras en Villalpando por la Puerta de la Villa y Alejandro te enseña su vida, sus proyectos y su
 stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con foto, proyectos, trayectoria, stack y contacto, y el CV y el contacto están siempre a mano.
@@ -10,25 +14,31 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
 ## Qué tiene
 
 - **Intro de terminal**, menú (continuar, nueva partida, modo clásico, opciones y créditos) y **creador de personaje**
-  (chico o chica, nombre, piel, once peinados, color de pelo, barba, prenda, colores, corte, zapatillas, gafas, cadena y sonrisa),
+  (chico o chica, nombre, piel, doce peinados, color de pelo, barba, ocho prendas, dibujo en el pecho, colores, corte,
+  zapatillas, gorra, gorro o cinta, gafas, cascos, mochila, cadena y sonrisa),
   con vista previa animada que se puede girar y un botón de personaje aleatorio.
 - **Recorrido guiado**: Alejandro va delante y cuenta cada etapa (Villalpando, el instituto, la residencia en Madrid,
   MEDAC, las prácticas en Anexia, la UDIT, el Erasmus, los hackatones y DANTE P.W.). Se puede saltar en cualquier momento.
 - **Mapa de su vida en píxeles**, con sitios dibujados a partir de fotos reales: la Puerta de la Villa (que se cruza
   por el arco), la Plaza Mayor con sus soportales, Reblán y su furgoneta, el IES Tierra de Campos, MEDAC Albalá y la UDIT.
+- **Edificios por dentro**: la casa de la familia (su cuarto y el salón), la tienda Reblán, el aula del MEDAC y la UDIT
+  (la entrada con sus profes, los tornos y el ascensor a la planta 3, con sus clases).
+- **Día y noche**: un ciclo de 6 minutos con ventanas y farolas que se encienden (o un botón para cambiarlo al momento).
 - **Personajes que pasean por su zona**: familia y amigos, con su nombre de pila al pasar el ratón.
 - **Paneles** de trayectoria, proyectos (con repositorio y demo), trofeos, stack y contacto, y **logros** al visitarlos.
-- **Recreativos** con cuatro minijuegos jugables (serpiente, nave, rompe-ladrillos y un laberinto propio).
+- **Minijuegos**: cuatro recreativas (serpiente, nave, rompe-ladrillos y un laberinto propio), penaltis en el campo
+  de fútbol (con tiro relámpago) y Bit Drop, un juego propio de bloques que caen, en la planta 3 de la UDIT.
 - **Secretos**: el robot Jerry, un bloque de Minecraft, DANTE P.W. (que te sigue si se lo pides), el código Konami
-  y guiños a la programación, a The Office, a Bob Esponja, a Batman y a Spider-Man.
-- **Español e inglés**, sonido chiptune (apagado por defecto), controles táctiles en el móvil y la partida guardada
-  en el navegador.
+  y guiños a la programación, a The Office, a Bob Esponja, a Batman, a Spider-Man, a Dragon Ball (siete esferas
+  escondidas y una nube que te lleva volando), a Inazuma Eleven y a Mickey Mouse.
+- **Español e inglés**, siete estilos de música chiptune (apagada por defecto), pantalla completa y palanca táctil en el
+  móvil, y la partida guardada en el navegador.
 
 ## Controles
 
 | Acción | Teclado | Móvil |
 | --- | --- | --- |
-| Moverse | WASD o flechas | cruceta |
+| Moverse | WASD o flechas | palanca (pon el pulgar en la mitad izquierda) |
 | Hablar / entrar | E, espacio o Enter | botón A |
 | Menús | flechas + Enter o ratón | toque |
 
