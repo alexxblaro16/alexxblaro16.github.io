@@ -19,19 +19,19 @@ export const EDIFICIOS = [
   { clave: 'bar_garibalde', x: 45.5, base: 13.5, vida: 'bar_garibalde' }, { clave: 'casa_plaza_2', x: 50.5, base: 13.5 },
   { clave: 'soportal_lado', x: 22.8, base: 18.3 }, { clave: 'soportal_lado_2', x: 45.6, base: 18.3 },
   { clave: 'soportal_sur', x: 27.9, base: 26.4 }, { clave: 'bar_burgos', x: 36, base: 26.4, vida: 'bar_burgos' }, { clave: 'soportal_sur_2', x: 44.4, base: 26.4 },
-  { clave: 'reblan', x: 10.4, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', vida: 'reblan' },
-  { clave: 'piso', x: 50.5, base: 18, vida: 'casa' },
+  { clave: 'reblan', x: 10.4, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', interior: 'reblan' },
+  { clave: 'piso', x: 50.5, base: 18, interior: 'casa' },
   // El instituto, con su camino hasta la puerta
   { clave: 'instituto', x: 36, base: 31.6, vida: 'instituto' },
   // Madrid
   { clave: 'edificio_madrid_2', x: 61, base: 13 }, { clave: 'edificio_madrid_2', x: 75, base: 13 }, { clave: 'edificio_madrid', x: 90.2, base: 13 },
   { clave: 'edificio_madrid_2', x: 66, base: 31.4 }, { clave: 'edificio_madrid', x: 71, base: 31.4 }, { clave: 'edificio_madrid', x: 91, base: 31.4 }, { clave: 'edificio_madrid_2', x: 96, base: 30.6 },
   { clave: 'residencia', x: 67, base: 18, letrero: 'RESIDENCIA JOSÉ PÉREZ DE VARGAS', vida: 'residencia' },
-  { clave: 'medac', x: 83, base: 18, letrero: 'MEDAC', vida: 'medac' },
+  { clave: 'medac', x: 83, base: 18, letrero: 'MEDAC', interior: 'medac' },
   { clave: 'anexia', x: 93.5, base: 18, letrero: 'ANEXIA · ALQUILER SEGURO', vida: 'anexia' },
   // La uni y los proyectos
   { clave: 'edificio_madrid_2', x: 100.2, base: 18 }, { clave: 'edificio_madrid', x: 117, base: 13 },
-  { clave: 'udit', x: 109, base: 18, letrero: 'UDIT', zona: 'trayectoria' },
+  { clave: 'udit', x: 109, base: 18, letrero: 'UDIT', interior: 'udit' },
   { clave: 'hackaton', x: 125, base: 18, letrero: 'HACKATONES', vida: 'hackaton' },
   { clave: 'laboratorio', x: 135, base: 18, letrero: 'LABORATORIO', zona: 'proyectos' },
   { clave: 'trofeos', x: 144, base: 18, letrero: 'SALA DE TROFEOS', zona: 'trofeos' },
@@ -75,7 +75,7 @@ export const OBJETOS = [
   { clave: 'telarana', x: 151.25, base: 16.5, encima: true },
   { clave: 'parada', x: 57, base: 18.4, vida: 'parada', letrero: 'MADRID · 2023' },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
-  { clave: 'estadio', x: 104, base: 29, vida: 'futbol' }, { clave: 'grada', x: 104, base: 31.2 },
+  { clave: 'estadio', x: 104, base: 29, arcade: 'futbol' }, { clave: 'grada', x: 104, base: 31.2 },
   { clave: 'foco', x: 99.4, base: 23.6 }, { clave: 'foco', x: 108.6, base: 23.6 }, { clave: 'foco', x: 99.4, base: 29.6 }, { clave: 'foco', x: 108.6, base: 29.6 },
   // huerto del pueblo con una berenjena gigante
   { clave: 'huerto', x: 9.5, base: 13.6 }, { clave: 'berenjena', x: 12.9, base: 13.8, vida: 'berenjena' },
@@ -95,6 +95,17 @@ export const OBJETOS = [
   // Guiños a The Office
   { clave: 'remolachas', x: 5.6, base: 13.6, vida: 'remolachas' }, { clave: 'gelatina', x: 147.3, base: 23, vida: 'gelatina' },
   { clave: 'taza_jefe', x: 25.6, base: 21.5, vida: 'taza' }, { clave: 'poste_scranton', x: 169, base: 17.6, vida: 'scranton' },
+  // Guiños a Dragon Ball e Inazuma Eleven: la nube amarilla (súbete y vas más rápido), el neumático de entrenar paradas
+  // y los banderines del rayo junto al campo
+  { clave: 'nube', x: 59.5, base: 27.4, nube: true, vida: 'nube' },
+  { clave: 'neumatico', x: 111.6, base: 27.6, vida: 'neumatico' },
+  { clave: 'banderin_rayo', x: 98.6, base: 31.4, vida: 'rayo' }, { clave: 'banderin_rayo', x: 109.4, base: 31.4, vida: 'rayo' },
+]
+
+// Las siete esferas: cinco por el mapa y dos dentro de edificios («dentro» = id del interior, x/y en casillas de la sala)
+export const ESFERAS = [
+  { n: 1, dentro: 'casa', x: 6.6, y: 7.6 }, { n: 2, x: 14, y: 24.6 }, { n: 3, x: 56.6, y: 28.6 }, { n: 4, dentro: 'medac', x: 14.4, y: 4.4 },
+  { n: 5, x: 86.4, y: 31.4 }, { n: 6, x: 113.6, y: 31.2 }, { n: 7, x: 151.2, y: 31.8 },
 ]
 
 // Zonas con suelo especial

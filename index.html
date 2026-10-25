@@ -28,13 +28,18 @@
       <span id="hud-titulo"></span>
       <a id="btn-practicas" class="boton verde"></a>
       <a id="btn-cv" class="boton" download></a>
+      <button id="btn-mas" class="boton" aria-label="Más opciones" aria-expanded="false">☰</button>
     </div>
     <div class="hud-der">
       <span id="hud-zonas"></span>
+      <span id="hud-esferas" hidden></span>
+      <button id="btn-hora" class="boton" title="Día o noche" aria-label="Día o noche"><span id="hora-icono"><svg class="icono" viewBox="0 0 9 9" shape-rendering="crispEdges"><path fill="#f2c200" d="M3 2h3v1h1v3H6v1H3V6H2V3h1zM4 0h1v1H4zM4 8h1v1H4zM0 4h1v1H0zM8 4h1v1H8zM1 1h1v1H1zM7 1h1v1H7zM1 7h1v1H1zM7 7h1v1H7z"/></svg></span><span class="solo-menu" id="txt-hora"></span></button>
+      <button id="btn-pantalla" class="boton" title="Pantalla completa" aria-label="Pantalla completa"><svg class="icono" viewBox="0 0 9 9" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h3v1H1v2H0zM6 0h3v3H8V1H6zM0 6h1v2h2v1H0zM8 6h1v3H6V8h2z"/></svg><span class="solo-menu" id="txt-pantalla"></span></button>
       <button id="btn-sonido" class="boton"></button>
       <button id="btn-musica" class="boton" title="Cambiar música"></button>
       <button id="btn-idioma" class="boton"></button>
       <button id="btn-clasico" class="boton"></button>
+      <button id="btn-menu" class="boton"></button>
     </div>
   </header>
   <p id="ayuda"></p>
@@ -54,13 +59,9 @@
   <span id="etiqueta" hidden></span>
 
   <!-- Mando táctil -->
+  <!-- Mando táctil: una palanca que aparece donde pones el dedo (mitad izquierda) y el botón de acción -->
   <div id="mando">
-    <div class="cruceta">
-      <button data-dir="arriba" aria-label="Arriba">▲</button>
-      <button data-dir="izquierda" aria-label="Izquierda">◀</button>
-      <button data-dir="derecha" aria-label="Derecha">▶</button>
-      <button data-dir="abajo" aria-label="Abajo">▼</button>
-    </div>
+    <div id="palanca" aria-label="Mover"><div class="palanca-base"><div class="palanca-bola"></div></div></div>
     <button id="btn-accion"></button>
   </div>
 

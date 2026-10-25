@@ -1,8 +1,10 @@
 // Sala de recreativos: cuatro minijuegos sencillos en un canvas de 320 × 240 que se abre encima del mapa.
-// Serpiente, una nave que destruye bugs, un rompe-ladrillos y un laberinto en el que se recogen commits.
+// Serpiente, una nave que destruye bugs, un rompe-ladrillos, un laberinto en el que se recogen commits
+// y los penaltis del campo de fútbol.
 // Se juegan con flechas/WASD + espacio, o con los botones táctiles. El récord de cada uno se guarda en el navegador.
 import { estado } from './estado.js'
 import { registrar } from './registro.js'
+import { sonar } from './sonido.js'
 
 const W = 320, H = 240
 const TEXTOS = {
@@ -217,7 +219,231 @@ function laberinto() {
   }
 }
 
-const JUEGOS = { serpiente, nave, ladrillos, laberinto }
+// ---------------------------------------------------------------------------------------------- 5. penaltis en el campo
+// Primero eliges adónde tirar (la mirilla va de palo a palo) y luego la fuerza. Si clavas la fuerza en la franja
+// amarilla sale un tiro relámpago que el portero no puede parar; si te pasas, va fuera. Tres fallos y se acaba.
+function futbol() {
+  const PALO_I = 92, PALO_D = 228, LARGUERO = 40, LINEA = 72
+  let fase, apunta, sentido, fuerza, subeFuerza, bola, portero, puntos, vidas, aviso, reloj, rayo, racha, estela
+  const textos = () => (estado.idioma === 'en'
+    ? { gol: 'GOAL!', parada: 'SAVED!', fuera: 'WIDE!', rayo: 'LIGHTNING SHOT!', apunta: 'AIM: A / SPACE', fuerza: 'POWER: A / SPACE' }
+    : { gol: '¡GOL!', parada: '¡PARADA!', fuera: '¡FUERA!', rayo: '¡TIRO RELÁMPAGO!', apunta: 'APUNTA: A / ESPACIO', fuerza: 'FUERZA: A / ESPACIO' })
+  const nuevoTiro = () => { fase = 'apuntar'; apunta = 160; sentido = 1; fuerza = 0; subeFuerza = true; bola = { x: 160, y: 196, r: 4 }; portero.x = 160; portero.objetivo = 160; rayo = false; estela = [] }
+  return {
+    titulo: estado.idioma === 'en' ? 'PENALTIES' : 'PENALTIS',
+    reiniciar() { portero = { x: 160, objetivo: 160 }; puntos = 0; vidas = 3; aviso = null; racha = 0; nuevoTiro() },
+    pulsar(k) {
+      if (k !== 'accion' && k !== 'arriba') return
+      if (fase === 'apuntar') { fase = 'fuerza'; sonar(660, 0.06) }
+      else if (fase === 'fuerza') {
+        fase = 'tiro'; reloj = 0
+        rayo = fuerza > 0.8 && fuerza < 0.9
+        const fuera = fuerza >= 0.97
+        bola.destino = { x: apunta, y: fuera ? 4 : LINEA - 14 - fuerza * 10 }
+        bola.desde = { x: bola.x, y: bola.y }
+        bola.dura = rayo ? 260 : 620 - fuerza * 260
+        // el portero se tira: cuanto más llevas, más acierta el lado
+        const acierta = Math.random() < Math.min(0.8, 0.45 + puntos * 0.03)
+        portero.objetivo = acierta ? apunta : PALO_I + 14 + Math.random() * (PALO_D - PALO_I - 28)
+        portero.alcance = fuerza < 0.35 ? 34 : 18
+        if (rayo) { [523, 784, 1047, 1568].forEach((f, i) => sonar(f, 0.09, 'square', 0.05, i * 0.04)) } else sonar(220, 0.08, 'triangle', 0.08)
+      }
+    },
+    paso(dt) {
+      if (aviso) { aviso.t -= dt; if (aviso.t <= 0) { aviso = null; if (vidas <= 0) return puntos; nuevoTiro() } return }
+      const s = dt / 1000
+      if (fase === 'apuntar') {
+        apunta += sentido * (120 + Math.min(120, puntos * 8)) * s
+        if (apunta > PALO_D - 6) { apunta = PALO_D - 6; sentido = -1 }
+        if (apunta < PALO_I + 6) { apunta = PALO_I + 6; sentido = 1 }
+      } else if (fase === 'fuerza') {
+        fuerza += (subeFuerza ? 1 : -1) * (1.1 + Math.min(0.9, puntos * 0.05)) * s
+        if (fuerza >= 1) { fuerza = 1; subeFuerza = false }
+        if (fuerza <= 0) { fuerza = 0; subeFuerza = true }
+      } else if (fase === 'tiro') {
+        reloj += dt
+        const k = Math.min(1, reloj / bola.dura)
+        bola.x = bola.desde.x + (bola.destino.x - bola.desde.x) * k
+        bola.y = bola.desde.y + (bola.destino.y - bola.desde.y) * k - Math.sin(k * Math.PI) * (rayo ? 4 : 14)
+        bola.r = 4 - k * 1.5
+        if (rayo) { estela.push({ x: bola.x, y: bola.y }); if (estela.length > 14) estela.shift() }
+        if (reloj > 120) portero.x += Math.sign(portero.objetivo - portero.x) * Math.min(Math.abs(portero.objetivo - portero.x), 260 * s)
+        if (k >= 1) {
+          const t = textos()
+          if (bola.destino.y < LARGUERO) { vidas--; racha = 0; aviso = { texto: t.fuera, color: '#e05a5a', t: 1000 }; sonar(150, 0.25, 'sawtooth', 0.04) }
+          else if (!rayo && Math.abs(portero.x - bola.x) < portero.alcance) { vidas--; racha = 0; aviso = { texto: t.parada, color: '#e05a5a', t: 1000 }; sonar(180, 0.2, 'square', 0.04) }
+          else { puntos += rayo ? 2 : 1; racha++; aviso = { texto: rayo ? t.rayo : t.gol, color: rayo ? '#ffd93a' : '#2fbf71', t: 1100 }; [784, 988, 1175].forEach((f, i) => sonar(f, 0.12, 'square', 0.05, i * 0.08)) }
+        }
+      }
+    },
+    pintar(ctx) {
+      // césped a franjas, área y punto de penalti
+      for (let y = 16; y < H; y += 20) { ctx.fillStyle = (y / 20) % 2 < 1 ? '#3c984b' : '#45a654'; ctx.fillRect(0, y, W, 20) }
+      ctx.fillStyle = '#f4f6f2'
+      ctx.fillRect(40, LINEA, 240, 2); ctx.fillRect(40, LINEA, 2, 110); ctx.fillRect(278, LINEA, 2, 110); ctx.fillRect(40, LINEA + 108, 240, 2)
+      ctx.fillRect(158, 194, 4, 4)
+      // portería con red
+      ctx.fillStyle = '#d9dee4'; ctx.fillRect(PALO_I, LARGUERO, PALO_D - PALO_I, LINEA - LARGUERO)
+      ctx.fillStyle = '#9aa3ad'
+      for (let x = PALO_I; x < PALO_D; x += 6) ctx.fillRect(x, LARGUERO, 1, LINEA - LARGUERO)
+      for (let y = LARGUERO; y < LINEA; y += 6) ctx.fillRect(PALO_I, y, PALO_D - PALO_I, 1)
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(PALO_I - 3, LARGUERO - 3, PALO_D - PALO_I + 6, 4); ctx.fillRect(PALO_I - 3, LARGUERO, 4, LINEA - LARGUERO + 2); ctx.fillRect(PALO_D - 1, LARGUERO, 4, LINEA - LARGUERO + 2)
+      // portero: camiseta naranja, guantes y brazos abiertos al tirarse
+      const px0 = Math.round(portero.x), tirado = fase === 'tiro' && Math.abs(portero.x - 160) > 6
+      ctx.fillStyle = '#1b1f27'; ctx.fillRect(px0 - 6, 50, 12, 20)
+      ctx.fillStyle = '#f28c28'; ctx.fillRect(px0 - 5, 56, 10, 9)
+      ctx.fillStyle = '#e8b896'; ctx.fillRect(px0 - 3, 50, 6, 6)
+      ctx.fillStyle = '#3a2618'; ctx.fillRect(px0 - 3, 49, 6, 2)
+      ctx.fillStyle = '#f28c28'; ctx.fillRect(px0 - (tirado ? 16 : 11), tirado ? 52 : 57, tirado ? 11 : 6, 3); ctx.fillRect(px0 + 5, tirado ? 52 : 57, tirado ? 11 : 6, 3)
+      ctx.fillStyle = '#f2c200'; ctx.fillRect(px0 - (tirado ? 19 : 13), tirado ? 51 : 56, 4, 5); ctx.fillRect(px0 + (tirado ? 15 : 9), tirado ? 51 : 56, 4, 5)
+      ctx.fillStyle = '#1b1f27'; ctx.fillRect(px0 - 4, 65, 3, 6); ctx.fillRect(px0 + 1, 65, 3, 6)
+      // mirilla
+      if (fase === 'apuntar' || fase === 'fuerza') { ctx.fillStyle = '#e05a5a'; ctx.fillRect(Math.round(apunta) - 1, LARGUERO - 12, 3, 7); ctx.fillRect(Math.round(apunta) - 4, LARGUERO - 8, 9, 2) }
+      // estela del tiro relámpago
+      if (rayo) estela.forEach((e, i) => { ctx.fillStyle = `rgba(255,217,58,${(i / estela.length) * 0.8})`; ctx.fillRect(e.x - 3 + ((i * 7) % 5) - 2, e.y - 3, 6, 6) })
+      // balón con su sombra
+      ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(Math.round(bola.x) - 4, Math.round(bola.y) + 4, 8, 2)
+      ctx.fillStyle = rayo ? '#ffd93a' : '#ffffff'; const r = Math.max(2, Math.round(bola.r)); ctx.fillRect(Math.round(bola.x) - r, Math.round(bola.y) - r, r * 2, r * 2)
+      ctx.fillStyle = '#1b1f27'; ctx.fillRect(Math.round(bola.x) - 1, Math.round(bola.y) - 1, 2, 2)
+      // barra de fuerza con la franja del rayo
+      ctx.fillStyle = '#0d1117'; ctx.fillRect(296, 90, 14, 104)
+      ctx.fillStyle = '#ffd93a'; ctx.fillRect(298, 92 + 100 * (1 - 0.9), 10, 10)
+      ctx.fillStyle = '#e05a5a'; ctx.fillRect(298, 92, 10, 3)
+      ctx.fillStyle = fuerza > 0.8 && fuerza < 0.9 ? '#ffffff' : '#2fbf71'; ctx.fillRect(298, 92 + 100 * (1 - fuerza), 10, 100 * fuerza)
+      ctx.fillStyle = '#ffd93a'; ctx.fillRect(292, 92 + 100 * (1 - 0.85) - 1, 4, 2)
+      texto(ctx, `${tx().vidas} ${'♥'.repeat(Math.max(0, vidas))}`, W - 6, 4, '#e05a5a', 7, false)
+      if (racha >= 3) texto(ctx, `x${racha}`, 20, 200, '#ffd93a', 8, false)
+      if (!aviso && (fase === 'apuntar' || fase === 'fuerza')) texto(ctx, fase === 'apuntar' ? textos().apunta : textos().fuerza, W / 2, 220, '#e6e9ef', 7)
+      if (aviso) {
+        if (rayo && aviso.t > 900) { ctx.fillStyle = 'rgba(255,240,170,.5)'; ctx.fillRect(0, 16, W, H - 16) }
+        texto(ctx, aviso.texto, W / 2, 120, aviso.color, 12)
+      }
+      return puntos
+    },
+  }
+}
+
+// ---------------------------------------------------------------------------------------------- 6. bit drop (planta 3 de la UDIT)
+// Juego propio de bloques que caen: bajan parejas de bits de colores; tres o más del mismo color en línea
+// (horizontal, vertical o diagonal) se borran, lo de encima cae y puede encadenar más. Se acaba al llenarse.
+function bits() {
+  const COL = 8, FIL = 13, C = 16, OX = 96, OY = 22
+  const COLORES = ['#2fbf71', '#3dd9ff', '#a970ff', '#f2c200']
+  let tablero, pieza, reloj, puntos, cadena, borrando, siguiente
+  const libre = (x, y) => x >= 0 && x < COL && y < FIL && (y < 0 || tablero[y][x] === null)
+  const nueva = () => {
+    pieza = { x: 3, y: -1, giro: 0, a: siguiente[0], b: siguiente[1] }
+    siguiente = [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)]
+    if (!libre(3, 0) || !libre(3, -1)) return false
+    return true
+  }
+  // posición del segundo bit según el giro: arriba, derecha, abajo, izquierda
+  const otro = (p) => [[0, -1], [1, 0], [0, 1], [-1, 0]][p.giro].map((d, i) => d + (i ? p.y : p.x))
+  const cabe = (p) => { const [ox, oy] = otro(p); return libre(p.x, p.y) && libre(ox, oy) }
+  // busca grupos de 3 o más en las cuatro direcciones
+  const buscar = () => {
+    const marcados = new Set()
+    for (let y = 0; y < FIL; y++) for (let x = 0; x < COL; x++) {
+      const c = tablero[y][x]
+      if (c === null) continue
+      for (const [dx, dy] of [[1, 0], [0, 1], [1, 1], [1, -1]]) {
+        const linea = [[x, y]]
+        let nx = x + dx, ny = y + dy
+        while (nx >= 0 && nx < COL && ny >= 0 && ny < FIL && tablero[ny][nx] === c) { linea.push([nx, ny]); nx += dx; ny += dy }
+        if (linea.length >= 3) linea.forEach(([a, b]) => marcados.add(`${a},${b}`))
+      }
+    }
+    return [...marcados].map((k) => k.split(',').map(Number))
+  }
+  const caer = () => {
+    for (let x = 0; x < COL; x++) {
+      const columna = []
+      for (let y = FIL - 1; y >= 0; y--) if (tablero[y][x] !== null) columna.push(tablero[y][x])
+      for (let y = FIL - 1, k = 0; y >= 0; y--, k++) tablero[y][x] = columna[k] ?? null
+    }
+  }
+  const fijar = () => {
+    const [ox, oy] = otro(pieza)
+    if (pieza.y < 0 || oy < 0) return false
+    tablero[pieza.y][pieza.x] = pieza.a
+    tablero[oy][ox] = pieza.b
+    pieza = null
+    caer()
+    cadena = 0
+    revisar()
+    return true
+  }
+  const revisar = () => {
+    const grupo = buscar()
+    if (!grupo.length) { pieza = null; return }
+    cadena++
+    puntos += grupo.length * cadena
+    borrando = { celdas: grupo, t: 280 }
+    ;[660, 880, 1100, 1320].slice(0, Math.min(4, cadena + 1)).forEach((f, i) => sonar(f, 0.08, 'square', 0.04, i * 0.05))
+  }
+  return {
+    titulo: 'BIT DROP',
+    reiniciar() {
+      tablero = Array.from({ length: FIL }, () => Array(COL).fill(null))
+      siguiente = [0, 1]; puntos = 0; reloj = 0; borrando = null; cadena = 0
+      siguiente = [Math.floor(Math.random() * 4), Math.floor(Math.random() * 4)]
+      nueva()
+    },
+    pulsar(k) {
+      if (!pieza || borrando) return
+      const p = { ...pieza }
+      if (k === 'izquierda') p.x--
+      else if (k === 'derecha') p.x++
+      else if (k === 'arriba' || k === 'accion') { p.giro = (p.giro + 1) % 4; if (!cabe(p)) { p.x += p.giro === 1 ? -1 : 1 } }
+      else if (k === 'abajo') p.y++
+      if (cabe(p)) { pieza = p; if (k === 'arriba' || k === 'accion') sonar(520, 0.04, 'square', 0.03) }
+    },
+    paso(dt) {
+      if (borrando) {
+        borrando.t -= dt
+        if (borrando.t <= 0) { borrando.celdas.forEach(([x, y]) => { tablero[y][x] = null }); borrando = null; caer(); revisar() }
+        return
+      }
+      if (!pieza) { if (!nueva()) return puntos; return }
+      reloj += dt
+      const ritmo = Math.max(140, 620 - puntos * 3) / (teclas.abajo ? 6 : 1)
+      if (reloj < ritmo) return
+      reloj = 0
+      const p = { ...pieza, y: pieza.y + 1 }
+      if (cabe(p)) pieza = p
+      else if (!fijar()) return puntos
+    },
+    pintar(ctx) {
+      ctx.fillStyle = '#0d1117'; ctx.fillRect(0, 16, W, H - 16)
+      ctx.fillStyle = '#161b22'; ctx.fillRect(OX - 4, OY - 2, COL * C + 8, FIL * C + 6)
+      ctx.fillStyle = '#1f3c9a'; ctx.fillRect(OX - 4, OY - 2, 2, FIL * C + 6); ctx.fillRect(OX + COL * C + 2, OY - 2, 2, FIL * C + 6); ctx.fillRect(OX - 4, OY + FIL * C + 2, COL * C + 8, 2)
+      const bit = (x, y, c, brilla) => {
+        if (y < 0) return
+        const X = OX + x * C, Y = OY + y * C
+        ctx.fillStyle = brilla ? '#ffffff' : COLORES[c]; ctx.fillRect(X + 1, Y + 1, C - 2, C - 2)
+        ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fillRect(X + 1, Y + 1, C - 2, 2)
+        ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'top'
+        ctx.fillText(c % 2 ? '1' : '0', X + C / 2, Y + 4)
+      }
+      const parpadea = borrando && Math.floor(borrando.t / 60) % 2 === 0
+      for (let y = 0; y < FIL; y++) for (let x = 0; x < COL; x++) {
+        if (tablero[y][x] === null) continue
+        const marcado = borrando?.celdas.some(([a, b]) => a === x && b === y)
+        bit(x, y, tablero[y][x], marcado && parpadea)
+      }
+      if (pieza) { bit(pieza.x, pieza.y, pieza.a); const [ox, oy] = otro(pieza); bit(ox, oy, pieza.b) }
+      // siguiente pieza y ayuda
+      texto(ctx, estado.idioma === 'en' ? 'NEXT' : 'SIGUE', 262, 30, '#8b93a3', 7)
+      if (siguiente) { ctx.fillStyle = COLORES[siguiente[1]]; ctx.fillRect(254, 44, 14, 14); ctx.fillStyle = COLORES[siguiente[0]]; ctx.fillRect(254, 60, 14, 14) }
+      if (cadena > 1 && borrando) texto(ctx, `x${cadena}`, 262, 100, '#f2c200', 10)
+      texto(ctx, '3 = OK', 48, 40, '#2fbf71', 7)
+      texto(ctx, estado.idioma === 'en' ? 'ROTATE' : 'GIRA', 48, 70, '#8b93a3', 7); texto(ctx, '▲ / A', 48, 82, '#e6e9ef', 7)
+      return puntos
+    },
+  }
+}
+
+const JUEGOS = { serpiente, nave, ladrillos, laberinto, futbol, bits }
 
 // ---------------------------------------------------------------------------------------------- ventana del juego
 export function abrirArcade(id) {
@@ -247,18 +473,23 @@ export function abrirArcade(id) {
   const empezarOtra = () => {
     if (actual.estado === 'jugando') return
     juego.reiniciar(); actual.estado = 'jugando'
+    actual.recien = true; setTimeout(() => { if (actual) actual.recien = false }, 150)
   }
   caja.querySelector('#arcade-salir').onclick = cerrarArcade
-  lienzo.addEventListener('pointerdown', empezarOtra)
+  // tocar la pantalla empieza la partida o, si ya se está jugando, hace la acción (tirar, lanzar…)
+  lienzo.addEventListener('pointerdown', () => { if (actual.estado === 'jugando' && juego.pulsar) juego.pulsar('accion'); else empezarOtra() })
   caja.querySelectorAll('[data-t]').forEach((b) => {
     const k = b.dataset.t
-    b.addEventListener('pointerdown', (e) => { e.preventDefault(); if (k === 'accion') empezarOtra(); if (juego.pulsar) juego.pulsar(k); teclas[k] = true })
+    b.addEventListener('pointerdown', (e) => { e.preventDefault(); if (k === 'accion' && actual.estado !== 'jugando') { empezarOtra(); return } if (juego.pulsar) juego.pulsar(k); teclas[k] = true })
     const soltar = (e) => { e.preventDefault(); teclas[k] = false }
     b.addEventListener('pointerup', soltar); b.addEventListener('pointerleave', soltar)
   })
   window.addEventListener('keydown', alPulsar, true)
   window.addEventListener('keyup', alSoltar, true)
   actual.pulsarAccion = (e) => { if (e.key === ' ' || e.key === 'Enter') empezarOtra() }
+  // al empezar, la acción que arranca la partida no debe contar también como tiro
+  const pulsarJuego = juego.pulsar
+  if (pulsarJuego) juego.pulsar = (k) => { if (actual?.recien) return; pulsarJuego(k) }
   window.addEventListener('keydown', actual.pulsarAccion, true)
 
   const bucle = (ahora) => {

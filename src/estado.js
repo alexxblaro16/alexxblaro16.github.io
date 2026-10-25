@@ -18,6 +18,7 @@ export const estado = {
   personaje: guardado.personaje || null,
   visitados: new Set(guardado.visitados || []),
   recorridoHecho: !!guardado.recorridoHecho,
+  esferas: new Set(guardado.esferas || []), // esferas encontradas (de 1 a 7)
   oyentes: new Set(),
 }
 
@@ -25,7 +26,7 @@ export function guardar() {
   try {
     localStorage.setItem(CLAVE, JSON.stringify({
       idioma: estado.idioma, personaje: estado.personaje, musica: estado.musica,
-      visitados: [...estado.visitados], recorridoHecho: estado.recorridoHecho,
+      visitados: [...estado.visitados], recorridoHecho: estado.recorridoHecho, esferas: [...estado.esferas],
     }))
   } catch { /* modo privado: no pasa nada */ }
 }

@@ -235,7 +235,7 @@ export function crearDecorado(scene) {
     for (let y = 0; y < 92; y += 3) { q(2, y, 1, 1, 'rgba(200,206,214,0.55)'); q(141, y, 1, 1, 'rgba(200,206,214,0.55)') }
     for (let x = 0; x < 144; x += 16) { q(x, 0, 2, 4, '#5b6068'); q(x, 88, 2, 4, '#5b6068') }
     for (let y = 0; y < 92; y += 16) { q(0, y, 4, 2, '#5b6068'); q(140, y, 4, 2, '#5b6068') }
-    q(66, 88, 12, 4, '#2f7a3c') // puerta de la valla
+    q(66, 88, 12, 4, '#2f7a3c'); q(66, 0, 12, 4, '#2f7a3c') // puertas de la valla, abajo y arriba (donde llega el camino)
     // banquillos con techo, en el lado de abajo
     for (const x of [36, 92]) { q(x, 80, 16, 8, '#1b1f27'); q(x + 1, 81, 14, 3, '#8fc4e8'); q(x + 1, 81, 14, 1, '#cfe8f7'); q(x + 1, 85, 14, 2, '#2f5fb0') }
     scene.textures.addCanvas('estadio', e)

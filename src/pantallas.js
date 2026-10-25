@@ -4,7 +4,7 @@ import { ENLACES } from './content.js'
 import { estado, t, cambiarIdioma, guardar } from './estado.js'
 import { registrar } from './registro.js'
 import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
-import { abrirClasico, pintarHUD } from './ui.js'
+import { abrirClasico, pintarHUD, pantallaCompleta, esTactil, alVolverAlMenu, mostrarHUD, hayDialogo } from './ui.js'
 import { PALETAS, crearPersonaje } from './sprites.js'
 
 const $ = (s) => document.querySelector(s)
@@ -19,7 +19,9 @@ const TXT = {
     soy: 'SOY', generos: { '': 'CHICO', 1: 'CHICA' }, abajo: 'ABAJO', abajos: { pantalon: 'PANTALON', falda: 'FALDA', corto: 'CORTO' },
     pestanas: { cuerpo: 'CUERPO', ropa: 'ROPA', extras: 'EXTRAS' }, tipo: 'PRENDA', pantalon: 'PANTALON', anchos: 'CORTE', zapatillas: 'ZAPATILLAS',
     barba: 'BARBA', cadena: 'CADENA', sonrisa: 'SONRISA', aleatorio: 'ALEATORIO', girar: 'GIRAR',
-    tipos: { camiseta: 'CAMISETA', polo: 'POLO', sudadera: 'SUDADERA', chaqueta: 'CHAQUETA' }, cortes: { '': 'RECTO', 1: 'ANCHO' },
+    tipos: { camiseta: 'CAMISETA', polo: 'POLO', sudadera: 'SUDADERA', chaqueta: 'CHAQUETA', camisa: 'CAMISA', futbol: 'FUTBOL', kimono: 'KIMONO', abrigo: 'ABRIGO' }, cortes: { '': 'RECTO', 1: 'ANCHO' },
+    dibujo: 'DIBUJO', dibujos: { '': 'NINGUNO', rayo: 'RAYO', estrella: 'ESTRELLA', corazon: 'CORAZON', codigo: '</>', pixel: 'PIXEL' },
+    sombrero: 'CABEZA', sombreros: { '': 'NADA', gorra: 'GORRA', gorro: 'GORRO', cinta: 'CINTA' }, colorExtra: 'COLOR', auriculares: 'CASCOS', mochila: 'MOCHILA',
     barbas: { '': 'NO', rala: 'POCA', perilla: 'PERILLA', completa: 'COMPLETA' }, visitante: 'Visitante',
     pulsa: 'PULSA ENTER O TOCA PARA EMPEZAR', subtitulo: 'Desarrollador Full Stack Junior · mi vida en píxeles',
     privacidad: 'Esta web cuenta las visitas de forma anónima (país, dispositivo y qué partes se visitan) para que yo sepa si le interesa a alguien. No usa cookies ni guarda tu IP.',
@@ -36,7 +38,9 @@ const TXT = {
     soy: 'I AM', generos: { '': 'BOY', 1: 'GIRL' }, abajo: 'BOTTOM', abajos: { pantalon: 'TROUSERS', falda: 'SKIRT', corto: 'SHORTS' },
     pestanas: { cuerpo: 'LOOK', ropa: 'CLOTHES', extras: 'EXTRAS' }, tipo: 'TOP', pantalon: 'TROUSERS', anchos: 'FIT', zapatillas: 'SNEAKERS',
     barba: 'BEARD', cadena: 'CHAIN', sonrisa: 'SMILE', aleatorio: 'RANDOM', girar: 'TURN',
-    tipos: { camiseta: 'T-SHIRT', polo: 'POLO', sudadera: 'HOODIE', chaqueta: 'JACKET' }, cortes: { '': 'SLIM', 1: 'BAGGY' },
+    tipos: { camiseta: 'T-SHIRT', polo: 'POLO', sudadera: 'HOODIE', chaqueta: 'JACKET', camisa: 'SHIRT', futbol: 'FOOTBALL', kimono: 'GI', abrigo: 'COAT' }, cortes: { '': 'SLIM', 1: 'BAGGY' },
+    dibujo: 'PRINT', dibujos: { '': 'NONE', rayo: 'BOLT', estrella: 'STAR', corazon: 'HEART', codigo: '</>', pixel: 'PIXEL' },
+    sombrero: 'HEAD', sombreros: { '': 'NONE', gorra: 'CAP', gorro: 'BEANIE', cinta: 'BAND' }, colorExtra: 'COLOUR', auriculares: 'HEADPHONES', mochila: 'BACKPACK',
     barbas: { '': 'NO', rala: 'LIGHT', perilla: 'GOATEE', completa: 'FULL' }, visitante: 'Visitor',
     pulsa: 'PRESS ENTER OR TAP TO START', subtitulo: 'Junior Full Stack Developer · my life in pixels',
     privacidad: 'This site counts visits anonymously (country, device and which parts are visited) so I know if anyone finds it useful. It uses no cookies and does not store your IP.',
@@ -138,16 +142,18 @@ function creditos() {
 // ---------------------------------------------------------------------------------------------- 3. creador
 // Vista grande que anda y se puede girar, tres pestañas de opciones y un botón para un personaje al azar
 const ESTILOS = ['corto', 'ondulado', 'rizado', 'flequillo', 'cortina', 'media', 'largo', 'larga', 'melena', 'rapado', 'calvo']
-const TIPOS = ['camiseta', 'polo', 'sudadera', 'chaqueta']
+const TIPOS = ['camiseta', 'polo', 'sudadera', 'chaqueta', 'camisa', 'futbol', 'kimono', 'abrigo']
+const DIBUJOS = ['', 'rayo', 'estrella', 'corazon', 'codigo', 'pixel']
+const SOMBREROS = ['', 'gorra', 'gorro', 'cinta']
 const BARBAS = ['', 'rala', 'perilla', 'completa']
-const BOOLEANOS = ['gafas', 'cadena', 'anchos', 'sonrisa', 'chica']
+const BOOLEANOS = ['gafas', 'cadena', 'anchos', 'sonrisa', 'chica', 'auriculares', 'mochila']
 const ABAJOS = ['pantalon', 'falda', 'corto']
 const CORTOS = ['corto', 'rapado', 'calvo', 'degradado', 'despeinado']
 const azarDe = (lista) => lista[Math.floor(Math.random() * lista.length)]
 
 function creador() {
   quitarTeclado()
-  const p = { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], tipo: 'camiseta', zapatillas: PALETAS.zapatillas[0], barba: '', chica: false, abajo: 'pantalon', gafas: false, cadena: false, anchos: false, sonrisa: false, ...(estado.personaje?.rasgos || {}) }
+  const p = { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], tipo: 'camiseta', zapatillas: PALETAS.zapatillas[0], barba: '', chica: false, abajo: 'pantalon', gafas: false, cadena: false, anchos: false, sonrisa: false, dibujo: '', sombrero: '', colorExtra: PALETAS.ropa[4], auriculares: false, mochila: false, ...(estado.personaje?.rasgos || {}) }
   let nombre = estado.personaje?.nombre || ''
   let pestana = 'cuerpo'
   let direccion = 0 // 0 abajo, 1 izquierda, 2 derecha, 3 arriba
@@ -161,8 +167,8 @@ function creador() {
   const siNo = { 1: x().si, '': x().no }
   const contenido = () => ({
     cuerpo: fila('soy', opciones('chica', ['', 1], x().generos)) + fila('piel', colores('piel', PALETAS.piel)) + fila('pelo', opciones('pelo', ESTILOS, x().estilos)) + fila('colorPelo', colores('colorPelo', PALETAS.pelo)) + fila('barba', opciones('barba', BARBAS, x().barbas)),
-    ropa: fila('tipo', opciones('tipo', TIPOS, x().tipos)) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('abajo', opciones('abajo', ABAJOS, x().abajos)) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('anchos', opciones('anchos', [1, ''], x().cortes)) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
-    extras: fila('gafas', opciones('gafas', [1, ''], siNo)) + fila('cadena', opciones('cadena', [1, ''], siNo)) + fila('sonrisa', opciones('sonrisa', [1, ''], siNo)),
+    ropa: fila('tipo', opciones('tipo', TIPOS, x().tipos)) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('dibujo', opciones('dibujo', DIBUJOS, x().dibujos)) + fila('abajo', opciones('abajo', ABAJOS, x().abajos)) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('anchos', opciones('anchos', [1, ''], x().cortes)) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
+    extras: fila('sombrero', opciones('sombrero', SOMBREROS, x().sombreros)) + fila('colorExtra', colores('colorExtra', PALETAS.ropa)) + fila('gafas', opciones('gafas', [1, ''], siNo)) + fila('auriculares', opciones('auriculares', [1, ''], siNo)) + fila('mochila', opciones('mochila', [1, ''], siNo)) + fila('cadena', opciones('cadena', [1, ''], siNo)) + fila('sonrisa', opciones('sonrisa', [1, ''], siNo)),
   })[pestana]
   const pintar = () => {
     caja().innerHTML = `<div class="cuadro creador"><h2>${x().crea}</h2>
@@ -182,6 +188,7 @@ function creador() {
     caja().querySelectorAll('[data-k]').forEach((b) => b.onclick = () => {
       const k = b.dataset.k, v = b.dataset.v
       p[k] = BOOLEANOS.includes(k) ? !!v : k === 'barba' ? (v || false) : v
+      if (k === 'mochila' && p.mochila) p.mochila = true
       // al pasar a chica, si llevaba un pelo muy corto se le pone media melena; al pasar a chico, sin falda ni barba no se toca
       if (k === 'chica' && p.chica && CORTOS.includes(p.pelo)) p.pelo = 'media'
       if (k === 'chica' && p.chica) p.barba = false
@@ -197,6 +204,7 @@ function creador() {
         chica, abajo: chica ? azarDe(ABAJOS) : azarDe(['pantalon', 'corto']),
         pelo: chica ? azarDe(ESTILOS.filter((e) => !CORTOS.includes(e))) : azarDe(ESTILOS), colorPelo: azarDe(PALETAS.pelo), piel: azarDe(PALETAS.piel), ropa: azarDe(PALETAS.ropa), pantalon: azarDe(PALETAS.pantalon),
         tipo: azarDe(TIPOS), zapatillas: azarDe(PALETAS.zapatillas), barba: chica ? false : azarDe(BARBAS) || false, gafas: Math.random() < 0.3, cadena: Math.random() < 0.3, anchos: Math.random() < 0.5, sonrisa: Math.random() < 0.5,
+        dibujo: Math.random() < 0.5 ? azarDe(DIBUJOS) : '', sombrero: Math.random() < 0.4 ? azarDe(SOMBREROS) : '', colorExtra: azarDe(PALETAS.ropa), auriculares: Math.random() < 0.2, mochila: Math.random() < 0.3,
       })
       sfx.aceptar(); nombre = $('#nombre').value; pintar()
     }
@@ -236,15 +244,27 @@ function creador() {
 }
 
 function jugar() {
+  // en el móvil el juego se abre a pantalla completa
+  if (esTactil()) pantallaCompleta()
   quitarTeclado()
   clearInterval(creador.reloj)
   caja().hidden = true
   alTerminar?.()
 }
 
+// Botón «Menú» de la barra: el juego se queda de fondo (la cámara vuelve a pasear) y sale el menú principal
+function volverAlMenu() {
+  if (hayDialogo()) return
+  escena.pausarParaMenu()
+  mostrarHUD(false)
+  caja().hidden = false
+  principal()
+}
+
 export function iniciarPantallas(scene, empezar) {
   escena = scene
   alTerminar = empezar
+  alVolverAlMenu(volverAlMenu)
   caja().hidden = false
   arranque()
 }

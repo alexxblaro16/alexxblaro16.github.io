@@ -111,7 +111,7 @@ export const TEXTOS = {
       cvOtro: 'Download CV (EN)',
     },
     clasico: {
-      volver: 'Volver al juego', proyectos: 'Proyectos', trayectoria: 'Trayectoria', stack: 'Stack', contacto: 'Contacto', sobre: 'Sobre mí',
+      volver: 'Volver al juego', jugar: 'Jugar', proyectos: 'Proyectos', trayectoria: 'Trayectoria', stack: 'Stack', contacto: 'Contacto', sobre: 'Sobre mí',
       comentario: 'mi primer lenguaje fue Java', disponible: 'Abierto a prácticas', prensa: 'En los medios', premio: 'Premio',
       datos: [['4.º premio', 'Hackatón OdiseIA4Good con MedScan'], ['Lead de frontend', 'VirtualpH, proyecto con el CSIC'], ['3.º de Full Stack', 'Grado en UDIT · Técnico Superior en DAM'], ['+10 proyectos', 'Front, back, IA y robótica']],
       pie: 'Alejandro Blanco Rodríguez · Hecho con Phaser, Vite y mucho Java en el corazón',
@@ -199,7 +199,7 @@ export const TEXTOS = {
       cvOtro: 'Descargar CV (ES)',
     },
     clasico: {
-      volver: 'Back to the game', proyectos: 'Projects', trayectoria: 'Journey', stack: 'Stack', contacto: 'Contact', sobre: 'About me',
+      volver: 'Back to the game', jugar: 'Play', proyectos: 'Projects', trayectoria: 'Journey', stack: 'Stack', contacto: 'Contact', sobre: 'About me',
       comentario: 'my first language was Java', disponible: 'Open to internships', prensa: 'In the media', premio: 'Prize',
       datos: [['4th prize', 'OdiseIA4Good hackathon with MedScan'], ['Frontend lead', 'VirtualpH, a project with CSIC'], ['3rd year Full Stack', 'Degree at UDIT · Higher Technician in DAM'], ['10+ projects', 'Front, back, AI and robotics']],
       pie: 'Alejandro Blanco Rodríguez · Made with Phaser, Vite and a lot of Java at heart',

@@ -31,6 +31,14 @@ empezarRegistro()
 
 juego.events.once('ready', () => {
   const mundo = juego.scene.getScene('Mundo')
+  // botón del sol y la luna: salta al día o a la noche
+  const hora = document.querySelector('#btn-hora')
+  hora.onclick = () => mundo.cambiarHora()
+  const ICONOS = {
+    '☀': document.querySelector('#hora-icono').innerHTML,
+    '☾': '<svg class="icono" viewBox="0 0 9 9" shape-rendering="crispEdges"><path fill="#cfe3ff" d="M3 0h3v1H4v1H3v5h1v1h2v1H3V8H2V7H1V2h1V1h1z"/></svg>',
+  }
+  mundo.events.on('hora', (icono) => { document.querySelector('#hora-icono').innerHTML = ICONOS[icono] })
   const listo = () => iniciarPantallas(mundo, () => mundo.empezar())
   if (mundo.sys.isActive()) listo()
   else mundo.events.once('create', listo)

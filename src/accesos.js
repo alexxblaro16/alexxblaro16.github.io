@@ -10,7 +10,16 @@ const raiz = $('#accesos')
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const paises = new Intl.DisplayNames(['es'], { type: 'region' })
 const nombrePais = (c) => { try { return c ? paises.of(c) : 'País desconocido' } catch { return c } }
-const ARCADE = { serpiente: 'Serpiente', nave: 'Nave', ladrillos: 'Ladrillos', laberinto: 'Commit Hunt' }
+const ARCADE = { serpiente: 'Serpiente', nave: 'Nave', ladrillos: 'Ladrillos', laberinto: 'Commit Hunt', futbol: 'los penaltis del campo', bits: 'Bit Drop (planta 3 de la UDIT)' }
+const SALAS = { casa: 'la casa de la familia', reblan: 'Reblán', medac: 'el aula del MEDAC', udit: 'la UDIT', udit3: 'la planta 3 de la UDIT' }
+// Las «zonas» nuevas (salas, esferas, deseo, pantalla completa) van por el mismo tipo para no tocar el servidor
+function zona(d) {
+  if (d.startsWith('interior-')) return ['', `Entró en ${SALAS[d.slice(9)] || d.slice(9)}`]
+  if (d.startsWith('esfera-')) return ['', `Encontró una esfera (${d.slice(7)}/7)`]
+  if (d === 'deseo') return ['oro', 'Reunió las 7 esferas y pidió el deseo']
+  if (d === 'pantalla-completa') return ['', 'Jugó a pantalla completa']
+  return ['', `Entró en ${TEXTOS.es.zonas[d]?.titulo || d}`]
+}
 
 const leer = () => { try { return localStorage.getItem(CLAVE) } catch { return null } }
 const escribir = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v) } catch { /* sin almacenamiento */ } }
@@ -31,7 +40,7 @@ function evento(e) {
   const d = e.dato
   switch (e.tipo) {
     case 'personaje': return ['verde', `Creó a «${d}»`]
-    case 'zona': return ['', `Entró en ${TEXTOS.es.zonas[d]?.titulo || d}`]
+    case 'zona': return zona(d || '')
     case 'recorrido': return d === 'completo' ? ['verde', 'Terminó el recorrido'] : ['', `Se saltó el recorrido (${d.replace('saltado en el ', '')})`]
     case 'clasico': return ['', 'Abrió el modo clásico']
     case 'cv': return ['oro', `Descargó el CV ${/EN/.test(d) ? '(EN)' : '(ES)'}`]

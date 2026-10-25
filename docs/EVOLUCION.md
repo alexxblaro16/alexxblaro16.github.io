@@ -160,9 +160,56 @@ Registro anónimo de visitas con un Cloudflare Worker y D1, y la página privada
 ver quién ha entrado: hora, país y ciudad aproximados, dispositivo, de dónde viene, el nombre de su personaje y
 qué ha hecho dentro. Sin IP ni cookies; aviso en los créditos.
 
+### 17. Interiores, día y noche, penaltis, guiños al anime y un modo clásico con vida
+
+Antes de grabar el vídeo del portfolio, una revisión completa (jugador, reclutador y móvil) y una tanda de mejoras:
+
+- **Interiores**: se entra en la casa de la familia (salón y mi cuarto), en Reblán, en el aula del MEDAC y en la UDIT (el tablón
+  abre la trayectoria). Las salas viven debajo del mapa; al entrar, la cámara se centra en la sala y se sale por la puerta.
+- **Día y noche**: un ciclo de 6 minutos con atardecer naranja, noche azul, farolas, focos y puertas encendidos y luciérnagas.
+  El botón del sol o la luna de la barra salta de uno a otro (para el vídeo viene muy bien).
+- **Penaltis** en el campo de la uni: se apunta, se carga la fuerza y, si se clava en la franja amarilla, sale un tiro relámpago.
+  La valla del campo ahora es sólida y tiene puerta arriba y abajo.
+- **Guiños a Dragon Ball e Inazuma Eleven**: siete esferas escondidas (dos dentro de edificios); con las siete se pide un deseo.
+  Una nube amarilla a la que te subes para ir más rápido, un neumático para entrenar paradas y banderines con un rayo.
+- **Colisiones**: ya no se atraviesa al guía, a DANTE P.W. ni a Jerry.
+- **Música**: cada estilo va por su propio canal; al cambiar o apagar, el anterior se corta en vez de sonar encima.
+- **Móvil**: palanca analógica que aparece donde apoyas el pulgar (en vez de la cruceta), botón de acción más grande,
+  barra de arriba compacta con un menú ☰, pantalla completa al empezar a jugar y el mando se esconde en las recreativas.
+- **Modo clásico**: fondo con manchas de color que se mueven, comentario que se escribe solo, el Alejandro del juego andando,
+  cifras que cuentan, foto con un aro de color, cinta de tecnologías, tarjetas con foco, barras que se llenan al verlas y
+  barra de progreso. Respeta «reducir movimiento». En el móvil, foto centrada y el botón «Jugar» en el menú.
+- La pantalla de accesos cuenta también las salas, las esferas, el deseo, los penaltis y la pantalla completa (sin tocar el servidor).
+
+### 18. Salas como las de verdad, noche más bonita, más música y botón de menú
+
+Tras probar la versión 17, Alejandro pidió:
+
+- **Casa**: mi cuarto con la cama pegada a la pared de la izquierda (sábanas del Real Madrid), el escritorio a la misma altura
+  a la derecha, mesilla, armario y estanterías llenas de LEGO; el salón aparte, con su tabique y su puerta, el sofá y la tele
+  donde veía muchísimo la tele. Sin mangas (no leo).
+- **Reblán**: el mostrador en una esquina y los electrodomésticos en el centro, con pasillos.
+- **UDIT**: en la entrada están mis profes Sandra (pelirroja, me dio Taller I), Fernando (pelo de punta, Representación de la
+  Información) y Siam (poco pelo y barba, siempre dispuesto a ayudar); la máquina de café («está malísimo») y la de snacks
+  (las barritas de almendras con yogur, buenísimas); hay que pasar los tornos, que se abren al acercarte, y subir en
+  ascensor a la planta 3, donde están mis dos clases (iguales, en espejo) con más ordenadores que en el MEDAC.
+- **Bit Drop**, una recreativa en el pasillo de la planta 3: juego propio de bloques que caen (parejas de bits de colores
+  que se borran al juntar tres en línea). No es el Tetris: ese juego tiene dueño y no se copia.
+- **Noche**: oscuridad que no lava los colores, ventanas encendidas en los edificios, una luz suave alrededor del jugador
+  y la niebla de las esquinas en azul.
+- **Música**: tres estilos más (Héroe, Verano y Noche): siete en total.
+- **Botón «Menú»** en la barra para volver al menú principal sin recargar.
+- Los muebles de dentro son sólidos enteros y la taza y la gelatina del banco ya no tapan al jugador.
+- **Creador**: más ropa (camisa, camiseta de fútbol con el 10 a la espalda, kimono y abrigo), dibujos en el pecho (rayo,
+  estrella, corazón, </> y píxeles), gorra, gorro de lana y cinta con su color, cascos y mochila, y cuatro colores más.
+- **Guiño a Mickey Mouse**: un póster en blanco y negro en el salón, el ratón silbando al timón de un barco de vapor (1928).
+- En la planta 3, una clase tiene **git push** en la pizarra y la otra **git pull**.
+- **Noche nítida**: en vez de una capa oscura por encima, cada cosa se tiñe de azul (las personas menos y el jugador menos
+  aún), y la luz de las farolas va en el suelo, así no borra a nadie.
+- En el modo clásico, el Alejandro en píxeles se da la vuelta cuando anda hacia atrás.
+
 ## Ideas para más adelante
 
-- Interiores: entrar en algunos edificios.
-- Ciclo de día y noche.
-- Un minijuego en el campo de fútbol.
 - Dominio propio.
+- Más salas (laboratorio, recreativos por dentro).
+- Que los NPC también tengan rutina de día y de noche.

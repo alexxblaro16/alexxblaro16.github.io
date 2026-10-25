@@ -1034,6 +1034,39 @@ function anexia() {
   return c
 }
 
+// ---------------------------------------------------------------------------------------------- guiños al anime
+// Como el resto de guiños, formas sencillas y propias: nada copiado de las series.
+// Una nubecita amarilla que flota (Dragon Ball): si te subes, vas más rápido un rato
+function nube() {
+  const [c, ctx] = lienzo(28, 14)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  for (const [x, y, w, h] of [[3, 5, 22, 7], [6, 2, 8, 6], [13, 1, 9, 6], [1, 7, 4, 4], [23, 6, 4, 5]]) p(x - 1, y - 1, w + 2, h + 2, '#c9962b')
+  for (const [x, y, w, h] of [[3, 5, 22, 7], [6, 2, 8, 6], [13, 1, 9, 6], [1, 7, 4, 4], [23, 6, 4, 5]]) p(x, y, w, h, '#ffd93a')
+  p(7, 3, 4, 2, '#fff3a0'); p(14, 2, 5, 2, '#fff3a0'); p(4, 10, 20, 1, '#f2b33d')
+  return c
+}
+
+// Neumático colgado de un pórtico de madera, para entrenar paradas (Inazuma Eleven)
+function neumatico() {
+  const [c, ctx] = lienzo(30, 40)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(1, 2, 3, 38, '#6b4a2b'); p(26, 2, 3, 38, '#6b4a2b'); p(0, 0, 30, 4, '#5a3c22'); p(0, 0, 30, 1, '#8a6040')
+  p(14, 4, 2, 14, '#c9b48a')
+  p(8, 17, 14, 16, NEGRO); p(9, 18, 12, 14, '#2b2f38'); p(12, 21, 6, 8, '#5aa84f'); p(9, 18, 12, 2, '#4a4f5a')
+  p(4, 38, 22, 2, 'rgba(0,0,0,0.2)')
+  return c
+}
+
+// Banderín con un rayo, junto al campo de fútbol
+function banderinRayo() {
+  const [c, ctx] = lienzo(18, 36)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(2, 0, 2, 36, '#8a919a'); p(4, 2, 13, 12, NEGRO); p(5, 3, 11, 10, '#1f3c9a')
+  p(11, 4, 2, 2, '#f2c200'); p(9, 6, 3, 2, '#f2c200'); p(8, 8, 5, 1, '#f2c200'); p(9, 9, 2, 2, '#f2c200'); p(8, 11, 1, 1, '#f2c200')
+  p(0, 34, 6, 2, '#5b6068')
+  return c
+}
+
 export function crearEdificios(scene) {
   for (const [nombre, [w, h, o]] of Object.entries(GENERICOS)) {
     const [c, ctx] = lienzo(w, h)
@@ -1054,6 +1087,7 @@ export function crearEdificios(scene) {
     maquina_nave: maquina('#1f3c9a', 'SHOOT', (p) => { p(5, 6, 2, 2, '#3dd9ff'); p(4, 7, 4, 1, '#3dd9ff'); p(2, 1, 2, 2, '#e05a5a'); p(8, 2, 2, 2, '#e05a5a'); p(6, 3, 1, 2, '#7ee2a8') }),
     maquina_ladrillos: maquina('#a83a2a', 'BRICK', (p) => { for (let x = 0; x < 12; x += 3) { p(x, 0, 2, 1, '#f2b33d'); p(x + 1, 2, 2, 1, '#2fbf71') } p(5, 7, 3, 1, '#ffffff'); p(6, 5, 1, 1, '#f2c200') }),
     maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
+    nube, neumatico, banderin_rayo: banderinRayo,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando

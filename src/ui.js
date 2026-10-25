@@ -18,9 +18,17 @@ export function pintarHUD() {
   $('#btn-cv').href = ENLACES.cv[estado.idioma]
   $('#btn-idioma').textContent = x.hud.idioma
   $('#btn-clasico').textContent = x.hud.clasico
+  $('#btn-menu').textContent = estado.idioma === 'es' ? 'MENU' : 'MENU'
   $('#btn-sonido').textContent = estado.sonido ? '♪ ON' : '♪ OFF'
   $('#btn-musica').textContent = `♫ ${nombreMusica()}`
   $('#hud-zonas').textContent = `${x.hud.misiones} ${estado.visitados.size}/6`
+  // contador de esferas: aparece al encontrar la primera
+  $('#hud-esferas').hidden = !estado.esferas.size
+  $('#hud-esferas').textContent = `● ${estado.esferas.size}/7`
+  $('#btn-pantalla').hidden = !document.fullscreenEnabled
+  $('#txt-hora').textContent = estado.idioma === 'es' ? 'DIA / NOCHE' : 'DAY / NIGHT'
+  $('#txt-pantalla').textContent = estado.idioma === 'es' ? 'PANTALLA COMPLETA' : 'FULL SCREEN'
+  $('#btn-pantalla').title = estado.idioma === 'es' ? 'Pantalla completa' : 'Full screen'
   $('#ayuda').textContent = x.hud.ayuda
   $('#btn-accion').textContent = x.accion
 }
@@ -29,7 +37,11 @@ export function iniciarUI() {
   $('#btn-idioma').onclick = () => { cambiarIdioma(); pintarHUD() }
   $('#btn-sonido').onclick = () => { alternarSonido(); pintarHUD() }
   $('#btn-musica').onclick = () => { cambiarMusica(); pintarHUD() }
-  $('#btn-clasico').onclick = () => abrirClasico()
+  $('#btn-clasico').onclick = () => { cerrarMenuHUD(); abrirClasico() }
+  $('#btn-pantalla').onclick = () => pantallaCompleta(!document.fullscreenElement)
+  $('#btn-menu').onclick = () => { cerrarMenuHUD(); alPedirMenu?.() }
+  // en el móvil, el resto de botones van en un menú desplegable para no tapar el juego
+  $('#btn-mas').onclick = () => { const abierto = $('#hud').classList.toggle('abierto'); $('#btn-mas').setAttribute('aria-expanded', abierto) }
   $('#clasico-volver').onclick = () => cerrarClasico()
   $('#panel-cerrar').onclick = () => cerrarPanel()
   $('#panel').addEventListener('click', (e) => { if (e.target.id === 'panel') cerrarPanel() })
@@ -40,6 +52,24 @@ export function iniciarUI() {
   pintarHUD()
   if (new URLSearchParams(location.search).get('modo') === 'clasico') abrirClasico()
 }
+
+// pantallas.js se apunta aquí para que el botón «Menú» de la barra vuelva al menú principal
+let alPedirMenu = null
+export function alVolverAlMenu(f) { alPedirMenu = f }
+
+function cerrarMenuHUD() { $('#hud').classList.remove('abierto'); $('#btn-mas').setAttribute('aria-expanded', 'false') }
+
+// Pantalla completa (en móviles se pide al empezar a jugar). En iPhone Safari no existe: allí la web se puede
+// añadir a la pantalla de inicio y entonces se abre sin barras.
+export function pantallaCompleta(si = true) {
+  try {
+    if (si && !document.fullscreenElement && document.fullscreenEnabled) {
+      document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => {})
+      registrar('zona', 'pantalla-completa', true)
+    } else if (!si && document.fullscreenElement) document.exitFullscreen().catch(() => {})
+  } catch { /* el navegador no deja: se sigue jugando igual */ }
+}
+export const esTactil = () => matchMedia('(pointer: coarse)').matches
 
 export function mostrarHUD(si) { $('#hud').classList.toggle('visible', si); $('#mando').classList.toggle('visible', si) }
 
@@ -176,6 +206,13 @@ export function abrirPanel(zona) {
 export function cerrarPanel() { $('#panel').hidden = true; panelAbierto = false }
 
 // ---------------------------------------------------------------------------------------------- modo clásico
+// La versión para quien tiene prisa: una web normal, pero con vida. Fondo con manchas de color que se mueven,
+// el comentario del editor que se escribe solo, un Alejandro en píxeles que anda (el mismo del juego), cifras
+// que cuentan, tarjetas con un foco que sigue al ratón, barras que se llenan al verlas y una cinta de tecnologías.
+// Con «reducir movimiento» activado en el sistema, todo aparece quieto.
+const TECNOLOGIAS = ['Java', 'React', 'Laravel', 'Python', 'JavaScript', 'Astro', 'Electron', 'Docker', 'MySQL', 'MongoDB', 'Redis', 'FastAPI', 'Tailwind', 'Git', 'Phaser', 'Vite', 'C++', 'Spring Boot']
+let limpiarClasico = null
+
 function pintarClasico() {
   const x = t()
   const c = x.clasico
@@ -186,16 +223,20 @@ function pintarClasico() {
     p.demo && `<a href="${p.demo}" ${fuera}>${esc(x.verDemo)} ↗</a>`,
     !p.repo && !p.demo && `<span class="privado">${esc(x.privado)}</span>`,
   ].filter(Boolean).join('')
+  const cinta = [...TECNOLOGIAS, ...TECNOLOGIAS].map((n) => `<span>${esc(n)}</span>`).join('<i>◆</i>')
   $('#clasico-volver').textContent = c.volver
   $('#clasico-cuerpo').innerHTML = `
+    <div class="cl-fondo" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="cl-progreso" aria-hidden="true"></div>
     <nav class="cl-nav"><span class="cl-marca"><b>alejandro</b>.blanco()</span>
-      <div>${['sobre', 'proyectos', 'trayectoria', 'stack', 'contacto'].map((k) => `<a href="#cl-${k}">${esc(c[k])}</a>`).join('')}
-      <button class="cl-idioma" id="cl-idioma">${otro.toUpperCase()}</button></div></nav>
+      <div>${['sobre', 'proyectos', 'trayectoria', 'stack', 'contacto'].map((k) => `<a href="#cl-${k}" data-seccion="cl-${k}">${esc(c[k])}</a>`).join('')}
+      <button class="cl-idioma" id="cl-idioma">${otro.toUpperCase()}</button>
+      <button class="cl-jugar" id="cl-jugar">▶ ${esc(c.jugar)}</button></div></nav>
     <header class="cl-hero" id="cl-sobre">
-      <div class="cl-editor">
-        <div class="cl-pestana"><i></i><i></i><i></i><span>HelloWorld.java</span></div>
-        <p class="cl-comentario">// ${esc(c.comentario)}</p>
-        <h1>Alejandro Blanco Rodríguez</h1>
+      <div class="cl-editor cl-revela">
+        <div class="cl-pestana"><i></i><i></i><i></i><span>HelloWorld.java</span><canvas class="cl-mini" width="24" height="32" aria-hidden="true"></canvas></div>
+        <p class="cl-comentario"><span class="cl-escribe" data-texto="// ${esc(c.comentario)}"></span><b class="cl-cursor">▋</b></p>
+        <h1 class="cl-nombre">Alejandro Blanco Rodríguez</h1>
         <p class="cl-titulo">${esc(x.titulo)}</p>
         <p class="cl-resumen">${esc(x.sobreMi)}</p>
         <p class="cl-estado"><span class="cl-punto"></span>${esc(c.disponible)} · Madrid</p>
@@ -206,20 +247,21 @@ function pintarClasico() {
           <a class="cl-btn" href="${ENLACES.linkedin}" ${fuera}>LinkedIn</a>
         </div>
       </div>
-      <figure class="cl-foto"><img src="img/alejandro.jpg" alt="Alejandro Blanco Rodríguez" width="400" height="600"></figure>
+      <figure class="cl-foto cl-revela"><div class="cl-aro"><img src="img/alejandro.jpg" alt="Alejandro Blanco Rodríguez" width="400" height="600"></div></figure>
     </header>
-    <section class="cl-datos">${c.datos.map(([n, d]) => `<div><b>${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</section>
-    <section id="cl-proyectos"><h2>${esc(c.proyectos)}</h2><div class="cl-proyectos">${PROYECTOS.map((p) => `
-      <article class="${p.premio ? 'destacado' : ''}"><header><h3>${esc(p.nombre)}</h3>${p.premio ? `<span class="cl-premio">${esc(c.premio)}</span>` : ''}</header>
+    <section class="cl-datos">${c.datos.map(([n, d], i) => `<div class="cl-revela" style="--i:${i}"><b data-cuenta="${esc(n)}">${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</section>
+    <div class="cl-cinta" aria-hidden="true"><div>${cinta}</div></div>
+    <section id="cl-proyectos"><h2 class="cl-revela">${esc(c.proyectos)}</h2><div class="cl-proyectos">${PROYECTOS.map((p, i) => `
+      <article class="cl-revela ${p.premio ? 'destacado' : ''}" style="--i:${i % 3}"><header><h3>${esc(p.nombre)}</h3>${p.premio ? `<span class="cl-premio">${esc(c.premio)}</span>` : ''}</header>
       <p>${esc(x.proyectosTexto[p.id])}</p><div class="cl-chips">${p.stack.map((s) => `<span>${esc(s)}</span>`).join('')}</div>
       <div class="cl-enlaces">${enlacesProyecto(p)}</div></article>`).join('')}</div></section>
-    <section id="cl-trayectoria"><h2>${esc(c.trayectoria)}</h2><ol class="cl-linea">${x.trayectoria.slice().reverse().map((h) => `
-      <li><time>${esc(h.fecha)}</time><div><h3>${esc(h.titulo)}</h3><em>${esc(h.lugar)}</em><p>${esc(h.texto)}</p></div></li>`).join('')}</ol></section>
-    <section id="cl-stack"><h2>${esc(c.stack)}</h2><div class="cl-stack">${STACK.map((g) => `
-      <div><h3>${esc(x.grupos[g.grupo])}</h3>${g.items.map(([n, v]) => `<div class="cl-nivel"><span>${esc(n)}</span><i style="--v:${v * 10}%"></i></div>`).join('')}</div>`).join('')}</div></section>
-    <section><h2>${esc(c.prensa)}</h2><div class="cl-prensa"><p><b>${esc(x.trofeos.titulo)}</b>. ${esc(x.trofeos.texto)}</p>
+    <section id="cl-trayectoria"><h2 class="cl-revela">${esc(c.trayectoria)}</h2><ol class="cl-linea">${x.trayectoria.slice().reverse().map((h) => `
+      <li class="cl-revela"><time>${esc(h.fecha)}</time><div><h3>${esc(h.titulo)}</h3><em>${esc(h.lugar)}</em><p>${esc(h.texto)}</p></div></li>`).join('')}</ol></section>
+    <section id="cl-stack"><h2 class="cl-revela">${esc(c.stack)}</h2><div class="cl-stack">${STACK.map((g, i) => `
+      <div class="cl-revela" style="--i:${i}"><h3>${esc(x.grupos[g.grupo])}</h3>${g.items.map(([n, v]) => `<div class="cl-nivel"><span>${esc(n)}</span><i style="--v:${v * 10}%"></i></div>`).join('')}</div>`).join('')}</div></section>
+    <section class="cl-revela"><h2>${esc(c.prensa)}</h2><div class="cl-prensa"><p><b>${esc(x.trofeos.titulo)}</b>. ${esc(x.trofeos.texto)}</p>
       <ul>${x.trofeos.medios.map(medio).join('')}</ul></div></section>
-    <section id="cl-contacto" class="cl-contacto"><h2>${esc(c.contacto)}</h2><p>${esc(x.contacto.texto)}</p>
+    <section id="cl-contacto" class="cl-contacto cl-revela"><h2>${esc(c.contacto)}</h2><p>${esc(x.contacto.texto)}</p>
       <div class="cl-acciones">
         <a class="cl-btn principal" href="${ENLACES.practicas}">${esc(x.contacto.practicas)}</a>
         <a class="cl-btn" href="mailto:${ENLACES.email}">${ENLACES.email}</a>
@@ -228,19 +270,124 @@ function pintarClasico() {
       </div></section>
     <footer class="cl-pie">${esc(c.pie)}</footer>`
   $('#cl-idioma').onclick = () => { cambiarIdioma(); pintarClasico(); pintarHUD() }
+  $('#cl-jugar').onclick = () => cerrarClasico()
+  animarClasico()
 }
-export function abrirClasico() { registrar('clasico', null, true); pintarClasico(); $('#clasico').hidden = false; document.body.classList.add('en-clasico') }
-export function cerrarClasico() { $('#clasico').hidden = true; document.body.classList.remove('en-clasico') }
+
+function animarClasico() {
+  limpiarClasico?.()
+  const raiz = $('#clasico')
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches
+  const relojes = []
+  // aparecer al hacer scroll (y contar las cifras y llenar las barras cuando se ven)
+  const contar = (b) => {
+    const m = b.dataset.cuenta.match(/\d+/)
+    if (!m || quieto) return
+    const fin = +m[0], plantilla = b.dataset.cuenta
+    const t0 = performance.now()
+    const paso = (ahora) => {
+      const k = Math.min(1, (ahora - t0) / 900)
+      b.textContent = plantilla.replace(m[0], Math.round(fin * (1 - Math.pow(1 - k, 3))))
+      if (k < 1) requestAnimationFrame(paso)
+    }
+    requestAnimationFrame(paso)
+  }
+  const visto = new IntersectionObserver((entradas) => entradas.forEach((e) => {
+    if (!e.isIntersecting) return
+    e.target.classList.add('visto')
+    e.target.querySelectorAll('[data-cuenta]').forEach(contar)
+    visto.unobserve(e.target)
+  }), { root: raiz, threshold: 0.12 })
+  raiz.querySelectorAll('.cl-revela').forEach((el) => { if (quieto) el.classList.add('visto'); else visto.observe(el) })
+
+  // sección activa en el menú y barra de progreso de lectura
+  const enlacesNav = [...raiz.querySelectorAll('[data-seccion]')]
+  const alScroll = () => {
+    const max = raiz.scrollHeight - raiz.clientHeight
+    raiz.querySelector('.cl-progreso').style.transform = `scaleX(${max > 0 ? raiz.scrollTop / max : 0})`
+    let activa = null
+    for (const a of enlacesNav) { const s = raiz.querySelector('#' + a.dataset.seccion); if (s && s.offsetTop - 120 <= raiz.scrollTop) activa = a }
+    enlacesNav.forEach((a) => a.classList.toggle('activa', a === activa))
+  }
+  raiz.addEventListener('scroll', alScroll, { passive: true })
+  alScroll()
+
+  // el comentario del editor se escribe solo
+  const escribe = raiz.querySelector('.cl-escribe')
+  const frase = escribe.dataset.texto
+  if (quieto) escribe.textContent = frase
+  else {
+    let n = 0
+    const reloj = setInterval(() => { escribe.textContent = frase.slice(0, ++n); if (n >= frase.length) clearInterval(reloj) }, 45)
+    relojes.push(reloj)
+  }
+
+  // el Alejandro del juego anda en la pestaña del editor
+  const mini = raiz.querySelector('.cl-mini')
+  const hoja = window.__juego?.textures?.exists('alejandro') && window.__juego.textures.get('alejandro').getSourceImage()
+  if (hoja && mini) {
+    const ctx = mini.getContext('2d')
+    ctx.imageSmoothingEnabled = false
+    let f = 0, haciaDerecha = true
+    // fila 2 de la hoja = mirando a la derecha, fila 1 = a la izquierda
+    const pinta = () => { ctx.clearRect(0, 0, 24, 32); ctx.drawImage(hoja, [1, 0, 2, 0][f % 4] * 24, haciaDerecha ? 64 : 32, 24, 32, 0, 0, 24, 32); f++ }
+    pinta()
+    // la animación va y vuelve: en cada vuelta cambia de sentido y se gira
+    mini.addEventListener('animationiteration', () => { haciaDerecha = !haciaDerecha; pinta() })
+    if (!quieto) relojes.push(setInterval(pinta, 160))
+  } else mini?.remove()
+
+  // foco que sigue al ratón en las tarjetas de proyectos y una ligera inclinación
+  if (!quieto) raiz.querySelectorAll('.cl-proyectos article').forEach((a) => {
+    a.addEventListener('pointermove', (e) => {
+      const r = a.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height
+      a.style.setProperty('--mx', `${px * 100}%`); a.style.setProperty('--my', `${py * 100}%`)
+      a.style.transform = `perspective(700px) rotateX(${(0.5 - py) * 5}deg) rotateY(${(px - 0.5) * 6}deg) translateY(-3px)`
+    })
+    a.addEventListener('pointerleave', () => { a.style.transform = '' })
+  })
+
+  limpiarClasico = () => { visto.disconnect(); raiz.removeEventListener('scroll', alScroll); relojes.forEach(clearInterval); limpiarClasico = null }
+}
+
+export function abrirClasico() { registrar('clasico', null, true); pintarClasico(); $('#clasico').hidden = false; $('#clasico').scrollTop = 0; document.body.classList.add('en-clasico') }
+export function cerrarClasico() { limpiarClasico?.(); $('#clasico').hidden = true; document.body.classList.remove('en-clasico') }
 
 // ---------------------------------------------------------------------------------------------- mando táctil
-export const teclasTactiles = { arriba: false, abajo: false, izquierda: false, derecha: false, accion: false }
+// vx y vy van de -1 a 1: la palanca es analógica (cuanto más la empujas, más rápido andas)
+export const teclasTactiles = { arriba: false, abajo: false, izquierda: false, derecha: false, accion: false, vx: 0, vy: 0 }
 export function iniciarMando() {
-  document.querySelectorAll('[data-dir]').forEach((b) => {
-    const dir = b.dataset.dir
-    const on = (e) => { e.preventDefault(); teclasTactiles[dir] = true }
-    const off = (e) => { e.preventDefault(); teclasTactiles[dir] = false }
-    b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off)
-    b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off)
+  // Palanca flotante: aparece donde apoyas el pulgar en la mitad izquierda y sigue al dedo
+  const zona = $('#palanca'), base = zona.querySelector('.palanca-base'), bola = zona.querySelector('.palanca-bola')
+  const RADIO = 42
+  let dedo = null, cx = 0, cy = 0
+  const soltar = (e) => {
+    if (e.pointerId !== dedo) return
+    dedo = null; teclasTactiles.vx = teclasTactiles.vy = 0
+    zona.classList.remove('activa'); bola.style.transform = ''
+  }
+  zona.addEventListener('pointerdown', (e) => {
+    if (dedo !== null) return
+    e.preventDefault()
+    dedo = e.pointerId; zona.setPointerCapture(dedo)
+    const r = zona.getBoundingClientRect()
+    cx = e.clientX; cy = e.clientY
+    base.style.left = `${cx - r.left}px`; base.style.top = `${cy - r.top}px`
+    zona.classList.add('activa')
+    cerrarMenuHUD()
   })
-  $('#btn-accion').addEventListener('pointerdown', (e) => { e.preventDefault(); teclasTactiles.accion = true })
+  zona.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== dedo) return
+    let dx = e.clientX - cx, dy = e.clientY - cy
+    const d = Math.hypot(dx, dy)
+    if (d > RADIO) { dx = (dx / d) * RADIO; dy = (dy / d) * RADIO }
+    bola.style.transform = `translate(${dx}px, ${dy}px)`
+    // zona muerta pequeña para que no se mueva solo con apoyar el dedo
+    const f = d < 8 ? 0 : Math.min(1, d / RADIO)
+    const a = Math.atan2(dy, dx)
+    teclasTactiles.vx = f ? Math.cos(a) * Math.max(0.45, f) : 0
+    teclasTactiles.vy = f ? Math.sin(a) * Math.max(0.45, f) : 0
+  })
+  zona.addEventListener('pointerup', soltar); zona.addEventListener('pointercancel', soltar)
+  $('#btn-accion').addEventListener('pointerdown', (e) => { e.preventDefault(); teclasTactiles.accion = true; navigator.vibrate?.(12) })
 }

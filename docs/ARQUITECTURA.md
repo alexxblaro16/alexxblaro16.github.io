@@ -81,9 +81,35 @@ elige todo al azar. Cada cambio vuelve a dibujar la hoja, así que lo que se ve 
 - **Niebla**: un `div` fijo (`#niebla`) con cuatro degradados radiales en las esquinas que respira despacio con CSS.
   Va por encima del canvas y por debajo de la interfaz, no captura el ratón y se queda quieta con `prefers-reduced-motion`.
 
+## Interiores (`interiores.js`)
+
+`INTERIORES` describe cada sala como datos (medidas, suelo, color de pared, ventanas y muebles con `vida`, `zona`, `pared` o
+`pisable`) y `crearInteriores()` dibuja con código la sala y cada mueble. `Mundo.colocarInteriores()` las pone debajo del mapa,
+una al lado de otra, con paredes y muebles sólidos. Un edificio con `interior` en `mapa.js` lleva a su sala: `entrar()` funde a
+negro, mueve al jugador, cambia los límites del mundo y de la cámara y centra la sala si cabe en pantalla (si no, la cámara sigue
+al jugador). Al pisar el felpudo de la puerta, `salir()` devuelve al jugador delante del edificio.
+
+## Día y noche
+
+`cicloDia()` crea un velo azul, otro naranja para el atardecer, una luz (degradado en modo `ADD`) por farola, foco y puerta, y
+luciérnagas. `noche()` calcula en qué momento del día estamos (`DURACION_DIA`, 6 minutos) y `actualizarLuz()` ajusta todo en cada
+fotograma. Dentro de las salas siempre hay luz. `cambiarHora()` salta al día o a la noche (botón de la barra).
+
+## Esferas, nube y penaltis
+
+`ESFERAS` (en `mapa.js`) dice dónde está cada una de las siete, fuera o dentro de una sala. Las encontradas se guardan en
+`estado.esferas`; con las siete, `pedirDeseo()` oscurece el cielo y hace girar las esferas alrededor del jugador. La nube amarilla
+activa un turbo de 20 s. Los penaltis son el quinto juego de `arcade.js` y se abren desde el campo de fútbol.
+
+## Mando táctil
+
+En pantallas táctiles, la mitad izquierda de abajo es una palanca flotante: aparece donde apoyas el dedo y escribe `vx` y `vy`
+(de -1 a 1) en `teclasTactiles`, así que se anda en cualquier dirección y más o menos deprisa. `Mundo.update()` usa esos valores
+si existen y, si no, el teclado. Al empezar a jugar en el móvil se pide la pantalla completa (`pantallaCompleta()` en `ui.js`).
+
 ## Idiomas y estado
 
-`estado.js` guarda idioma, sonido, personaje, zonas visitadas y si el recorrido está hecho. Todos los textos
+`estado.js` guarda idioma, sonido, personaje, zonas visitadas, esferas encontradas y si el recorrido está hecho. Todos los textos
 salen de `content.js` y `historia.js`, que tienen la misma estructura en `es` y `en`.
 
 ## Registro de visitas (`registro.js`, `registro/` y `/accesos/`)
