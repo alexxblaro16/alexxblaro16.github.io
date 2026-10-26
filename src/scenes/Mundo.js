@@ -183,6 +183,9 @@ export default class Mundo extends Phaser.Scene {
     for (let x = 62 * T; x < 97 * T; x += 12) if (!cebras.some((c) => x >= c * T - 4 && x < (c + 2) * T + 4)) rect(x, (CAMINO + 1) * T - 1, 7, 2, '#e9ecef')
     for (const c of cebras) for (let y = CAMINO * T + 2; y < (CAMINO + 2) * T - 2; y += 4) rect(c * T + 2, y, 2 * T - 4, 2, '#eef1f4')
 
+    // El aparcamiento del Lupa: plazas pintadas en blanco
+    for (let x = 20 * T + 4; x <= 32 * T - 4; x += 56) rect(x, 7 * T + 2, 2, 2 * T - 4, '#e9ecef')
+    rect(20 * T + 4, 7 * T + 2, 12 * T - 8, 1, '#e9ecef')
     // La autovía: líneas blancas, discontinua en el centro y biondas a los dos lados
     const ax0 = AUTOVIA.x0 * T, ax1 = (AUTOVIA.x1 + 1) * T, H = ALTO * T
     rect(ax0 + 2, 0, 1, H, '#e9ecef'); rect(ax1 - 3, 0, 1, H, '#e9ecef')

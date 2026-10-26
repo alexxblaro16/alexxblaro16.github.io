@@ -21,6 +21,8 @@ export const EDIFICIOS = [
   { clave: 'bar_garibalde', x: 45.5, base: 13.5, vida: 'bar_garibalde' }, { clave: 'casa_plaza_2', x: 50.5, base: 13.5 },
   { clave: 'soportal_lado', x: 22.8, base: 18.3 }, { clave: 'soportal_lado_2', x: 45.6, base: 18.3 },
   { clave: 'soportal_sur', x: 27.9, base: 26.4 }, { clave: 'bar_burgos', x: 36, base: 26.4, vida: 'bar_burgos' }, { clave: 'soportal_sur_2', x: 44.4, base: 26.4 },
+  // El Lupa del pueblo, encima de la plaza, con su aparcamiento delante (allí trabajó un verano)
+  { clave: 'lupa', x: 25.4, base: 7.2, letrero: 'SUPERMERCADO LUPA', vida: 'lupa' },
   { clave: 'reblan', x: 10.4, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', interior: 'reblan' },
   { clave: 'piso', x: 50.5, base: 18, interior: 'casa' },
   // El instituto, con su camino hasta la puerta
@@ -58,6 +60,9 @@ export const OBJETOS = [
   { clave: 'puesto', x: 41, base: 22.4 },
   { clave: 'mesa_bar', x: 34.4, base: 22.3 }, { clave: 'mesa_bar', x: 37.6, base: 22.3 },
   { clave: 'arbol_plaza', x: 21.6, base: 20.6 },
+  // El aparcamiento del Lupa: coches aparcados, los carros y la señal
+  { clave: 'coche_azul', x: 21.9, base: 9 }, { clave: 'coche_blanco', x: 28.9, base: 9 },
+  { clave: 'carritos', x: 30.6, base: 7.3, vida: 'carrito' }, { clave: 'senal_p', x: 20.2, base: 7.4 },
   // La casa de la familia, con las banderas de España y Colombia
   { clave: 'banderas', x: 53.2, base: 18.3, vida: 'banderas' },
   // Guiño a Bob Esponja junto al agua
@@ -122,9 +127,11 @@ export const SUELOS = [
   { tipo: 'acera', x0: 60, x1: 98, y0: CAMINO - 1, y1: CAMINO - 1 }, { tipo: 'acera', x0: 60, x1: 98, y0: CAMINO + 2, y1: CAMINO + 2 },
   { tipo: 'arena', x0: 2, x1: 11, y0: 21, y1: 31 }, // rincón de la piña
   { tipo: 'asfalto', x0: AUTOVIA.x0, x1: AUTOVIA.x1, y0: 0, y1: ALTO - 1 }, // la autovía
+  { tipo: 'asfalto', x0: 20, x1: 31, y0: 7, y1: 8 }, // el aparcamiento del Lupa
 ]
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [
+  { x: 23, y0: 9, y1: 12 }, // de la plaza al aparcamiento del Lupa, entre las casas
   { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 31, y0: 21, y1: 32 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 }, { x: 165, y0: 13, y1: 18 },
 ]
 

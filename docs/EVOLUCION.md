@@ -272,6 +272,20 @@ Tras probar la versión 17, Alejandro pidió:
   - la pantalla del récord («BEST SCORE»);
   - el marcador del Raimon encendido de noche.
 
+### 22. El Lupa del pueblo
+
+- Encima de la Plaza Mayor, a la izquierda, está el **supermercado Lupa** de Villalpando. Se dibujó a partir de fotos
+  reales de la cadena: fachada de paneles gris claro, el logo («lu» en azul y «pa» en naranja dentro de un cuadro azul),
+  el carrito naranja, una franja naranja y la cristalera con estanterías y puertas automáticas.
+- Delante tiene su **aparcamiento**, con plazas pintadas, dos coches, una fila de carros y la señal de la P. Desde la
+  plaza se sube por un camino entre las casas.
+- Al hablar con él: «Aquí trabajé un verano». Cuenta que reponía estanterías, echaba una mano en la caja y ayudaba a la
+  gente mayor a llevar la compra al coche. Cierra con que un lineal bien ordenado se parece a un código bien escrito, y
+  con que en un pueblo, si vas al súper, sales sabiendo todo lo que ha pasado esa semana. El carro dice que siempre hay
+  uno que tira hacia un lado, como un bug que nadie arregla.
+- De noche se encienden sus cristales, como los de los demás edificios.
+- Alejandro pidió no volver a grabar el vídeo: el de 45 s se queda como está.
+
 ## Ideas para más adelante
 
 - Dominio propio.

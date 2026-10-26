@@ -21,7 +21,8 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
 - **Recorrido guiado**: Alejandro va delante y cuenta cada etapa (Villalpando, el instituto, la residencia en Madrid,
   MEDAC, las prácticas en Anexia, la UDIT, el Erasmus, los hackatones y DANTE P.W.). Se puede saltar en cualquier momento.
 - **Mapa de su vida en píxeles**, con sitios dibujados a partir de fotos reales: la Puerta de la Villa (que se cruza
-  por el arco), la Plaza Mayor con sus soportales, Reblán y su furgoneta, el IES Tierra de Campos, MEDAC Albalá y la UDIT.
+  por el arco), la Plaza Mayor con sus soportales, el Lupa con su aparcamiento (donde trabajó un verano), Reblán y su
+  furgoneta, el IES Tierra de Campos, MEDAC Albalá y la UDIT.
 - **Edificios por dentro**: la casa de la familia (su cuarto y el salón), la tienda Reblán (donde Pedro te invita a dejar una
   reseña de verdad en Google si has comprado allí), el aula del MEDAC y la UDIT
   (la entrada con sus profes, los tornos y el ascensor a la planta 3, con sus clases).

@@ -861,6 +861,61 @@ function senal(nombre, tachada) {
   }
 }
 
+// ---------------------------------------------------------------------------------------------- el Lupa del pueblo
+// Supermercado de una planta como los Lupa de verdad: fachada de paneles gris claro con el logo («lu» en azul y «pa» en
+// naranja dentro de un cuadro azul) y el carrito naranja, franja naranja y la cristalera con las puertas automáticas
+function lupa() {
+  const [c, ctx] = lienzo(96, 56)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(0, 2, 96, 54, NEGRO); p(1, 3, 94, 52, '#dfe2e6'); p(1, 3, 94, 1, '#f2f4f6'); p(92, 4, 3, 24, '#c6cbd1')
+  p(0, 0, 96, 3, NEGRO); p(1, 1, 94, 1, '#c25f0c') // remate del tejado
+  for (let x = 12; x < 94; x += 12) p(x, 4, 1, 20, '#cdd2d8') // juntas de los paneles
+  // logo: carrito naranja, «LU» en azul y un cuadro azul con «PA» en naranja
+  p(22, 9, 9, 1, '#f07d1a'); p(23, 10, 1, 5, '#f07d1a'); p(23, 14, 7, 1, '#f07d1a'); p(29, 10, 1, 5, '#f07d1a'); p(20, 7, 3, 1, '#f07d1a'); p(24, 16, 2, 2, '#f07d1a'); p(28, 16, 2, 2, '#f07d1a')
+  // «lu» en minúscula, en azul
+  const B = '#1f5fc8', O = '#f5a623'
+  p(35, 6, 2, 11, B); p(39, 10, 2, 6, B); p(43, 10, 2, 7, B); p(39, 15, 6, 2, B)
+  // cuadro azul con «pa» en naranja (la «p» baja por debajo de la línea)
+  p(48, 5, 25, 16, B); p(48, 5, 25, 1, '#4f86e0')
+  p(52, 9, 2, 10, O); p(52, 9, 6, 2, O); p(56, 9, 2, 6, O); p(52, 13, 6, 2, O)
+  p(61, 9, 6, 2, O); p(61, 9, 2, 6, O); p(61, 13, 6, 2, O); p(65, 9, 2, 6, O); p(67, 14, 1, 1, O)
+  // franja naranja
+  p(1, 23, 94, 6, '#f07d1a'); p(1, 23, 94, 1, '#ffad5c'); p(1, 28, 94, 1, '#c25f0c')
+  // cristalera con montantes oscuros y el marco naranja a los lados
+  p(1, 29, 4, 26, '#f07d1a'); p(91, 29, 4, 26, '#f07d1a')
+  p(5, 29, 86, 26, '#2b3a40'); p(6, 30, 84, 24, '#4f8f97'); p(6, 30, 84, 4, '#7db3ba')
+  for (let x = 16; x < 90; x += 10) p(x, 30, 1, 24, '#2b3a40')
+  // dentro se ven baldas de colores
+  for (let x = 8; x < 88; x += 10) if (x < 38 || x > 56) { p(x, 40, 7, 1, '#3a4a50'); p(x + 1, 37, 2, 3, '#f2b33d'); p(x + 4, 37, 2, 3, '#e05a5a'); p(x + 2, 43, 2, 3, '#3d7be0'); p(x + 5, 43, 2, 3, '#2fbf71') }
+  // puertas automáticas, con un cartel de ofertas al lado
+  p(40, 32, 16, 23, NEGRO); p(41, 33, 14, 22, '#8fc0c6'); p(47, 33, 2, 22, NEGRO)
+  p(60, 34, 6, 8, '#ffffff'); p(61, 36, 4, 1, '#c8302a'); p(61, 38, 4, 2, '#f07d1a')
+  p(38, 54, 20, 2, '#3a3f48')
+  return c
+}
+
+// Fila de carros de la compra encajados unos en otros
+function carritos() {
+  const [c, ctx] = lienzo(26, 14)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  for (let i = 0; i < 3; i++) {
+    const x = i * 6
+    p(x, 2, 12, 8, '#8a919a'); p(x + 1, 3, 10, 6, '#c9ced5'); for (let k = 2; k < 11; k += 3) p(x + k, 3, 1, 6, '#8a919a')
+    p(x, 1, 2, 2, '#f07d1a') // asa naranja
+    p(x + 1, 11, 2, 2, NEGRO); p(x + 9, 11, 2, 2, NEGRO)
+  }
+  return c
+}
+
+// Señal de aparcamiento
+function senalP() {
+  const [c, ctx] = lienzo(12, 26)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(5, 10, 2, 16, '#6a717c')
+  p(0, 0, 12, 12, NEGRO); p(1, 1, 10, 10, '#1f5fb0'); textoCentrado(ctx, 'P', 6, 4, '#ffffff')
+  return c
+}
+
 // ---------------------------------------------------------------------------------------------- estadio
 function foco() {
   const [c, ctx] = lienzo(16, 60)
@@ -1087,7 +1142,7 @@ export function crearEdificios(scene) {
     maquina_nave: maquina('#1f3c9a', 'SHOOT', (p) => { p(5, 6, 2, 2, '#3dd9ff'); p(4, 7, 4, 1, '#3dd9ff'); p(2, 1, 2, 2, '#e05a5a'); p(8, 2, 2, 2, '#e05a5a'); p(6, 3, 1, 2, '#7ee2a8') }),
     maquina_ladrillos: maquina('#a83a2a', 'BRICK', (p) => { for (let x = 0; x < 12; x += 3) { p(x, 0, 2, 1, '#f2b33d'); p(x + 1, 2, 2, 1, '#2fbf71') } p(5, 7, 3, 1, '#ffffff'); p(6, 5, 1, 1, '#f2c200') }),
     maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
-    nube, neumatico, banderin_rayo: banderinRayo,
+    nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando
