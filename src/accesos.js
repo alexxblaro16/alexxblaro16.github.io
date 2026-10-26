@@ -33,6 +33,10 @@ function hace(ms) {
   return new Date(ms).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 }
 const hora = (ms) => new Date(ms).toLocaleString('es-ES', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+const reloj24 = (ms) => new Date(ms).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+const desde = (ms, inicio) => { const s = Math.max(0, Math.round((ms - inicio) / 1000)); return s < 60 ? `+${s} s` : `+${Math.floor(s / 60)} min ${s % 60} s` }
+// Visitas desplegadas: se mantienen abiertas aunque la lista se recargue cada 30 s
+const abiertas = new Set()
 const duracion = (s) => (!s ? '—' : s < 60 ? `${s} s` : `${Math.floor(s / 60)} min ${s % 60} s`)
 
 // Cómo se cuenta cada cosa que hace un visitante
@@ -71,14 +75,25 @@ function tarjeta(v) {
   const cv = v.eventos.some((e) => e.tipo === 'cv')
   // si no creó personaje en esta visita pero volvió con el de otra vez, se dice en la cabecera
   const vuelve = !v.eventos.some((e) => e.tipo === 'personaje') && v.eventos.some((e) => e.tipo === 'vuelve')
-  return `<article class="visita${cv ? ' cv' : ''}">
+  const abierta = abiertas.has(v.id)
+  const ficha = [
+    ['Entró', hora(v.inicio)], ['Última actividad', hora(v.ultima)], ['Tiempo dentro', duracion(v.duracion)],
+    ['Lugar', lugar], ['Dispositivo', `${v.dispositivo} · ${v.sistema} · ${v.navegador}`],
+    ['Pantalla', v.pantalla], ['Idioma', v.idioma], ['Origen', v.origen || 'Directo'], ['Campaña', v.campana],
+  ].filter(([, valor]) => valor)
+  const detalle = `<div class="detalle">
+      <dl>${ficha.map(([k, valor]) => `<dt>${k}</dt><dd>${esc(valor)}</dd>`).join('')}</dl>
+      ${v.eventos.length ? `<ol class="cronologia">${v.eventos.map((e, i) => `<li class="${cosas[i][0]}"><time>${reloj24(e.hora)}</time><span class="mas">${desde(e.hora, v.inicio)}</span>${esc(cosas[i][1])}</li>`).join('')}</ol>` : ''}
+    </div>`
+  return `<article class="visita${cv ? ' cv' : ''}${abierta ? ' abierta' : ''}" data-id="${esc(v.id)}" tabindex="0" aria-expanded="${abierta}">
       <header>
         <h2>${v.personaje ? esc(v.personaje) : '<span class="sin">Sin personaje</span>'}${vuelve ? ' <span class="sin">· entró de nuevo</span>' : ''}</h2>
         <time title="${esc(hora(v.inicio))}">${esc(hace(v.inicio))}</time>
       </header>
       <p class="lugar">${esc(lugar)}</p>
-      <p class="datos">${esc(v.dispositivo)} · ${esc(v.sistema)} · ${esc(v.navegador)} · ${esc(v.idioma || '')} · ${origen} · ${esc(duracion(v.duracion))}</p>
+      <p class="datos">${[v.dispositivo, v.sistema, v.navegador, v.idioma].filter(Boolean).map(esc).join(' · ')} · ${origen} · ${esc(duracion(v.duracion))}</p>
       ${cosas.length ? `<ul class="chips">${cosas.map(([c, txt]) => `<li class="${c}">${esc(txt)}</li>`).join('')}</ul>` : '<p class="nada">Solo miró la portada.</p>'}
+      ${abierta ? detalle : ''}
     </article>`
 }
 
@@ -101,6 +116,16 @@ function pintar({ resumen, visitas }) {
     ${r.paises.length ? `<p class="paises">${r.paises.map((p) => `<span>${esc(nombrePais(p.pais))} <b>${p.n}</b></span>`).join('')}</p>` : ''}
     <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s.</p>
     <section class="lista">${visitas.length ? visitas.map(tarjeta).join('') : '<p class="nada">Todavía no ha entrado nadie.</p>'}</section>`
+  // pulsar una visita la despliega con todos sus datos y lo que hizo minuto a minuto
+  const lista = $('.lista')
+  const alternar = (art) => {
+    if (abiertas.has(art.dataset.id)) abiertas.delete(art.dataset.id); else abiertas.add(art.dataset.id)
+    const v = visitas.find((x) => x.id === art.dataset.id)
+    art.outerHTML = tarjeta(v)
+    lista.querySelector(`[data-id="${CSS.escape(v.id)}"]`)?.focus({ preventScroll: true })
+  }
+  lista.onclick = (e) => { const art = e.target.closest('.visita'); if (art && !e.target.closest('.detalle') && !getSelection().toString()) alternar(art) }
+  lista.onkeydown = (e) => { const art = e.target.closest('.visita'); if (art && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); alternar(art) } }
   $('#recargar').onclick = () => cargar(leer())
   $('#salir').onclick = () => { escribir(CLAVE, null); pintarEntrada() }
 }

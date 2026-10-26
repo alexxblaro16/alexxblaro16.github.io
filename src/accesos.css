@@ -38,6 +38,20 @@ h1 { font: 18px 'Press Start 2P', monospace; color: var(--verde); margin: 0; let
 .lista { display: grid; gap: 10px; }
 .visita { background: var(--panel); border: 2px solid var(--borde); border-left: 4px solid var(--borde); border-radius: 8px; padding: 14px 16px; }
 .visita.cv { border-left-color: var(--oro); }
+.visita { cursor: pointer; }
+.visita:hover, .visita:focus-visible { border-color: var(--verde); outline: none; }
+.visita.cv:hover, .visita.cv:focus-visible { border-left-color: var(--oro); }
+.visita header h2::before { content: '▸ '; color: var(--suave); }
+.visita.abierta header h2::before { content: '▾ '; }
+.detalle { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--borde); cursor: auto; }
+.detalle dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0 0 12px; font-size: 13px; }
+.detalle dt { color: var(--suave); }
+.detalle dd { margin: 0; overflow-wrap: anywhere; }
+.cronologia { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 13px; }
+.cronologia li { display: grid; grid-template-columns: 70px 90px 1fr; gap: 8px; padding: 4px 8px; border-radius: 4px; background: var(--fondo); }
+.cronologia time, .cronologia .mas { font: 12px/1.6 'JetBrains Mono', monospace; color: var(--suave); }
+.cronologia li.verde { color: var(--verde); }
+.cronologia li.oro { color: var(--oro); }
 .visita header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .visita h2 { font: 700 17px Inter, sans-serif; margin: 0; overflow-wrap: anywhere; }
 .visita .sin { color: var(--suave); font-weight: 600; }
@@ -53,4 +67,6 @@ h1 { font: 18px 'Press Start 2P', monospace; color: var(--verde); margin: 0; let
 @media (max-width: 600px) {
   .cifras { grid-template-columns: repeat(2, 1fr); }
   h1 { font-size: 15px; }
+  .cronologia li { grid-template-columns: 64px 1fr; }
+  .cronologia .mas { display: none; }
 }
