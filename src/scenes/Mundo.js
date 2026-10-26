@@ -10,6 +10,7 @@ import { decir, elegir, pedirRopa, hayDialogo, avanzarDialogo, abrirPanel, hayPa
 import { sfx, sonar } from '../sonido.js'
 import { abrirArcade } from '../arcade.js'
 import { animarViaje } from '../viaje.js'
+import { ENLACES } from '../content.js'
 import { lienzo, px, texto, ruido2D } from '../pixel.js'
 
 const VELOCIDAD = 90
@@ -371,7 +372,7 @@ export default class Mundo extends Phaser.Scene {
           this.add.rectangle(img.x + 2, img.y - 1, img.width - 2, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-885)
         }
         if (m.vida || m.zona || m.ir || m.arcade || m.ropa) {
-          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, nombre: 'Alejandro' })
+          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, resena: m.resena, nombre: 'Alejandro' })
         }
       }
       for (const [i, g] of (o.personas || []).entries()) {
@@ -415,6 +416,18 @@ export default class Mundo extends Phaser.Scene {
     const edificio = EDIFICIOS.find((e) => e.interior === id)
     this.vuelta = { x: edificio.x * T, y: edificio.base * T + 12 }
     this.irASala(id)
+    // la primera vez que entras en Reblán, Pedro te pide una reseña (de la tienda de verdad)
+    if (id === 'reblan' && !this.resenaPedida) { this.resenaPedida = true; this.time.delayedCall(700, () => this.pedirResena()) }
+  }
+
+  // La reseña es de la tienda real, en Google: no se puede meter dentro del juego (Google no deja), así que se abre
+  // la página de reseñas de Reblán en otra pestaña y el juego sigue donde estaba
+  async pedirResena() {
+    if (hayDialogo()) return
+    const i = await elegir('Pedro', frases('resena'), en() ? ['Open Google reviews', 'Not now'] : ['Abrir las reseñas de Google', 'Ahora no'])
+    if (i !== 0) return
+    registrar('enlace', 'resena-reblan', true)
+    window.open(ENLACES.resenaReblan, '_blank', 'noopener')
   }
 
   // El ascensor: un aviso corto con la planta y a la otra sala
@@ -1047,6 +1060,7 @@ export default class Mundo extends Phaser.Scene {
     if (cosa.nube) return this.subirNube()
     if (cosa.bus) return this.preguntarBus(cosa.bus)
     if (cosa.ropa) return this.abrirArmario()
+    if (cosa.resena) { await decir(cosa.nombre, frases(cosa.vida)); return this.pedirResena() }
     if (cosa.arcade) return abrirArcade(cosa.arcade)
     if (cosa.zona) return abrirPanel(cosa.zona)
     if (cosa.frase) return decir(cosa.nombre, cosa.frase())

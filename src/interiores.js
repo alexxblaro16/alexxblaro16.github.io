@@ -41,7 +41,7 @@ export const INTERIORES = {
     muebles: [
       { clave: 'cartel_reblan', x: 5.5, base: 2.2, pared: true },
       // el mostrador, en la esquina de arriba a la derecha
-      { clave: 'mostrador_esquina', x: 12.4, base: 4.6, vida: 'int_mostrador' },
+      { clave: 'mostrador_esquina', x: 12.4, base: 4.6, vida: 'int_mostrador', resena: true },
       { clave: 'tele_tienda', x: 2.4, base: 3.9, vida: 'int_teles' }, { clave: 'tele_tienda', x: 5.4, base: 3.9, vida: 'int_teles' },
       // los electrodomésticos, en el centro de la tienda, con pasillos alrededor
       { clave: 'lavadora', x: 5.2, base: 6.2, vida: 'int_lavadora' }, { clave: 'lavadora', x: 6.5, base: 6.2, vida: 'int_lavadora' },

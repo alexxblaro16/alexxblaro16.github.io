@@ -7,6 +7,8 @@ export const ENLACES = {
   email: 'alexxblaro@gmail.com',
   practicas: 'mailto:alexxblaro@gmail.com?subject=Pr%C3%A1cticas%20-%20Alejandro%20Blanco',
   cv: { es: 'cv/CV-Alejandro-Blanco-ES.pdf', en: 'cv/CV-Alejandro-Blanco-EN.pdf' },
+  // reseñas de Google de Reblán, la tienda de su padre (de verdad, no del juego)
+  resenaReblan: 'https://g.page/r/CZUFPz2TUKibEAE/review',
 }
 
 // Proyectos: los mismos en los dos idiomas, solo cambia el texto

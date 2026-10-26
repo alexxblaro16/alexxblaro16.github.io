@@ -253,6 +253,25 @@ Tras probar la versión 17, Alejandro pidió:
 - **Campo más grande** (13 × 8 casillas) y un **marcador UDIT 0 – RAIMON 8**, un guiño a Inazuma Eleven, que se ilumina
   de noche.
 
+### 21. La reseña de Reblán, el tornado de fuego y el vídeo de 45 segundos
+
+- **Reseña de Reblán**: la primera vez que entras en la tienda, Pedro te pregunta si has comprado alguna vez allí y te
+  ofrece dejar una reseña en Google. El aviso deja claro que es una reseña **de verdad**, de la tienda real de
+  Villalpando, no del juego. Se puede volver a pedir desde el mostrador. Google no deja meter su página de reseñas dentro
+  de otra web (la bloquea), así que se abre en otra pestaña y el juego se queda donde estaba. No hay premio por dejarla:
+  las reseñas tienen que ser de clientes reales.
+- **Tornado de fuego**: el tiro especial de los penaltis ya no es un relámpago. Ahora es un tornado de fuego (otro guiño a
+  Inazuma Eleven), con un remolino de llamas alrededor del balón, una estela de fuego, un destello naranja y un sonido grave.
+- **Vídeo de 45 s** (`public/video/portfolio.mp4` y el GIF del README). Una cuarta toma (`grabar4.mjs`) suma:
+  - la reseña de Reblán;
+  - el Monbus con el viaje y la llegada a la Estación Sur;
+  - los amigos charlando;
+  - Jerry siguiéndote;
+  - el probador;
+  - el tornado de fuego;
+  - la pantalla del récord («BEST SCORE»);
+  - el marcador del Raimon encendido de noche.
+
 ## Ideas para más adelante
 
 - Dominio propio.

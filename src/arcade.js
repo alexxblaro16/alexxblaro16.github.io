@@ -236,14 +236,14 @@ function laberinto() {
 
 // ---------------------------------------------------------------------------------------------- 5. penaltis en el campo
 // Primero eliges adónde tirar (la mirilla va de palo a palo) y luego la fuerza. Si clavas la fuerza en la franja
-// amarilla sale un tiro relámpago que el portero no puede parar; si te pasas, va fuera. Tres fallos y se acaba.
+// naranja sale el tornado de fuego, que el portero no puede parar; si te pasas, va fuera. Tres fallos y se acaba.
 function futbol() {
   const PALO_I = 92, PALO_D = 228, LARGUERO = 40, LINEA = 72
-  let fase, apunta, sentido, fuerza, subeFuerza, bola, portero, puntos, vidas, aviso, reloj, rayo, racha, estela
+  let fase, apunta, sentido, fuerza, subeFuerza, bola, portero, puntos, vidas, aviso, reloj, fuego, racha, estela
   const textos = () => (estado.idioma === 'en'
-    ? { gol: 'GOAL!', parada: 'SAVED!', fuera: 'WIDE!', rayo: 'LIGHTNING SHOT!', apunta: 'AIM: A / SPACE', fuerza: 'POWER: A / SPACE' }
-    : { gol: '¡GOL!', parada: '¡PARADA!', fuera: '¡FUERA!', rayo: '¡TIRO RELÁMPAGO!', apunta: 'APUNTA: A / ESPACIO', fuerza: 'FUERZA: A / ESPACIO' })
-  const nuevoTiro = () => { fase = 'apuntar'; apunta = 160; sentido = 1; fuerza = 0; subeFuerza = true; bola = { x: 160, y: 196, r: 4 }; portero.x = 160; portero.objetivo = 160; rayo = false; estela = [] }
+    ? { gol: 'GOAL!', parada: 'SAVED!', fuera: 'WIDE!', fuego: 'FIRE TORNADO!', apunta: 'AIM: A / SPACE', fuerza: 'POWER: A / SPACE' }
+    : { gol: '¡GOL!', parada: '¡PARADA!', fuera: '¡FUERA!', fuego: '¡TORNADO DE FUEGO!', apunta: 'APUNTA: A / ESPACIO', fuerza: 'FUERZA: A / ESPACIO' })
+  const nuevoTiro = () => { fase = 'apuntar'; apunta = 160; sentido = 1; fuerza = 0; subeFuerza = true; bola = { x: 160, y: 196, r: 4 }; portero.x = 160; portero.objetivo = 160; fuego = false; estela = [] }
   return {
     titulo: estado.idioma === 'en' ? 'PENALTIES' : 'PENALTIS',
     reiniciar() { portero = { x: 160, objetivo: 160 }; puntos = 0; vidas = 3; aviso = null; racha = 0; nuevoTiro() },
@@ -252,16 +252,16 @@ function futbol() {
       if (fase === 'apuntar') { fase = 'fuerza'; sonar(660, 0.06) }
       else if (fase === 'fuerza') {
         fase = 'tiro'; reloj = 0
-        rayo = fuerza > 0.8 && fuerza < 0.9
+        fuego = fuerza > 0.8 && fuerza < 0.9
         const fuera = fuerza >= 0.97
         bola.destino = { x: apunta, y: fuera ? 4 : LINEA - 14 - fuerza * 10 }
         bola.desde = { x: bola.x, y: bola.y }
-        bola.dura = rayo ? 260 : 620 - fuerza * 260
+        bola.dura = fuego ? 260 : 620 - fuerza * 260
         // el portero se tira: cuanto más llevas, más acierta el lado
         const acierta = Math.random() < Math.min(0.8, 0.45 + puntos * 0.03)
         portero.objetivo = acierta ? apunta : PALO_I + 14 + Math.random() * (PALO_D - PALO_I - 28)
         portero.alcance = fuerza < 0.35 ? 34 : 18
-        if (rayo) { [523, 784, 1047, 1568].forEach((f, i) => sonar(f, 0.09, 'square', 0.05, i * 0.04)) } else sonar(220, 0.08, 'triangle', 0.08)
+        if (fuego) { [196, 262, 392, 523, 784].forEach((f, i) => sonar(f, 0.12, 'sawtooth', 0.045, i * 0.05)) } else sonar(220, 0.08, 'triangle', 0.08)
       }
     },
     paso(dt) {
@@ -279,15 +279,15 @@ function futbol() {
         reloj += dt
         const k = Math.min(1, reloj / bola.dura)
         bola.x = bola.desde.x + (bola.destino.x - bola.desde.x) * k
-        bola.y = bola.desde.y + (bola.destino.y - bola.desde.y) * k - Math.sin(k * Math.PI) * (rayo ? 4 : 14)
+        bola.y = bola.desde.y + (bola.destino.y - bola.desde.y) * k - Math.sin(k * Math.PI) * (fuego ? 4 : 14)
         bola.r = 4 - k * 1.5
-        if (rayo) { estela.push({ x: bola.x, y: bola.y }); if (estela.length > 14) estela.shift() }
+        if (fuego) { estela.push({ x: bola.x, y: bola.y }); if (estela.length > 14) estela.shift() }
         if (reloj > 120) portero.x += Math.sign(portero.objetivo - portero.x) * Math.min(Math.abs(portero.objetivo - portero.x), 260 * s)
         if (k >= 1) {
           const t = textos()
           if (bola.destino.y < LARGUERO) { vidas--; racha = 0; aviso = { texto: t.fuera, color: '#e05a5a', t: 1000 }; sonar(150, 0.25, 'sawtooth', 0.04) }
-          else if (!rayo && Math.abs(portero.x - bola.x) < portero.alcance) { vidas--; racha = 0; aviso = { texto: t.parada, color: '#e05a5a', t: 1000 }; sonar(180, 0.2, 'square', 0.04) }
-          else { puntos += rayo ? 2 : 1; racha++; aviso = { texto: rayo ? t.rayo : t.gol, color: rayo ? '#ffd93a' : '#2fbf71', t: 1100 }; [784, 988, 1175].forEach((f, i) => sonar(f, 0.12, 'square', 0.05, i * 0.08)) }
+          else if (!fuego && Math.abs(portero.x - bola.x) < portero.alcance) { vidas--; racha = 0; aviso = { texto: t.parada, color: '#e05a5a', t: 1000 }; sonar(180, 0.2, 'square', 0.04) }
+          else { puntos += fuego ? 2 : 1; racha++; aviso = { texto: fuego ? t.fuego : t.gol, color: fuego ? '#ff7a2a' : '#2fbf71', t: 1100 }; [784, 988, 1175].forEach((f, i) => sonar(f, 0.12, 'square', 0.05, i * 0.08)) }
         }
       }
     },
@@ -314,23 +314,29 @@ function futbol() {
       ctx.fillStyle = '#1b1f27'; ctx.fillRect(px0 - 4, 65, 3, 6); ctx.fillRect(px0 + 1, 65, 3, 6)
       // mirilla
       if (fase === 'apuntar' || fase === 'fuerza') { ctx.fillStyle = '#e05a5a'; ctx.fillRect(Math.round(apunta) - 1, LARGUERO - 12, 3, 7); ctx.fillRect(Math.round(apunta) - 4, LARGUERO - 8, 9, 2) }
-      // estela del tiro relámpago
-      if (rayo) estela.forEach((e, i) => { ctx.fillStyle = `rgba(255,217,58,${(i / estela.length) * 0.8})`; ctx.fillRect(e.x - 3 + ((i * 7) % 5) - 2, e.y - 3, 6, 6) })
+      // tornado de fuego: estela de llamas y un remolino de fuego girando alrededor del balón
+      if (fuego) {
+        const llamas = ['#ffd93a', '#ff9a2a', '#ff5a1f', '#c8302a']
+        estela.forEach((e, i) => { const k = i / estela.length; ctx.fillStyle = llamas[(i + (performance.now() / 60 | 0)) % 4]; ctx.globalAlpha = k * 0.9; const t = 3 + Math.round(k * 4); ctx.fillRect(e.x - t / 2 + ((i * 7) % 5) - 2, e.y - t / 2 - ((i * 3) % 4), t, t) })
+        ctx.globalAlpha = 1
+        const giro = performance.now() / 70
+        for (let k = 0; k < 8; k++) { const a = giro + (k * Math.PI) / 4, rr = 7 + (k % 2) * 3; ctx.fillStyle = llamas[k % 4]; ctx.fillRect(Math.round(bola.x + Math.cos(a) * rr) - 2, Math.round(bola.y + Math.sin(a) * rr * 0.6) - 2 - (k % 3), 4, 4) }
+      }
       // balón con su sombra
       ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(Math.round(bola.x) - 4, Math.round(bola.y) + 4, 8, 2)
-      ctx.fillStyle = rayo ? '#ffd93a' : '#ffffff'; const r = Math.max(2, Math.round(bola.r)); ctx.fillRect(Math.round(bola.x) - r, Math.round(bola.y) - r, r * 2, r * 2)
+      ctx.fillStyle = fuego ? '#ff7a2a' : '#ffffff'; const r = Math.max(2, Math.round(bola.r)); ctx.fillRect(Math.round(bola.x) - r, Math.round(bola.y) - r, r * 2, r * 2)
       ctx.fillStyle = '#1b1f27'; ctx.fillRect(Math.round(bola.x) - 1, Math.round(bola.y) - 1, 2, 2)
-      // barra de fuerza con la franja del rayo
+      // barra de fuerza con la franja del tornado de fuego
       ctx.fillStyle = '#0d1117'; ctx.fillRect(296, 90, 14, 104)
-      ctx.fillStyle = '#ffd93a'; ctx.fillRect(298, 92 + 100 * (1 - 0.9), 10, 10)
+      ctx.fillStyle = '#ff7a2a'; ctx.fillRect(298, 92 + 100 * (1 - 0.9), 10, 10)
       ctx.fillStyle = '#e05a5a'; ctx.fillRect(298, 92, 10, 3)
       ctx.fillStyle = fuerza > 0.8 && fuerza < 0.9 ? '#ffffff' : '#2fbf71'; ctx.fillRect(298, 92 + 100 * (1 - fuerza), 10, 100 * fuerza)
-      ctx.fillStyle = '#ffd93a'; ctx.fillRect(292, 92 + 100 * (1 - 0.85) - 1, 4, 2)
+      ctx.fillStyle = '#ff7a2a'; ctx.fillRect(292, 92 + 100 * (1 - 0.85) - 1, 4, 2)
       texto(ctx, `${tx().vidas} ${'♥'.repeat(Math.max(0, vidas))}`, W - 6, 4, '#e05a5a', 7, false)
       if (racha >= 3) texto(ctx, `x${racha}`, 20, 200, '#ffd93a', 8, false)
       if (!aviso && (fase === 'apuntar' || fase === 'fuerza')) texto(ctx, fase === 'apuntar' ? textos().apunta : textos().fuerza, W / 2, 220, '#e6e9ef', 7)
       if (aviso) {
-        if (rayo && aviso.t > 900) { ctx.fillStyle = 'rgba(255,240,170,.5)'; ctx.fillRect(0, 16, W, H - 16) }
+        if (fuego && aviso.t > 900) { ctx.fillStyle = 'rgba(255,140,50,.45)'; ctx.fillRect(0, 16, W, H - 16) }
         texto(ctx, aviso.texto, W / 2, 120, aviso.color, 12)
       }
       return puntos

@@ -1,6 +1,6 @@
 # alejandro.blanco()
 
-[![Vídeo del portfolio: intro de terminal, creador de personaje, Villalpando, su casa y la UDIT por dentro, la noche, los minijuegos y las siete esferas](docs/portfolio.gif)](https://alexxblaro16.github.io/video/portfolio.mp4)
+[![Vídeo del portfolio: intro de terminal, creador de personaje, su casa, la tienda de su padre, el Monbus a Madrid, sus amigos, la UDIT por dentro, Jerry, el probador, el tornado de fuego, los récords, el marcador del Raimon y las siete esferas](docs/portfolio.gif)](https://alexxblaro16.github.io/video/portfolio.mp4)
 
 **[Jugar en alexxblaro16.github.io](https://alexxblaro16.github.io)** · [ver el vídeo con sonido](https://alexxblaro16.github.io/video/portfolio.mp4)
 
@@ -22,7 +22,8 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
   MEDAC, las prácticas en Anexia, la UDIT, el Erasmus, los hackatones y DANTE P.W.). Se puede saltar en cualquier momento.
 - **Mapa de su vida en píxeles**, con sitios dibujados a partir de fotos reales: la Puerta de la Villa (que se cruza
   por el arco), la Plaza Mayor con sus soportales, Reblán y su furgoneta, el IES Tierra de Campos, MEDAC Albalá y la UDIT.
-- **Edificios por dentro**: la casa de la familia (su cuarto y el salón), la tienda Reblán, el aula del MEDAC y la UDIT
+- **Edificios por dentro**: la casa de la familia (su cuarto y el salón), la tienda Reblán (donde Pedro te invita a dejar una
+  reseña de verdad en Google si has comprado allí), el aula del MEDAC y la UDIT
   (la entrada con sus profes, los tornos y el ascensor a la planta 3, con sus clases).
 - **Día y noche**: un ciclo de 6 minutos con ventanas y farolas que se encienden (o un botón para cambiarlo al momento).
 - **Personajes que pasean por su zona** y charlan entre ellos: familia y amigos, con su nombre de pila al pasar el ratón.
@@ -30,7 +31,7 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
   estación del pueblo y, tras el viaje por la meseta, te deja en la Estación Sur (Méndez Álvaro).
 - **Paneles** de trayectoria, proyectos (con repositorio y demo), trofeos, stack y contacto, y **logros** al visitarlos.
 - **Minijuegos**: cuatro recreativas (serpiente, nave, rompe-ladrillos y un laberinto propio), penaltis en el campo
-  de fútbol (con tiro relámpago) y Bit Drop, un juego propio de bloques que caen, en la planta 3 de la UDIT. Cada máquina
+  de fútbol (con el tornado de fuego) y Bit Drop, un juego propio de bloques que caen, en la planta 3 de la UDIT. Cada máquina
   enseña el récord de todos (BEST SCORE: nombre y puntos), que se guarda en el servidor hasta que alguien lo supera.
 - **Secretos**: el robot Jerry y DANTE P.W. (andan sueltos y te siguen si se lo pides), un bloque de Minecraft, el código Konami
   y guiños a la programación, a The Office, a Bob Esponja, a Batman, a Spider-Man, a Dragon Ball (siete esferas
