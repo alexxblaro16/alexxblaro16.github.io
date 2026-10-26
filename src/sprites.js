@@ -1,10 +1,12 @@
 // Pixel art dibujado con código: suelos, árboles y Jerry. Los personajes están en personajes.js
 // y los edificios en edificios.js; aquí se reexportan para que el resto del juego los pida a un solo sitio.
-import { lienzo, px, azar, texto, aclarar } from './pixel.js'
+import { lienzo, px, azar, texto, textoCentrado, aclarar } from './pixel.js'
 export { crearPersonaje, PALETAS, ANCHO_PJ, ALTO_PJ } from './personajes.js'
 export { crearEdificios } from './edificios.js'
 
 export const T = 16 // tamaño de una casilla
+// Medidas del campo de la uni: la valla, las puertas (arriba y abajo) y los banquillos, para dibujarlo y para sus colisiones
+export const ESTADIO = { w: 208, h: 128, puerta: [98, 122], banquillos: [[54, 112], [136, 112]] }
 
 // Animaciones de andar para una hoja de personaje
 export function crearAnimaciones(scene, clave) {
@@ -223,38 +225,61 @@ export function crearDecorado(scene) {
     p(70, 37, 3, 3, '#ffffff'); p(71, 38, 1, 1, '#1b1f27'); p(70, 40, 3, 1, 'rgba(0,0,0,0.25)')
     scene.textures.addCanvas('campo', c)
 
-    // Campo universitario (176 × 112), sin gradas: césped artificial alrededor del campo, valla metálica con lona
-    // verde en los fondos, dos banquillos, un carro de balones y el escudo de la UDIT en la valla
-    const [e, ex] = lienzo(176, 112)
+    // Campo universitario (208 × 128), sin gradas: césped artificial alrededor del campo, valla metálica con lona
+    // verde en los fondos, dos banquillos, un carro de balones, conos y el escudo de la UDIT en la valla
+    const { w: EW, h: EH, puerta: [P0, P1], banquillos } = ESTADIO
+    const [e, ex] = lienzo(EW, EH)
     const q = (x, y, w, h, col) => px(ex, x, y, col, w, h)
-    q(0, 0, 176, 112, '#2a7238')
-    for (let x = 0; x < 176; x += 12) q(x, 0, 6, 112, '#2e783c')
-    // el campo, más grande (el de 112 × 64 escalado a 136 × 78) y con sus líneas un poco más gruesas
+    q(0, 0, EW, EH, '#2a7238')
+    for (let x = 0; x < EW; x += 12) q(x, 0, 6, EH, '#2e783c')
+    // el campo de 112 × 64 escalado a 164 × 90, con sus líneas
     ex.imageSmoothingEnabled = false
-    ex.drawImage(c, 20, 17, 136, 78)
+    ex.drawImage(c, 22, 19, 164, 90)
     // porterías con la red que sale por detrás de la línea
-    for (const [gx, s] of [[14, 1], [156, -1]]) {
-      q(gx, 46, 6, 20, '#1b1f27'); q(gx + 1, 47, 4, 18, '#cfd5dc')
-      for (let y = 48; y < 64; y += 2) q(gx + 1, y, 4, 1, '#8f99a4')
-      for (let x = gx + 1; x < gx + 5; x += 2) q(x, 47, 1, 18, '#aeb6c0')
-      q(s > 0 ? gx + 5 : gx, 46, 1, 20, '#ffffff')
+    for (const [gx, s] of [[16, 1], [186, -1]]) {
+      q(gx, 52, 6, 24, '#1b1f27'); q(gx + 1, 53, 4, 22, '#cfd5dc')
+      for (let y = 54; y < 74; y += 2) q(gx + 1, y, 4, 1, '#8f99a4')
+      for (let x = gx + 1; x < gx + 5; x += 2) q(x, 53, 1, 22, '#aeb6c0')
+      q(s > 0 ? gx + 5 : gx, 52, 1, 24, '#ffffff')
     }
     // valla: tubo gris, malla y postes; lona verde oscura arriba y abajo
-    q(0, 0, 176, 2, '#9aa3ad'); q(0, 110, 176, 2, '#9aa3ad'); q(0, 0, 2, 112, '#9aa3ad'); q(174, 0, 2, 112, '#9aa3ad')
-    q(2, 2, 172, 3, '#1f5a2c'); q(2, 105, 172, 4, '#1f5a2c'); q(2, 105, 172, 1, '#2f7a3c')
-    for (let y = 0; y < 112; y += 3) { q(2, y, 1, 1, 'rgba(200,206,214,0.6)'); q(173, y, 1, 1, 'rgba(200,206,214,0.6)') }
-    for (let x = 0; x < 176; x += 16) { q(x, 0, 2, 5, '#5b6068'); q(x, 107, 2, 5, '#5b6068') }
-    for (let y = 0; y < 112; y += 16) { q(0, y, 4, 2, '#5b6068'); q(172, y, 4, 2, '#5b6068') }
+    q(0, 0, EW, 2, '#9aa3ad'); q(0, EH - 2, EW, 2, '#9aa3ad'); q(0, 0, 2, EH, '#9aa3ad'); q(EW - 2, 0, 2, EH, '#9aa3ad')
+    q(2, 2, EW - 4, 3, '#1f5a2c'); q(2, EH - 7, EW - 4, 4, '#1f5a2c'); q(2, EH - 7, EW - 4, 1, '#2f7a3c')
+    for (let y = 0; y < EH; y += 3) { q(2, y, 1, 1, 'rgba(200,206,214,0.6)'); q(EW - 3, y, 1, 1, 'rgba(200,206,214,0.6)') }
+    for (let x = 0; x < EW; x += 16) { q(x, 0, 2, 5, '#5b6068'); q(x, EH - 5, 2, 5, '#5b6068') }
+    for (let y = 0; y < EH; y += 16) { q(0, y, 4, 2, '#5b6068'); q(EW - 4, y, 4, 2, '#5b6068') }
     // puertas arriba y abajo, donde llega el camino
-    q(82, 0, 24, 5, '#2a7238'); q(82, 105, 24, 7, '#2a7238'); q(81, 0, 1, 5, '#5b6068'); q(106, 0, 1, 5, '#5b6068'); q(81, 105, 1, 7, '#5b6068'); q(106, 105, 1, 7, '#5b6068')
+    q(P0, 0, P1 - P0, 5, '#2a7238'); q(P0, EH - 7, P1 - P0, 7, '#2a7238')
+    for (const x of [P0 - 1, P1]) { q(x, 0, 1, 5, '#5b6068'); q(x, EH - 7, 1, 7, '#5b6068') }
     // escudo de la UDIT colgado en la lona de arriba
     q(30, 1, 22, 6, '#1b1f27'); q(31, 2, 20, 4, '#f2c200'); q(33, 3, 2, 2, '#1b1f27'); q(36, 3, 2, 2, '#1b1f27'); q(39, 3, 2, 2, '#1b1f27'); q(42, 3, 2, 2, '#1b1f27'); q(45, 3, 4, 2, '#1b1f27')
     // banquillos con techo de metacrilato, dentro de la valla, en el lado de abajo
-    for (const x of [44, 116]) { q(x, 96, 18, 9, '#1b1f27'); q(x + 1, 97, 16, 3, '#8fc4e8'); q(x + 1, 97, 16, 1, '#cfe8f7'); q(x + 1, 101, 16, 3, '#2f5fb0'); q(x + 1, 101, 16, 1, '#5f86c8') }
+    for (const [x, y] of banquillos) { q(x, y, 18, 9, '#1b1f27'); q(x + 1, y + 1, 16, 3, '#8fc4e8'); q(x + 1, y + 1, 16, 1, '#cfe8f7'); q(x + 1, y + 5, 16, 3, '#2f5fb0'); q(x + 1, y + 5, 16, 1, '#5f86c8') }
     // carro de balones y unos conos junto al banquillo
-    q(66, 98, 8, 6, '#1b1f27'); q(67, 99, 6, 4, '#3a3f48'); for (const [bx, by] of [[67, 97], [70, 97], [68, 99]]) { q(bx, by, 3, 3, '#ffffff'); q(bx + 1, by + 1, 1, 1, '#1b1f27') }
-    for (const cx of [100, 104, 108]) { q(cx, 100, 3, 3, '#f28c28'); q(cx + 1, 99, 1, 1, '#f28c28'); q(cx, 102, 3, 1, '#ffffff') }
+    q(78, 114, 8, 6, '#1b1f27'); q(79, 115, 6, 4, '#3a3f48'); for (const [bx, by] of [[79, 113], [82, 113], [80, 115]]) { q(bx, by, 3, 3, '#ffffff'); q(bx + 1, by + 1, 1, 1, '#1b1f27') }
+    for (const cx of [118, 122, 126]) { q(cx, 116, 3, 3, '#f28c28'); q(cx + 1, 115, 1, 1, '#f28c28'); q(cx, 118, 3, 1, '#ffffff') }
     scene.textures.addCanvas('estadio', e)
+
+    // Marcador del campo: UDIT 0 – RAIMON 8 (un guiño a Inazuma Eleven), con los números en naranja que de noche se encienden
+    const [mc, mx] = lienzo(64, 34)
+    const mq = (x, y, w, h, col) => px(mx, x, y, col, w, h)
+    mq(8, 20, 3, 14, '#5b6068'); mq(53, 20, 3, 14, '#5b6068'); mq(8, 20, 1, 14, '#8a919a'); mq(53, 20, 1, 14, '#8a919a')
+    mq(0, 0, 64, 22, '#1b1f27'); mq(1, 1, 62, 20, '#15171c'); mq(1, 1, 62, 1, '#3a3f48')
+    textoCentrado(mx, 'UDIT', 16, 3, '#f2c200'); textoCentrado(mx, 'RAIMON', 46, 3, '#f2c200')
+    textoCentrado(mx, '0', 16, 12, '#ff7a3c'); textoCentrado(mx, '8', 46, 12, '#ff7a3c'); mq(30, 14, 4, 1, '#ff7a3c')
+    scene.textures.addCanvas('marcador_raimon', mc)
+
+    // Estación de autobuses de Villalpando: casita de ladrillo con tejado, su cartel y un banco bajo el alero
+    const [ep, pxx] = lienzo(52, 40)
+    const pq = (x, y, w, h, col) => px(pxx, x, y, col, w, h)
+    pq(1, 12, 50, 28, '#1b1f27'); pq(2, 13, 48, 26, '#c9895a'); pq(2, 13, 48, 1, '#dba57a')
+    for (let y = 16; y < 38; y += 4) for (let x = 2 + ((y / 4) % 2) * 3; x < 50; x += 6) pq(x, y, 5, 1, '#b07548')
+    pq(0, 4, 52, 9, '#1b1f27'); pq(1, 5, 50, 7, '#b8432f'); for (let x = 1; x < 51; x += 4) pq(x, 7, 2, 5, '#9a3524'); pq(1, 5, 50, 1, '#d46a50')
+    pq(8, 14, 36, 8, '#1b1f27'); pq(9, 15, 34, 6, '#f4f1e6'); textoCentrado(pxx, 'BUS', 26, 15, '#1f4fa0')
+    pq(6, 25, 10, 10, '#1b1f27'); pq(7, 26, 8, 8, '#6f9cc8'); pq(7, 26, 8, 2, '#a9cdee')
+    pq(36, 25, 10, 10, '#1b1f27'); pq(37, 26, 8, 8, '#6f9cc8'); pq(37, 26, 8, 2, '#a9cdee')
+    pq(20, 24, 12, 16, '#1b1f27'); pq(21, 25, 10, 15, '#7a5232'); pq(29, 32, 1, 2, '#d6c070')
+    scene.textures.addCanvas('estacion_pueblo', ep)
 
     // Estación Sur de autobuses (Méndez Álvaro): edificio bajo de hormigón y cristal con su marquesina
     const [es, sx] = lienzo(64, 46)

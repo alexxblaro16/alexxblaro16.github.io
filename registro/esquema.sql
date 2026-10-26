@@ -19,3 +19,11 @@ CREATE TABLE IF NOT EXISTS eventos (
   dato TEXT
 );
 CREATE INDEX IF NOT EXISTS eventos_visita ON eventos(visita);
+
+-- El récord de cada minijuego, compartido por todos los que juegan: nombre del personaje y puntos
+CREATE TABLE IF NOT EXISTS records (
+  juego TEXT PRIMARY KEY,
+  nombre TEXT NOT NULL,
+  puntos INTEGER NOT NULL,
+  fecha INTEGER NOT NULL
+);

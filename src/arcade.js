@@ -1,15 +1,16 @@
 // Sala de recreativos: cuatro minijuegos sencillos en un canvas de 320 × 240 que se abre encima del mapa.
 // Serpiente, una nave que destruye bugs, un rompe-ladrillos, un laberinto en el que se recogen commits
 // y los penaltis del campo de fútbol.
-// Se juegan con flechas/WASD + espacio, o con los botones táctiles. El récord de cada uno se guarda en el navegador.
+// Se juegan con flechas/WASD + espacio, o con los botones táctiles. Tu mejor puntuación se guarda en el navegador y el
+// récord de cada juego (BEST SCORE: nombre y puntos) es de todos: lo guarda el servidor del registro hasta que alguien lo supera.
 import { estado } from './estado.js'
-import { registrar } from './registro.js'
+import { registrar, URL_REGISTRO } from './registro.js'
 import { sonar } from './sonido.js'
 
 const W = 320, H = 240
 const TEXTOS = {
-  es: { record: 'RECORD', puntos: 'PUNTOS', fin: 'FIN DE LA PARTIDA', otra: 'ESPACIO o TOCA para jugar otra', salir: 'Salir', empezar: 'ESPACIO o TOCA para empezar', vidas: 'VIDAS' },
-  en: { record: 'BEST', puntos: 'SCORE', fin: 'GAME OVER', otra: 'SPACE or TAP to play again', salir: 'Exit', empezar: 'SPACE or TAP to start', vidas: 'LIVES' },
+  es: { nuevo: 'NUEVO RECORD!', record: 'TU RECORD', puntos: 'PUNTOS', fin: 'FIN DE LA PARTIDA', otra: 'ESPACIO o TOCA para jugar otra', salir: 'Salir', empezar: 'ESPACIO o TOCA para empezar', vidas: 'VIDAS' },
+  en: { nuevo: 'NEW RECORD!', record: 'YOUR BEST', puntos: 'SCORE', fin: 'GAME OVER', otra: 'SPACE or TAP to play again', salir: 'Exit', empezar: 'SPACE or TAP to start', vidas: 'LIVES' },
 }
 const tx = () => TEXTOS[estado.idioma] || TEXTOS.es
 
@@ -19,6 +20,20 @@ export const enArcade = () => !!actual
 // ---------------------------------------------------------------------------------------------- récords
 function leerRecord(id) { try { return +(localStorage.getItem(`alexxblaro-record-${id}`) || 0) } catch { return 0 } }
 function guardarRecord(id, v) { try { localStorage.setItem(`alexxblaro-record-${id}`, String(v)) } catch { /* sin almacenamiento */ } }
+// el récord de todos: se pide al abrir la máquina y se manda si lo superas (en desarrollo solo se lee)
+let records = {}
+async function pedirRecords() {
+  try { records = await (await fetch(URL_REGISTRO + '/records')).json() } catch { /* sin conexión: solo el récord propio */ }
+}
+async function mandarRecord(id, puntos) {
+  const nombre = (estado.personaje?.nombre || 'Anon').slice(0, 12)
+  records[id] = { nombre, puntos } // se ve al momento, aunque el servidor tarde
+  if (import.meta.env.DEV) return
+  try {
+    const r = await (await fetch(URL_REGISTRO + '/record', { method: 'POST', body: JSON.stringify({ juego: id, nombre, puntos }) })).json()
+    if (r.record) records[id] = r.record
+  } catch { /* sin conexión */ }
+}
 
 // ---------------------------------------------------------------------------------------------- entrada
 const teclas = { izquierda: false, derecha: false, arriba: false, abajo: false, accion: false }
@@ -468,6 +483,7 @@ export function abrirArcade(id) {
   const juego = JUEGOS[id]()
   juego.reiniciar()
   actual = { id, juego, caja, estado: 'listo', record: leerRecord(id), ultimo: performance.now(), final: 0 }
+  pedirRecords()
   Object.keys(teclas).forEach((k) => { teclas[k] = false })
 
   const empezarOtra = () => {
@@ -502,6 +518,8 @@ export function abrirArcade(id) {
       if (fin !== undefined) {
         actual.estado = 'fin'; actual.final = fin
         if (fin > actual.record) { actual.record = fin; guardarRecord(id, fin) }
+        actual.nuevo = fin > 0 && fin > (records[id]?.puntos || 0)
+        if (actual.nuevo) { mandarRecord(id, fin); [784, 988, 1175, 1568].forEach((f, i) => sonar(f, 0.14, 'square', 0.05, i * 0.1)) }
       }
     }
     const puntos = juego.pintar(ctx)
@@ -510,8 +528,11 @@ export function abrirArcade(id) {
     texto(ctx, `${tx().puntos} ${puntos}  ${tx().record} ${actual.record}`, W / 2 + 40, 4, '#e6e9ef', 7)
     if (actual.estado !== 'jugando') {
       ctx.fillStyle = 'rgba(5,7,13,.78)'; ctx.fillRect(0, 16, W, H - 16)
-      if (actual.estado === 'fin') { texto(ctx, tx().fin, W / 2, 92, '#e05a5a', 10); texto(ctx, `${tx().puntos} ${actual.final}`, W / 2, 114) }
+      if (actual.estado === 'fin') { texto(ctx, tx().fin, W / 2, 84, '#e05a5a', 10); texto(ctx, `${tx().puntos} ${actual.final}`, W / 2, 104); if (actual.nuevo) texto(ctx, tx().nuevo, W / 2, 120, '#2fbf71', 8) }
       else texto(ctx, juego.titulo, W / 2, 96, '#2fbf71', 12)
+      // el récord de todos, con el nombre de quien lo tiene
+      const r = records[id]
+      texto(ctx, `BEST SCORE: ${r ? `${r.nombre} ${r.puntos}` : '---'}`, W / 2, 170, '#3dd9ff', 7)
       texto(ctx, actual.estado === 'fin' ? tx().otra : tx().empezar, W / 2, 140, '#f2c200', 7)
     }
     requestAnimationFrame(bucle)

@@ -26,11 +26,12 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
   (la entrada con sus profes, los tornos y el ascensor a la planta 3, con sus clases).
 - **Día y noche**: un ciclo de 6 minutos con ventanas y farolas que se encienden (o un botón para cambiarlo al momento).
 - **Personajes que pasean por su zona** y charlan entre ellos: familia y amigos, con su nombre de pila al pasar el ratón.
-- **El Monbus**: una autovía separa Villalpando de Madrid; se coge el autobús en la parada del pueblo y, tras el viaje por
-  la meseta, te deja en la Estación Sur (Méndez Álvaro).
+- **El Monbus**: una autovía separa Villalpando de Madrid (desde un lado no se ve el otro); se coge el autobús en la
+  estación del pueblo y, tras el viaje por la meseta, te deja en la Estación Sur (Méndez Álvaro).
 - **Paneles** de trayectoria, proyectos (con repositorio y demo), trofeos, stack y contacto, y **logros** al visitarlos.
 - **Minijuegos**: cuatro recreativas (serpiente, nave, rompe-ladrillos y un laberinto propio), penaltis en el campo
-  de fútbol (con tiro relámpago) y Bit Drop, un juego propio de bloques que caen, en la planta 3 de la UDIT.
+  de fútbol (con tiro relámpago) y Bit Drop, un juego propio de bloques que caen, en la planta 3 de la UDIT. Cada máquina
+  enseña el récord de todos (BEST SCORE: nombre y puntos), que se guarda en el servidor hasta que alguien lo supera.
 - **Secretos**: el robot Jerry y DANTE P.W. (andan sueltos y te siguen si se lo pides), un bloque de Minecraft, el código Konami
   y guiños a la programación, a The Office, a Bob Esponja, a Batman, a Spider-Man, a Dragon Ball (siete esferas
   escondidas y una nube que te lleva volando), a Inazuma Eleven y a Mickey Mouse.

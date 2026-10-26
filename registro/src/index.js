@@ -1,10 +1,13 @@
 // Registro de visitas del portfolio. Recibe cada visita y lo que hace dentro del juego,
 // y se lo enseña solo a Alejandro con su contraseña (secreto CLAVE_ACCESOS).
 // País y ciudad los pone Cloudflare; la IP no se guarda en ningún sitio.
+// También guarda el récord de cada minijuego (nombre del personaje y puntos), que ve todo el mundo.
 
-const ORIGENES = ['https://alexxblaro16.github.io', 'http://localhost:5173', 'http://127.0.0.1:5173']
+const ORIGENES = ['https://alexxblaro16.github.io', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5180']
 const TIPOS = new Set(['personaje', 'zona', 'recorrido', 'clasico', 'cv', 'arcade', 'enlace', 'fin'])
 const MAX_EVENTOS = 300
+// tope razonable de puntos de cada minijuego (lo que pase de ahí es trampa)
+const JUEGOS = { serpiente: 300, nave: 5000, ladrillos: 500, laberinto: 1000, futbol: 1000, bits: 100000 }
 
 const corta = (v, n) => (typeof v === 'string' ? v.slice(0, n) : null)
 
@@ -84,6 +87,25 @@ async function nuevoEvento(request, env) {
   return json(request, { ok: true })
 }
 
+async function verRecords(request, env) {
+  const filas = (await env.DB.prepare('SELECT juego, nombre, puntos FROM records').all()).results
+  return json(request, Object.fromEntries(filas.map((f) => [f.juego, { nombre: f.nombre, puntos: f.puntos }])))
+}
+
+// Solo se guarda si supera el récord que hay (la comparación la hace la propia base de datos)
+async function nuevoRecord(request, env) {
+  const d = await cuerpo(request)
+  const tope = d && JUEGOS[d.juego]
+  const puntos = d && Number.isInteger(d.puntos) ? d.puntos : -1
+  const nombre = d && typeof d.nombre === 'string' ? d.nombre.replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 12) : ''
+  if (!tope || puntos <= 0 || puntos > tope || !nombre) return json(request, { ok: false }, 400)
+  await env.DB.prepare(`INSERT INTO records (juego, nombre, puntos, fecha) VALUES (?, ?, ?, ?)
+      ON CONFLICT(juego) DO UPDATE SET nombre = excluded.nombre, puntos = excluded.puntos, fecha = excluded.fecha
+      WHERE excluded.puntos > records.puntos`).bind(d.juego, nombre, puntos, Date.now()).run()
+  const r = await env.DB.prepare('SELECT nombre, puntos FROM records WHERE juego = ?').bind(d.juego).first()
+  return json(request, { ok: true, record: r })
+}
+
 async function verAccesos(request, env) {
   const clave = (request.headers.get('Authorization') || '').replace(/^Bearer /, '')
   if (!env.CLAVE_ACCESOS || !igual(clave, env.CLAVE_ACCESOS)) return json(request, { error: 'Contraseña incorrecta' }, 401)
@@ -119,6 +141,8 @@ export default {
       if (request.method === 'POST' && pathname === '/visita') return await nuevaVisita(request, env)
       if (request.method === 'POST' && pathname === '/evento') return await nuevoEvento(request, env)
       if (request.method === 'GET' && pathname === '/accesos') return await verAccesos(request, env)
+      if (request.method === 'GET' && pathname === '/records') return await verRecords(request, env)
+      if (request.method === 'POST' && pathname === '/record') return await nuevoRecord(request, env)
       return json(request, { error: 'No existe' }, 404)
     } catch {
       return json(request, { error: 'Error del servidor' }, 500)

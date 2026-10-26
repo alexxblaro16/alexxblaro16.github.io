@@ -238,6 +238,21 @@ Tras probar la versión 17, Alejandro pidió:
 - **Cambiarse de ropa** sin empezar otra partida: botón **ROPA** en la barra o el armario de su cuarto. Se abre el creador
   solo con la ropa y los extras, y al ponértela se rehace el personaje en el sitio.
 
+### 20. Dos lados que no se ven, dos estaciones, récords para todos y el marcador del Raimon
+
+- **Villalpando y Madrid ya no se ven el uno desde el otro**: la cámara solo enseña el lado de la autovía en el que estás
+  (en el menú sigue recorriendo el mapa entero).
+- **Dos estaciones**: en el pueblo, una estación de autobuses pequeña de ladrillo con tejado en lugar de la marquesina; en
+  Madrid, la Estación Sur, ahora más separada de la residencia (la resi y el BiciMAD se han movido a la derecha).
+- **Lucía** con el pelo negro.
+- **Récords en las recreativas**: tu mejor puntuación se guarda en el navegador y cada máquina enseña **BEST SCORE: nombre
+  y puntos**, el récord de todos los que han jugado. Lo guarda el servidor del registro (tabla `records` en la misma base
+  D1) y solo cambia cuando alguien lo supera; el servidor rechaza puntuaciones imposibles.
+- **Jerry y DANTE P.W. vuelven a su zona** cuando les dices que dejen de seguirte («Vuelve a tu sitio»): andando si están
+  cerca y, si están lejos (dentro de un edificio o al otro lado de la autovía), aparecen allí sin que se vea.
+- **Campo más grande** (13 × 8 casillas) y un **marcador UDIT 0 – RAIMON 8**, un guiño a Inazuma Eleven, que se ilumina
+  de noche.
+
 ## Ideas para más adelante
 
 - Dominio propio.
