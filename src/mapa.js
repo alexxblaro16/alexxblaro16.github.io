@@ -170,11 +170,15 @@ const amigos = (lista, x0, y0, grupo, paso = 2.2) => lista.map(([nombre, pelo, r
   rasgos: { pelo: 'corto', piel: '#f2c29b', colorPelo: pelo, ropa, ...extra },
 }))
 
+// Los que pasean por una zona entera en vez de alrededor de su sitio (en casillas): los de Madrid por su trozo
+// de calle sin cruzar la carretera ni meterse en lo de los demás, y Jandro por toda la Plaza Mayor
+const enZona = (lista, x0, x1, y0, y1) => lista.map((p) => ({ ...p, zona: { x0, x1, y0, y1 } }))
+
 export const PERSONAJES = [
   { nombre: 'Pedro', x: 10.4, y: 19.3, rasgos: { pelo: 'calvo', colorPelo: '#9a8a80', piel: '#ebb995', ropa: '#1f2430', pantalon: '#3a4a66', robusto: true, sonrisa: true, zapatillas: '#e9ecef' }, vida: 'pedro' },
   { nombre: 'Martha', x: 48.8, y: 19.3, rasgos: { pelo: 'media', colorPelo: '#5e3c24', piel: '#ebbd99', ropa: '#f4b6c8', tipo: 'chaqueta', interior: '#f6f0d8', rayas: '#e8c45a', pantalon: '#a9bfdc', anchos: true, sonrisa: true, labios: '#c4505a', chica: true, bolso: '#6b4a2b', zapatillas: '#f4f4f4' }, vida: 'marta' },
   { nombre: 'Dante', x: 52.4, y: 19.3, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', estampado: '#e8e2d6', raya: '#9aa3ad' }, vida: 'dante' },
-  ...amigos([
+  ...enZona(amigos([
     ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true, chica: true , frases: { es: ['De la residencia a compartir piso con Alejandro. Canela, mi perra, también se apunta.'], en: ['From the halls of residence to sharing a flat with Alejandro. Canela, my dog, is in too.'] } }],
     ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera', chica: true, zapatillas: '#f4f4f4', frases: { es: ['Nos conocimos en la resi y ahora vivimos juntos. Pasamos tanto tiempo juntos que ya nos lo sabemos todo el uno del otro.'], en: ['We met at the halls and now we live together. We spend so much time together that we know everything about each other.'] } }],
     ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo', chica: true, estampado: '#ff7fb0', zapatillas: '#f4f4f4' , frases: { es: ['Empezamos en la misma residencia y ahora compartimos piso. Y seguimos aguantándonos.'], en: ['We started out in the same halls and now we share a flat. And we still put up with each other.'] } }],
@@ -183,7 +187,7 @@ export const PERSONAJES = [
     // Manu: el pelo como Héctor, la cara como Iván y ropa de calle
     ['Manu', '#7a5a38', '#1f2124', { pelo: 'ondulado', piel: '#ecbf9c', estampado: '#f2f3f5', anchos: true, pantalon: '#5a6b45', zapatillas: '#f4f4f4', raya: '#e05a5a', cadena: true, frases: { es: ['Nos conocimos en la resi. Desde entonces, conciertos y eventos como la Scrap World: si hay plan, vamos juntos.'], en: ["We met at the halls. Since then it's been gigs and events like Scrap World: if there's a plan, we go together."] } }],
     ['Rodrigo', '#c9a060', '#1f3c66', { tipo: 'polo', robusto: true, ojos: '#4f86b8', pantalon: '#cfc6b0', zapatillas: '#f4f4f4', frases: { es: ['Soy de Cuenca. Coincidí con Alejandro en la resi de Madrid y de ahí salió una amistad de las buenas.'], en: ["I'm from Cuenca. I met Alejandro at the halls in Madrid and we've been good friends ever since."] } }],
-  ], 66, 22.8, 'residencia', 1.9),
+  ], 66, 22.8, 'residencia', 1.9), 62.5, 75, 21.8, 27),
   // Amigos de toda la vida, del instituto: siguen siendo amigos
   ...amigos([
     ['Manuel', '#6b4527', '#3d7be0', { pelo: 'pincho', ojos: '#5a3a22', pantalon: '#34466e', zapatillas: '#f4f4f4', estampado: '#f4f4f0', frases: { es: ['Soy Manuel. Con Alejandro voy desde siempre: fuimos juntos al IES Tierra de Campos y seguimos igual de amigos.'], en: ["I'm Manuel. Alejandro and I go way back: we went to IES Tierra de Campos together and we're still just as close."] } }],
@@ -191,17 +195,17 @@ export const PERSONAJES = [
     ['Jorge', '#141212', '#15171c', { pelo: 'canario', ajustada: true, pitillo: true, pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy Jorge. Con Alejandro, desde el instituto. Han pasado los años y seguimos siendo amigos.'], en: ["I'm Jorge. Alejandro and I go back to high school. Years have gone by and we're still friends."] } }],
   ], 40.6, 32.6, 'instituto'),
   // Jandro, en la plaza: te ofrece cerezas (Mundo.js, «especial»)
-  { nombre: 'Jandro', x: 39.4, y: 21.6, grupo: 'pueblo', especial: 'cerezas', rasgos: { pelo: 'corto', colorPelo: '#141212', piel: '#f2c29b', ojos: '#5a3a22', ropa: '#2b2f38', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#15171c', pitillo: true, zapatillas: '#f4f4f4' } },
+  { nombre: 'Jandro', x: 39.4, y: 21.6, grupo: 'pueblo', zona: { x0: 22, x1: 46.5, y0: 14.4, y1: 26 }, especial: 'cerezas', rasgos: { pelo: 'corto', colorPelo: '#141212', piel: '#f2c29b', ojos: '#5a3a22', ropa: '#2b2f38', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#15171c', pitillo: true, zapatillas: '#f4f4f4' } },
   // Salva, detrás del Lupa: los dos llevan la peña El Pilón
   ...amigos([
     ['Salva', '#6b4527', '#2f5a94', { pelo: 'ondulado', gafas: '#3d7be0', tipo: 'sudadera', pantalon: '#2b2f38', pitillo: true, zapatillas: '#f4f4f4', frases: { es: ['Soy Salva. Soy amigo de Alejandro desde hace años: hacemos la peña juntos, El Pilón.'], en: ["I'm Salva. Alejandro and I have been friends for years: we run our club together, El Pilón."] } }],
   ], 31.2, 5.6, 'pueblo'),
-  ...amigos([
+  ...enZona(amigos([
     ['Pablo', '#4e3221', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true, frases: { es: ['Soy integrante, junto a Héctor, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final.'], en: ["Together with Héctor, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment."] } }],
     ['Héctor', '#7a5a38', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy integrante, junto a Pablo, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final. Además, hice las prácticas con Alejandro.'], en: ["Together with Pablo, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment. I also did my internship with Alejandro."] } }],
     ['Cristian', '#7a5236', '#9aa1aa', { pelo: 'despeinado', piel: '#e4ac85', tipo: 'sudadera', pantalon: '#8fa9cc', anchos: true, zapatillas: '#f4f4f4', frases: { es: ['Yo también era de CHAP Games, con Pablo, Héctor y Alejandro: el proyecto ambicioso que presentamos como trabajo final.'], en: ["I was part of CHAP Games too, with Pablo, Héctor and Alejandro: the ambitious project we presented as our final assignment."] } }],
-  ], 80, 21.5, 'medac'),
-  ...amigos([
+  ], 80, 21.5, 'medac'), 77, 89, 21.4, 27),
+  ...enZona(amigos([
     ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' , frases: { es: ['Hicimos MedScan juntos y seguimos en el mismo equipo para los hackatones.'], en: ["We built MedScan together and we're still on the same hackathon team."] } }],
     ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' , frases: { es: ['En el equipo de los hackatones yo hago de Product Owner. Alejandro, del front.'], en: ["On our hackathon team I'm the Product Owner. Alejandro takes the front end."] } }],
     ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' , frases: { es: ['MedScan empezó como un hackatón y acabamos saliendo en la tele.'], en: ['MedScan started as a hackathon and we ended up on TV.'] } }],
@@ -210,12 +214,12 @@ export const PERSONAJES = [
     ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' , frases: { es: ['Soy el lead de VirtualpH, el proyecto con el CSIC. Las pull requests de Alejandro las reviso yo.'], en: ["I'm the lead on VirtualpH, our project with CSIC. I'm the one who reviews Alejandro's pull requests."] } }],
     ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', estampado: '#3a7bd5', raya: '#3a7bd5' }],
     ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a', chica: true, zapatillas: '#f4f4f4' , frases: { es: ['¡Hola! Soy Andrea y soy de México. Vamos juntos a la uni, a la UDIT.'], en: ["Hi! I'm Andrea and I'm from Mexico. We're at uni together, at UDIT."] } }],
-  ], 101.4, 21.4, 'uni'),
+  ], 101.4, 21.4, 'uni'), 97, 111, 21.3, 24),
   // Gabriel, con la equipación, dentro del campo de la uni
   ...amigos([
     ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' , frases: { es: ['PyKV, el equipo de fútbol de la uni… Alejandro y yo coincidimos en todo.'], en: ['PyKV, the uni football team… Alejandro and I end up together in everything.'] } }],
   ], 102, 27.6, 'uni'),
-  ...amigos([
+  ...enZona(amigos([
     ['Gonzalo', '#3a2618', '#3a4a66', { gafas: true, barba: 'rala', tipo: 'sudadera', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Vamos juntos a clase en la UDIT. Si hay que sacar una práctica adelante, nos ponemos y sale.'], en: ['We go to class together at UDIT. If an assignment needs doing, we sit down and get it done.'] } }],
     ['Lucía', '#1d1a19', '#1f2124', { pelo: 'moño', chica: true, tipo: 'chaqueta', interior: '#ff7fb0', rayas: '#ff7fb0', pantalon: '#15171c', zapatillas: '#f4f4f4', aros: '#e8c45a', labios: '#c4505a', frases: { es: ['¡Hola! Soy Lucía. Con Alejandro comparto alguna clase en la UDIT.'], en: ["Hi! I'm Lucía. I share a few classes with Alejandro at UDIT."] } }],
     // los Tort, gemelos y vestidos al revés: Jorge de blanco y Miguel de negro
@@ -223,7 +227,7 @@ export const PERSONAJES = [
     ['Miguel', '#141212', '#1f2124', { pelo: 'rizado', estampado: '#f2f3f5', pantalon: '#d9dde2', anchos: true, zapatillas: '#2a2d33', cadena: true, frases: { es: ['Soy Miguel, el gemelo de Jorge. Con Alejandro comparto alguna clase y nos llevamos genial.'], en: ["I'm Miguel, Jorge's twin. I share a few classes with Alejandro and we get on great."] } }],
     ['Lucas', '#141212', '#f2c200', { pelo: 'pincho', piel: '#d9a07a', gafas: '#15171c', sonrisa: true, estampado: '#2fbf71', pantalon: '#1f3c66', zapatillas: '#f4f4f4', frases: { es: ['¡Olá! Soy Lucas, de Brasil. Alejandro y yo nos fuimos juntos a Estonia y desde entonces somos amigos.'], en: ["Olá! I'm Lucas, from Brazil. Alejandro and I went to Estonia together and we've been friends ever since."] } }],
     ['Marcos', '#a07a48', '#eef1f4', { pelo: 'ondulado', barba: 'perilla', tipo: 'polo', pantalon: '#34466e', zapatillas: '#2a2d33', frases: { es: ['Soy Marcos. Con Alejandro coincido en alguna clase de la UDIT.'], en: ["I'm Marcos. Alejandro and I share a few classes at UDIT."] } }],
-  ], 111, 21.8, 'uni', 2),
+  ], 111, 21.8, 'uni', 2), 110.5, 123, 21.8, 26),
 ]
 
 // El recorrido guiado: adónde va Alejandro y qué cuenta (las frases están en historia.js)

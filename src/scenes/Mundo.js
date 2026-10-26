@@ -891,7 +891,8 @@ export default class Mundo extends Phaser.Scene {
       crearAnimaciones(this, clave)
       const s = this.physics.add.sprite(p.x * T, p.y * T, clave, 0).setOrigin(0.5, 1).setImmovable(true)
       s.body.setSize(10, 6).setOffset(7, 25)
-      s.setData('paseo', { clave, grupo: p.grupo, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 22 : 36, destino: null, espera: 1000 + (i * 977) % 3000 })
+      const zona = p.zona && { x0: p.zona.x0 * T, x1: p.zona.x1 * T, y0: p.zona.y0 * T, y1: p.zona.y1 * T }
+      s.setData('paseo', { clave, grupo: p.grupo, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 22 : 36, zona, destino: null, espera: 1000 + (i * 977) % 3000 })
       s.setInteractive({ useHandCursor: true })
       s.on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointermove', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
@@ -1344,16 +1345,24 @@ export default class Mundo extends Phaser.Scene {
     if (!m.destino) {
       if (ahora < m.espera) return
       // si se ha alejado de su sitio (le han empujado, venía de charlar…), vuelve a él
-      const lejos = Phaser.Math.Distance.Between(n.x, n.y, m.casaX, m.casaY) > m.radio * 1.3
+      // (los que tienen zona, si se han salido de ella)
+      const z = m.zona
+      const dentro = (x, y, margen = 0) => x >= z.x0 - margen && x <= z.x1 + margen && y >= z.y0 - margen && y <= z.y1 + margen
+      const lejos = z ? !dentro(n.x, n.y, 8) : Phaser.Math.Distance.Between(n.x, n.y, m.casaX, m.casaY) > m.radio * 1.3
       // a veces va a charlar con alguien de su grupo que esté cerca, pero sin salir de su zona; si no, un paseo
       const amigo = !lejos && m.grupo && Math.random() < 0.35 && this.npcs.find((o) => o !== n && o.getData('paseo').grupo === m.grupo && !o.getData('paseo').destino
         && ahora > o.getData('paseo').espera - 200 && Phaser.Math.Distance.Between(o.x, o.y, n.x, n.y) < 70
-        && Phaser.Math.Distance.Between(o.x, o.y, m.casaX, m.casaY) < m.radio + 24)
-      if (lejos) m.destino = { x: m.casaX, y: m.casaY, hasta: ahora + 5000 }
+        && (z ? dentro(o.x, o.y) : Phaser.Math.Distance.Between(o.x, o.y, m.casaX, m.casaY) < m.radio + 24))
+      // al salirse vuelve al punto de su zona más cercano (o a su sitio, si no tiene zona)
+      if (lejos) m.destino = z ? { x: Phaser.Math.Clamp(n.x, z.x0, z.x1), y: Phaser.Math.Clamp(n.y, z.y0, z.y1), hasta: ahora + 5000 } : { x: m.casaX, y: m.casaY, hasta: ahora + 5000 }
       else if (amigo) {
         const lado = n.x < amigo.x ? -15 : 15
         m.destino = { x: amigo.x + lado, y: amigo.y, hasta: ahora + 4000, amigo }
         amigo.getData('paseo').espera = ahora + 4500 // que le espere
+      } else if (z) {
+        // un paseo a cualquier punto de su zona, sin ir de punta a punta de una vez
+        const x = Phaser.Math.Clamp(n.x + (Math.random() - 0.5) * 180, z.x0, z.x1), y = Phaser.Math.Clamp(n.y + (Math.random() - 0.5) * 90, z.y0, z.y1)
+        m.destino = { x, y, hasta: ahora + 6000 }
       } else {
         const a = Math.random() * Math.PI * 2, r = Math.random() * m.radio
         m.destino = { x: m.casaX + Math.cos(a) * r, y: m.casaY + Math.sin(a) * r * 0.7, hasta: ahora + 3500 }
