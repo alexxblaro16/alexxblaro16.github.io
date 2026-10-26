@@ -145,7 +145,7 @@ export const INTERIORES = {
       { clave: 'altavoz', x: 1.4, base: 10.3 },
     ],
     personas: [
-      { nombre: 'Iker', x: 3.2, y: 7.4, vida: 'iker', rasgos: { pelo: 'rapado', colorPelo: '#3a2618', piel: '#f2c29b', ojos: '#1d1820', ropa: '#15171c', tipo: 'pena', letras: '#f2c200', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
+      { nombre: 'Iker', x: 3.2, y: 7.4, vida: 'iker', rasgos: { pelo: 'rapado', colorPelo: '#141212', piel: '#f2c29b', ojos: '#1d1820', ropa: '#15171c', tipo: 'pena', letras: '#f2c200', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
     ],
   },
   // Los recreativos por dentro: moqueta de feria, neones, las cuatro máquinas al fondo, la de peluches, el air
