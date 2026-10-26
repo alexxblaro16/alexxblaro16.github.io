@@ -83,15 +83,21 @@ const LETRAS = {
   9: ['###', '#.#', '###', '..#', '##.'], '-': ['...', '...', '###', '...', '...'],
 }
 
+// Las letras con tilde y la Ñ se dibujan con su letra base y la marca encima (en las dos filas de arriba)
+const base = (ch) => ch.normalize('NFD')[0]
+
 export function anchoTexto(texto) {
-  return [...texto].reduce((a, ch) => a + (LETRAS[ch] || LETRAS[' '])[0].length + 1, -1)
+  return [...texto.toUpperCase()].reduce((a, ch) => a + (LETRAS[base(ch)] || LETRAS[' '])[0].length + 1, -1)
 }
 
 export function texto(ctx, cadena, x, y, color) {
   let cx = x
   for (const ch of cadena.toUpperCase()) {
-    const g = LETRAS[ch] || LETRAS[' ']
+    const b = base(ch)
+    const g = LETRAS[b] || LETRAS[' ']
     g.forEach((fila, fy) => [...fila].forEach((c, fx) => { if (c === '#') px(ctx, cx + fx, y + fy, color) }))
+    if (ch === 'Ñ') { px(ctx, cx, y - 1, color); px(ctx, cx + 1, y - 2, color); px(ctx, cx + 2, y - 1, color); px(ctx, cx + 3, y - 2, color) }
+    else if (ch !== b) { px(ctx, cx + 1, y - 1, color); px(ctx, cx + 2, y - 2, color) }
     cx += g[0].length + 1
   }
 }

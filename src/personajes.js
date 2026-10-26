@@ -6,15 +6,18 @@ export const ANCHO_PJ = 24
 export const ALTO_PJ = 32
 
 export const PALETAS = {
-  pelo: ['#3b2a20', '#1d1a19', '#5e3c24', '#8a5a38', '#c49a5a', '#e8d29a', '#b0452f', '#9aa3ad', '#3d7be0', '#ff7fb0'],
+  pelo: ['#3b2a20', '#1d1a19', '#0f0d0d', '#5e3c24', '#8a5a38', '#c49a5a', '#e8d29a', '#e8e4dc', '#b0452f', '#9aa3ad', '#3d7be0', '#ff7fb0', '#7a4ab0', '#4f9a4a'],
   piel: ['#fbd9c0', '#f2c29b', '#e5a97f', '#d49a72', '#c98a5e', '#8d5a3b', '#5e3a26'],
-  ropa: ['#2fbf71', '#3d7be0', '#1f2a44', '#a970ff', '#e05a5a', '#f2b33d', '#eef1f4', '#2b2f38', '#ff7fb0', '#8a6a4a', '#f28c28', '#1f8a8a', '#5b2a8a', '#c8302a'],
-  pantalon: ['#34466e', '#8fa9cc', '#2b2f38', '#cfc6b0', '#6a6f78', '#5a6b45'],
-  zapatillas: ['#f4f4f4', '#2a2d33', '#e05a5a', '#3d7be0'],
+  ropa: ['#2fbf71', '#3d7be0', '#1f2a44', '#a970ff', '#e05a5a', '#f2b33d', '#eef1f4', '#2b2f38', '#15171c', '#ff7fb0', '#8a6a4a', '#f28c28', '#1f8a8a', '#5b2a8a', '#c8302a', '#7a1f2a', '#d9c9a3', '#6b7a3a', '#9aa1aa'],
+  pantalon: ['#34466e', '#8fa9cc', '#2b2f38', '#15171c', '#cfc6b0', '#e9e4d8', '#6a6f78', '#5a6b45', '#7a1f2a'],
+  zapatillas: ['#f4f4f4', '#2a2d33', '#e05a5a', '#3d7be0', '#f2c200', '#2fbf71', '#8a5a38'],
+  // color de ojos: el primero (vacío) es el de siempre, marrón oscuro
+  ojos: ['', '#1d1820', '#3d7be0', '#4f9a7a', '#4f8f9f', '#7a8590'],
 }
 
 function colores(r) {
-  const S = r.piel, H = r.colorPelo, T = r.ropa, P = r.pantalon || '#34466e', B = r.zapatillas || '#2a2d33'
+  // con vestido, la falda va del mismo color que la parte de arriba
+  const S = r.piel, H = r.colorPelo, T = r.ropa, P = r.tipo === 'vestido' ? r.ropa : r.pantalon || '#34466e', B = r.zapatillas || '#2a2d33'
   return {
     S, s: oscurecer(S, 0.86), m: mezclar(S, '#8a3a34', 0.45), rubor: mezclar(S, '#ff7a7a', 0.25), SL: aclarar(S, 0.4),
     H, L: aclarar(H, 0.26), h: oscurecer(H, 0.62), barba: mezclar(H, S, 0.3),
@@ -270,6 +273,117 @@ const PELO = {
       p(9, 1, 1, 2, C.L); p(15, 4, 3, 8, C.h)
     },
   },
+  // Canario: degradado a los lados y el pelo de arriba peinado hacia delante en un flequillo corto (Iván y Jorge)
+  canario: {
+    frente(p, C) {
+      mechones(p, C, [[8, 1, 8, 1], [7, 2, 10, 1], [6, 3, 12, 5], [7, 8, 3, 1], [11, 8, 4, 1], [16, 8, 1, 1]])
+      p(8, 2, 3, 1, C.L); p(7, 4, 2, 1, C.L); p(11, 5, 2, 2, C.L); p(14, 3, 2, 1, C.L)
+      p(15, 4, 3, 4, C.h); p(10, 8, 1, 1, C.h); p(9, 7, 1, 1, C.h); p(13, 7, 1, 1, C.h)
+      const lado = mezclar(C.h, C.S, 0.55)
+      p(6, 8, 1, 3, lado); p(17, 8, 1, 3, lado)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 1, 8, 1], [7, 2, 10, 1], [5, 3, 13, 4], [4, 7, 5, 1], [5, 8, 2, 1]])
+      p(8, 2, 3, 1, C.L); p(6, 4, 2, 1, C.L); p(15, 3, 3, 4, C.h)
+      const lado = mezclar(C.h, C.S, 0.55)
+      p(12, 7, 6, 5, lado); p(14, 12, 3, 1, lado)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 1, 8, 1], [7, 2, 10, 1], [6, 3, 12, 5]])
+      p(8, 2, 4, 1, C.L); p(15, 3, 3, 5, C.h)
+      const lado = mezclar(C.h, C.S, 0.55)
+      p(6, 8, 12, 5, lado); p(7, 13, 10, 1, lado)
+    },
+  },
+  // Media melena de chico: tapa las orejas y cae un poco por la nuca (Jandro)
+  medio: {
+    frente(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [6, 8, 5, 1], [12, 8, 2, 1], [15, 8, 3, 1], [5, 6, 2, 8], [17, 6, 2, 8], [5, 14, 1, 1], [18, 14, 1, 1]])
+      p(9, 3, 3, 1, C.L); p(7, 4, 3, 1, C.L); p(8, 6, 2, 1, C.L)
+      p(15, 4, 3, 4, C.h); p(17, 8, 2, 6, C.h); p(11, 8, 1, 1, C.h); p(5, 12, 1, 2, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [5, 8, 3, 1], [5, 9, 1, 1], [12, 8, 7, 7], [13, 15, 5, 1]])
+      p(8, 3, 3, 1, C.L); p(7, 4, 2, 1, C.L); p(13, 9, 1, 5, C.L)
+      p(16, 4, 3, 11, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 11], [7, 15, 10, 1]])
+      p(9, 3, 3, 1, C.L); p(8, 5, 2, 3, C.L)
+      p(15, 5, 3, 10, C.h); p(9, 14, 2, 1, C.h); p(13, 14, 2, 1, C.h)
+    },
+  },
+  // Coleta: recogido hacia atrás con una goma y la coleta que cae por la espalda
+  coleta: {
+    frente(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [6, 8, 2, 2], [16, 8, 2, 2]])
+      p(9, 3, 4, 1, C.L); p(7, 5, 3, 1, C.L); p(12, 4, 1, 4, C.h); p(15, 5, 3, 3, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [6, 8, 2, 1], [13, 8, 5, 3], [18, 6, 2, 3], [19, 9, 2, 6], [18, 15, 2, 2]])
+      p(8, 3, 3, 1, C.L); p(7, 5, 3, 1, C.L); p(17, 7, 1, 2, '#e05a5a'); p(20, 10, 1, 5, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 8], [7, 12, 10, 1], [10, 13, 4, 6], [11, 19, 2, 2]])
+      p(9, 3, 3, 1, C.L); p(8, 5, 2, 4, C.L); p(10, 12, 4, 1, '#e05a5a'); p(13, 13, 1, 6, C.h)
+    },
+  },
+  // Dos trenzas que caen por delante de los hombros
+  trenzas: {
+    frente(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 3], [6, 7, 5, 1], [13, 7, 5, 1], [5, 6, 2, 4], [17, 6, 2, 4]])
+      p(8, 3, 3, 1, C.L); p(14, 4, 2, 1, C.L); p(11, 3, 1, 4, C.h)
+      for (const x of [4, 18]) for (let y = 10; y < 22; y++) p(x, y, 2, 1, y % 2 ? C.h : C.H)
+      p(4, 22, 2, 1, '#e05a5a'); p(18, 22, 2, 1, '#e05a5a')
+    },
+    lado(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 3], [5, 7, 4, 1], [12, 7, 6, 6]])
+      p(8, 3, 3, 1, C.L); p(15, 4, 3, 9, C.h)
+      for (let y = 13; y < 22; y++) p(15, y, 2, 1, y % 2 ? C.h : C.H)
+      p(15, 22, 2, 1, '#e05a5a')
+    },
+    espalda(p, C) {
+      mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 9], [7, 13, 10, 1]])
+      p(11, 3, 2, 10, C.h)
+      for (const x of [7, 15]) for (let y = 14; y < 22; y++) p(x, y, 2, 1, y % 2 ? C.h : C.H)
+    },
+  },
+  // Afro: una nube redonda de rizos alrededor de la cabeza
+  afro: {
+    frente(p, C) {
+      mechones(p, C, [[7, 0, 10, 1], [5, 1, 14, 1], [4, 2, 16, 6], [3, 4, 1, 8], [20, 4, 1, 8], [4, 8, 3, 5], [17, 8, 3, 5], [7, 8, 3, 1], [14, 8, 3, 1]], true)
+      p(17, 3, 3, 9, C.h)
+    },
+    lado(p, C) {
+      mechones(p, C, [[7, 0, 10, 1], [5, 1, 14, 1], [4, 2, 16, 6], [3, 4, 1, 6], [20, 4, 1, 9], [4, 8, 4, 1], [12, 8, 8, 6]], true)
+      p(17, 3, 3, 11, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[7, 0, 10, 1], [5, 1, 14, 1], [4, 2, 16, 12], [3, 4, 1, 8], [20, 4, 1, 8], [5, 14, 14, 1]], true)
+      p(17, 3, 3, 11, C.h)
+    },
+  },
+  // Cresta: una franja alta en el centro y los lados rapados
+  cresta: {
+    frente(p, C) {
+      const lado = mezclar(C.h, C.S, 0.6)
+      p(6, 4, 12, 4, lado); p(6, 8, 1, 3, lado); p(17, 8, 1, 3, lado)
+      mechones(p, C, [[10, 0, 4, 1], [9, 1, 6, 7]])
+      p(10, 1, 2, 5, C.L); p(13, 2, 2, 6, C.h)
+    },
+    lado(p, C) {
+      const lado = mezclar(C.h, C.S, 0.6)
+      p(6, 4, 12, 4, lado); p(12, 8, 6, 4, lado)
+      mechones(p, C, [[7, 0, 9, 1], [6, 1, 11, 3]])
+      p(8, 1, 4, 1, C.L); p(14, 1, 3, 3, C.h)
+    },
+    espalda(p, C) {
+      const lado = mezclar(C.h, C.S, 0.6)
+      p(6, 4, 12, 9, lado)
+      mechones(p, C, [[10, 0, 4, 1], [9, 1, 6, 12]])
+      p(10, 1, 2, 10, C.L); p(13, 2, 2, 11, C.h)
+    },
+  },
   rapado: {
     frente(p, C) {
       mechones(p, C, [[8, 3, 8, 1], [6, 4, 12, 3], [6, 7, 1, 2], [17, 7, 1, 2]], true)
@@ -376,8 +490,10 @@ function piernas(p0, C, dir, paso, r) {
     return
   }
   const izq = paso === 1 ? 4 : 5, der = paso === 2 ? 4 : 5
-  p(8, 24, 4, izq, C.P); p(8, 24, 1, izq, C.Pl); p(11, 25, 1, izq - 1, C.p)
-  p(12, 24, 4, der, C.P); p(15, 24, 1, der, C.p); p(12, 25, 1, der - 1, C.p)
+  // pitillo: las perneras un píxel más estrechas por fuera, pegadas a la pierna
+  const pi = r.pitillo && !r.anchos ? 1 : 0
+  p(8 + pi, 24, 4 - pi, izq, C.P); p(8 + pi, 24, 1, izq, C.Pl); p(11, 25, 1, izq - 1, C.p)
+  p(12, 24, 4 - pi, der, C.P); p(15 - pi, 24, 1, der, C.p); p(12, 25, 1, der - 1, C.p)
   if (r.anchos) { p(7, 26, 5, izq - 2, C.P); p(12, 26, 5, der - 2, C.P); p(16, 26, 1, der - 2, C.p); p(7, 26, 1, izq - 2, C.Pl) }
   p(7, 24 + izq, 5, 2, C.B); p(7, 25 + izq, 5, 1, C.b); p(8, 24 + izq, 2, 1, aclarar(C.B, 0.35))
   p(12, 24 + der, 5, 2, C.B); p(12, 25 + der, 5, 1, C.b); p(13, 24 + der, 2, 1, aclarar(C.B, 0.35))
@@ -385,8 +501,8 @@ function piernas(p0, C, dir, paso, r) {
   if (dir === 'frente' && !r.corto) {
     p(8, 24, 8, 1, C.p); p(11, 24, 2, 1, '#c9b37a') // cinturón con hebilla
     p(8, 25, 1, 1, C.Pl); p(15, 25, 1, 1, C.p) // bolsillos
-    p(8, 26, 1, izq - 3, C.Pl); p(15, 26, 1, der - 3, C.p) // costuras laterales
-    p(8, 23 + izq, 4, 1, C.Pl); p(12, 23 + der, 4, 1, C.Pl) // bajo vuelto
+    p(8 + pi, 26, 1, izq - 3, C.Pl); p(15 - pi, 26, 1, der - 3, C.p) // costuras laterales
+    p(8 + pi, 23 + izq, 4 - pi, 1, C.Pl); p(12, 23 + der, 4 - pi, 1, C.Pl) // bajo vuelto
     if (izq === 5) p(9, 27, 1, 1, C.Pl); if (der === 5) p(14, 27, 1, 1, C.Pl) // rodillas
   }
 }
@@ -410,9 +526,16 @@ function cuerpo(p, C, dir, r) {
     if (tipo === 'kimono') { p(9, 17, 2, 3, C.Tl); p(8, 22, 8, 1, r.cinturon || '#1f3c9a') }
     if (tipo === 'futbol') { p(8, 17, 1, 7, '#f4f4f0'); p(15, 17, 1, 7, '#f4f4f0') }
     if (tipo === 'abrigo') { p(8, 24, 8, 2, C.T); p(14, 24, 2, 2, C.t); p(8, 25, 8, 1, C.t) }
+    if (tipo === 'tirantes') p(8, 17, 3, 1, C.S)
+    if (tipo === 'chandal') { p(8, 17, 1, 7, C.Tl); p(9, 17, 2, 1, C.Tl) }
+    if (tipo === 'cuadros') { for (let y = 18; y < 24; y += 3) p(8, y, 8, 1, C.t); for (let x = 9; x < 16; x += 3) p(x, 17, 1, 7, C.t) }
+    if (tipo === 'traje') { p(8, 17, 2, 5, '#f4f4f0'); p(8, 18, 1, 4, r.colorExtra || '#c8302a') }
+    if (tipo === 'pena') { p(9, 17, 3, 1, C.Tl); p(9, 20, 6, 1, r.letras || '#f2c200') }
+    if (tipo === 'vestido') { p(7, 24, 10, 2, C.T); p(14, 24, 3, 2, C.t) }
     return
   }
-  if (r.chica && !r.robusto) {
+  // de cintura estrecha: las chicas, la ropa ajustada y el vestido
+  if ((r.chica || r.ajustada || tipo === 'vestido') && !r.robusto) {
     // cintura un poco más estrecha
     p(8, 17, 8, 1, C.T); p(7, 18, 10, 3, C.T); p(8, 21, 8, 3, C.T)
     p(15, 18, 1, 3, C.t); p(16, 18, 1, 3, C.t); p(14, 21, 1, 3, C.t); p(8, 23, 8, 1, C.t); p(8, 18, 1, 3, C.Tl)
@@ -424,7 +547,13 @@ function cuerpo(p, C, dir, r) {
   if (r.franja) p(r.robusto ? 6 : 7, 19, r.robusto ? 12 : 10, 2, r.franja)
   if (tipo === 'futbol') { p(7, 18, 1, 6, '#f4f4f0'); p(16, 18, 1, 6, '#f4f4f0') } // franjas laterales
   if (tipo === 'abrigo') { p(7, 24, 10, 2, C.T); p(15, 24, 2, 2, C.t); p(7, 25, 10, 1, C.t) } // por debajo de la cadera
+  // cuadros de leñador: líneas más oscuras cruzadas sobre el color de la camisa
+  if (tipo === 'cuadros') { for (let y = 19; y < 24; y += 3) p(7, y, 10, 1, C.t); for (let x = 8; x < 17; x += 3) p(x, 17, 1, 7, C.t); for (let y = 19; y < 24; y += 3) for (let x = 8; x < 17; x += 3) p(x, y, 1, 1, oscurecer(C.T, 0.55)) }
+  if (tipo === 'chandal') { p(7, 18, 1, 6, '#f4f4f0'); p(16, 18, 1, 6, '#f4f4f0') } // franjas a los lados
+  if (tipo === 'vestido') { p(7, 24, 10, 1, C.T); p(6, 25, 12, 2, C.T); p(15, 24, 2, 3, C.t); p(6, 26, 12, 1, C.t); p(7, 25, 1, 1, C.Tl) } // la falda del vestido, con vuelo
   if (dir === 'espalda') {
+    if (tipo === 'pena') { const l = r.letras || '#f2c200'; for (let x = 8; x < 16; x += 2) { p(x, 19, 1, 2, l); p(x + 1, 19, 1, 1, l) } p(8, 22, 8, 1, l) } // el nombre de la peña a la espalda
+    if (tipo === 'tirantes') { p(7, 17, 2, 2, C.S); p(15, 17, 2, 2, C.S) }
     if (tipo === 'futbol') { const n = '#f4f4f0'; p(10, 18, 1, 4, n); p(12, 18, 2, 1, n); p(12, 21, 2, 1, n); p(12, 19, 1, 2, n); p(14, 19, 1, 2, n) } // dorsal 10
     if (tipo === 'kimono') p(7, 22, 10, 1, r.cinturon || '#1f3c9a')
     return
@@ -459,6 +588,28 @@ function cuerpo(p, C, dir, r) {
     p(13, 18, 1, 6, '#c9ced5') // cremallera
     p(8, 21, 2, 1, oscurecer(C.T, 0.6)); p(15, 21, 1, 1, oscurecer(C.T, 0.6)) // bolsillos
   }
+  if (tipo === 'tirantes') { p(7, 17, 2, 2, C.S); p(15, 17, 2, 2, C.S); p(10, 17, 4, 2, C.S); p(9, 17, 1, 1, C.t); p(14, 17, 1, 1, C.t) } // hombros al aire y escote
+  if (tipo === 'chandal') {
+    p(10, 17, 4, 1, C.Tl); p(9, 16, 6, 1, C.T) // cuello alto
+    p(12, 17, 1, 7, '#c9ced5') // cremallera
+    p(8, 21, 2, 1, C.t); p(14, 21, 2, 1, C.t)
+  }
+  if (tipo === 'cuadros') { p(9, 17, 2, 2, C.Tl); p(13, 17, 2, 2, C.Tl); p(11, 17, 2, 1, C.s); p(12, 19, 1, 5, oscurecer(C.T, 0.6)) }
+  if (tipo === 'traje') {
+    // americana abierta con la camisa blanca, la corbata y las solapas
+    p(10, 17, 4, 7, '#f4f4f0'); p(11, 17, 2, 1, C.s)
+    const corbata = r.colorExtra || '#c8302a'
+    p(11, 18, 2, 1, corbata); p(11, 19, 2, 4, corbata); p(11, 23, 2, 1, oscurecer(corbata, 0.7))
+    p(9, 17, 1, 4, C.Tl); p(14, 17, 1, 4, C.Tl); p(10, 21, 1, 3, C.t); p(13, 21, 1, 3, C.t)
+    p(15, 20, 1, 1, '#d6c070')
+  }
+  if (tipo === 'pena') {
+    // polo de la peña: cuello, botones y el nombre en amarillo cruzando el pecho
+    p(10, 17, 4, 1, C.s); p(9, 17, 1, 1, C.Tl); p(14, 17, 1, 1, C.Tl); p(11, 18, 2, 1, C.t)
+    const l = r.letras || '#f2c200'
+    for (const [x, a] of [[8, 2], [11, 1], [13, 2], [16, 1]]) p(x, 20, a, 1, l)
+    for (const x of [8, 10, 12, 14, 16]) p(x, 21, 1, 1, l)
+  }
 }
 
 // Dibujo pequeño en el pecho (camiseta, sudadera o camiseta de fútbol)
@@ -468,11 +619,17 @@ function dibujoPecho(p, dibujo, C) {
   if (dibujo === 'corazon') { p(10, 19, 1, 1, '#e05a5a'); p(13, 19, 1, 1, '#e05a5a'); p(10, 20, 4, 1, '#e05a5a'); p(11, 21, 2, 1, '#e05a5a') }
   if (dibujo === 'estrella') { p(11, 18, 2, 1, '#f2c200'); p(10, 19, 4, 1, '#f2c200'); p(11, 20, 2, 1, '#f2c200'); p(10, 21, 1, 1, '#f2c200'); p(13, 21, 1, 1, '#f2c200') }
   if (dibujo === 'codigo') { p(9, 19, 1, 1, c); p(8, 20, 1, 1, c); p(9, 21, 1, 1, c); p(12, 18, 1, 1, c); p(11, 20, 1, 1, c); p(10, 22, 1, 1, c); p(14, 19, 1, 1, c); p(15, 20, 1, 1, c); p(14, 21, 1, 1, c) } // </>
+  if (dibujo === 'calavera') { p(10, 18, 4, 3, blanco); p(10, 19, 1, 1, '#15171c'); p(13, 19, 1, 1, '#15171c'); p(11, 21, 2, 1, blanco); p(11, 21, 1, 1, '#15171c') }
+  if (dibujo === 'flor') { p(11, 18, 2, 1, '#ff7fb0'); p(10, 19, 1, 2, '#ff7fb0'); p(13, 19, 1, 2, '#ff7fb0'); p(11, 21, 2, 1, '#ff7fb0'); p(11, 19, 2, 2, '#f2c200'); p(12, 22, 1, 1, '#2fbf71') }
+  if (dibujo === 'balon') { p(11, 18, 2, 1, blanco); p(10, 19, 4, 2, blanco); p(11, 21, 2, 1, blanco); p(11, 19, 2, 2, '#15171c') }
+  if (dibujo === 'nota') { p(12, 18, 2, 1, c); p(12, 18, 1, 4, c); p(13, 19, 1, 1, c); p(10, 21, 3, 2, c) }
   if (dibujo === 'pixel') { p(10, 19, 2, 2, '#e05a5a'); p(12, 19, 2, 2, '#2fbf71'); p(10, 21, 2, 2, '#3d7be0'); p(12, 21, 2, 2, '#f2c200') }
 }
 
-function brazos(p, C, dir, paso, r) {
-  const corta = !['sudadera', 'chaqueta', 'camisa', 'abrigo', 'kimono'].includes(r.tipo)
+function brazos(p, C0, dir, paso, r) {
+  const corta = !['sudadera', 'chaqueta', 'camisa', 'abrigo', 'kimono', 'chandal', 'cuadros', 'traje'].includes(r.tipo)
+  // con tirantes los brazos van al aire desde el hombro
+  const C = r.tipo === 'tirantes' ? { ...C0, T: C0.S, t: C0.s } : C0
   if (dir === 'lado') {
     // el brazo de este lado se balancea al andar
     const [x, mano] = paso === 1 ? [8, [7, 22]] : paso === 2 ? [12, [14, 22]] : [10, [11, 22]]
@@ -489,7 +646,9 @@ function brazos(p, C, dir, paso, r) {
     q(x, 18, 2, corta ? 2 : 5, C.T); q(sombra, 18, 1, corta ? 2 : 5, C.t)
     if (corta) { q(x, 19, 2, 1, C.t); q(x, 20, 2, 3, C.S); q(sombra, 20, 1, 3, C.s) }
     else q(x, 22, 2, 1, C.t) // puño de la manga larga
+    if (r.tipo === 'chandal') q(sombra, 18, 1, 4, '#f4f4f0') // las rayas blancas de la manga
     q(x, 23, 2, 1, C.S); q(sombra, 23, 1, 1, C.s)
+    if (r.reloj && lado === 'izq') { q(x, 22, 2, 1, '#2b2f38'); q(x, 22, 1, 1, '#c9ced5') }
   }
 }
 
@@ -514,8 +673,16 @@ function accesorios(p, C, dir, r) {
   if (r.cadena && dir === 'frente') { p(9, 17, 1, 1, plata[0]); p(14, 17, 1, 1, plata[0]); p(10, 18, 1, 1, plata[0]); p(13, 18, 1, 1, plata[0]); p(11, 19, 2, 1, plata[1]) }
   if (r.cadena && dir === 'lado') { p(8, 17, 1, 1, plata[0]); p(9, 18, 1, 1, plata[1]) }
   // aros grandes en las orejas
-  if (r.aros && dir === 'frente') for (const [x, d] of [[5, -1], [18, 1]]) { p(x, 13, 1, 1, r.aros); p(x + d, 14, 1, 1, r.aros); p(x, 15, 1, 1, r.aros) }
-  if (r.aros && dir === 'lado') { p(12, 13, 1, 1, r.aros); p(13, 14, 1, 1, r.aros); p(12, 15, 1, 1, r.aros) }
+  const aro = typeof r.aros === 'string' ? r.aros : '#e8c45a'
+  if (r.aros && dir === 'frente') for (const [x, d] of [[5, -1], [18, 1]]) { p(x, 13, 1, 1, aro); p(x + d, 14, 1, 1, aro); p(x, 15, 1, 1, aro) }
+  if (r.aros && dir === 'lado') { p(12, 13, 1, 1, aro); p(13, 14, 1, 1, aro); p(12, 15, 1, 1, aro) }
+  // bufanda del color extra: vuelta al cuello y una punta que cuelga por delante
+  if (r.bufanda) {
+    const b = r.colorExtra || '#e05a5a'
+    p(8, 16, 8, 2, b); p(8, 16, 8, 1, aclarar(b, 0.25))
+    if (dir === 'frente') { p(13, 18, 2, 4, b); p(13, 21, 2, 1, oscurecer(b, 0.7)) }
+    if (dir === 'lado') p(6, 17, 2, 4, b)
+  }
   if (r.logo && dir === 'frente') p(13, 19, 2, 1, r.logo)
   // bolso cruzado: correa en diagonal y el bolso a la altura de la cadera
   if (r.bolso && dir === 'frente') { for (let i = 0; i < 6; i++) p(9 + i, 17 + i, 1, 1, '#3a2a20'); p(14, 22, 4, 3, r.bolso); p(14, 22, 4, 1, aclarar(r.bolso, 0.25)); p(16, 23, 1, 1, '#d6c070') }
@@ -537,6 +704,13 @@ function accesorios(p, C, dir, r) {
   if (r.sombrero === 'gorro') {
     p(6, 1, 12, 5, S); p(7, 1, 3, 1, aclarar(S, 0.3)); p(5, 5, 14, 3, oscurecer(S, 0.8)); for (let x = 6; x < 18; x += 2) p(x, 5, 1, 3, oscurecer(S, 0.68))
     p(11, 0, 2, 1, '#f4f4f0')
+  }
+  if (r.sombrero === 'boina') {
+    if (dir === 'lado') { p(5, 2, 13, 4, S); p(5, 2, 13, 1, aclarar(S, 0.3)); p(4, 5, 4, 1, oscurecer(S, 0.7)) }
+    else { p(5, 2, 14, 4, S); p(6, 2, 12, 1, aclarar(S, 0.3)); p(5, 5, 14, 1, oscurecer(S, 0.72)); p(11, 1, 2, 1, oscurecer(S, 0.7)) }
+  }
+  if (r.sombrero === 'pescador') {
+    p(7, 1, 10, 4, S); p(7, 1, 10, 1, aclarar(S, 0.3)); p(4, 5, 16, 2, oscurecer(S, 0.8)); p(4, 6, 16, 1, oscurecer(S, 0.65))
   }
   if (r.sombrero === 'cinta') {
     p(5, 6, 14, 2, S); p(5, 6, 14, 1, aclarar(S, 0.3))
@@ -582,7 +756,7 @@ export function crearPersonaje(scene, clave, rasgos) {
   if (scene.textures.exists(clave)) scene.textures.remove(clave)
   const W = ANCHO_PJ, A = ALTO_PJ
   const r = { ...rasgos, barba: rasgos.barba === true ? 'completa' : rasgos.barba, robot: rasgos.robot || rasgos.antena,
-    falda: rasgos.falda || rasgos.abajo === 'falda', corto: rasgos.corto || rasgos.abajo === 'corto' }
+    falda: rasgos.falda || rasgos.abajo === 'falda' || rasgos.tipo === 'vestido', corto: rasgos.corto || rasgos.abajo === 'corto' }
   const C = colores(r)
   const [hoja, hctx] = lienzo(W * 3, A * 4)
   const filas = [['frente', false], ['lado', false], ['lado', true], ['espalda', false]]

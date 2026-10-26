@@ -190,6 +190,12 @@ a { color: var(--verde); }
 .fila-creador { display: grid; grid-template-columns: 140px 1fr; align-items: center; gap: 10px; }
 .fila-creador > span { font-family: var(--pixel); font-size: 9px; color: var(--suave); }
 .fila-creador > div { display: flex; flex-wrap: wrap; gap: 6px; }
+.pedir-nombre { width: min(460px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.pedir-nombre p { margin: 0; color: var(--suave); }
+.pedir-nombre input { font-family: var(--pixel); font-size: 14px; background: var(--editor-2); color: var(--texto); border: 3px solid var(--linea); padding: 12px; width: 100%; }
+.pedir-nombre input:focus, .fila-creador input:focus { outline: none; border-color: var(--verde); }
+.pedir-nombre .error-nombre { color: #ff6b6b; min-height: 1.4em; }
+.fila-creador input.falta { border-color: #ff6b6b; }
 .fila-creador input { font-family: var(--pixel); font-size: 11px; background: var(--editor-2); color: var(--texto); border: 3px solid var(--linea); padding: 8px; width: 100%; }
 .color { width: 26px; height: 26px; border: 3px solid var(--editor-2); cursor: pointer; }
 .color.sel { border-color: var(--texto); outline: 2px solid var(--verde); }

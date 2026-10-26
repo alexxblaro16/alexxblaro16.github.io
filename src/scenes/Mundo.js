@@ -1,15 +1,15 @@
 // La escena principal: el mundo en píxeles, el personaje del visitante, Alejandro como guía y todos los NPC.
 import Phaser from 'phaser'
 import { T, ESTADIO, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdificios, crearDecorado } from '../sprites.js'
-import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, AUTOVIA, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO, ESFERAS } from '../mapa.js'
+import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, AUTOVIA, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO, ESFERAS, METRO } from '../mapa.js'
 import { INTERIORES, crearInteriores } from '../interiores.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { registrar } from '../registro.js'
 import { decir, elegir, pedirRopa, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD, logro } from '../ui.js'
-import { sfx, sonar } from '../sonido.js'
+import { sfx, sonar, musicaFiesta, hayFiesta, ESTILOS_FIESTA, nombreFiesta } from '../sonido.js'
 import { abrirArcade } from '../arcade.js'
-import { animarViaje } from '../viaje.js'
+import { animarViaje, animarMetro } from '../viaje.js'
 import { ENLACES } from '../content.js'
 import { lienzo, px, texto, ruido2D } from '../pixel.js'
 
@@ -240,7 +240,7 @@ export default class Mundo extends Phaser.Scene {
   // ------------------------------------------------------------------------------------------ edificios
   letrero(texto, x, y, color = '#ffffff') {
     // La fuente de píxel no tiene mayúsculas con tilde: se quitan para que no salgan raras
-    texto = texto.normalize('NFD').replace(/[̀-ͯ]/g, '')
+    texto = texto.normalize('NFD').replace(/Ñ/g, 'Ñ').replace(/[̀-ͯ]/g, '')
     return this.add.text(x, y, texto, { fontFamily: '"Press Start 2P"', fontSize: '5px', color, backgroundColor: '#1b1f27cc', padding: { x: 2, y: 2 }, resolution: 6 })
       .setOrigin(0.5, 1).setDepth(9000)
   }
@@ -320,7 +320,7 @@ export default class Mundo extends Phaser.Scene {
       if (o.nube) {
         const nube = this.nubeImg
         this.interactivos.push({ get x() { return nube.visible ? nube.x : -9999 }, get y() { return nube.y + 4 }, radio: 20, nube: true, nombre: 'Alejandro', fija: true })
-      } else if (o.zona || o.vida || o.arcade || o.bus) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : 4), radio: grande ? 68 : o.bus ? 32 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, nombre: 'Alejandro' })
+      } else if (o.zona || o.vida || o.arcade || o.bus || o.metro) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : 4), radio: grande ? 68 : o.bus || o.metro ? 26 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, metro: o.metro, nombre: 'Alejandro' })
     }
   }
 
@@ -365,8 +365,11 @@ export default class Mundo extends Phaser.Scene {
       this.letrero(o.titulo[estado.idioma], x0 + W / 2, y0 - 2)
       for (const m of o.muebles) {
         const img = this.add.image(x0 + m.x * T, y0 + m.base * T, m.clave).setOrigin(0.5, 1)
-        img.setDepth(m.pared ? -880 : m.pisable ? -890 : y0 + m.base * T)
-        if (m.tornos) {
+        img.setDepth(m.pared ? -880 : m.pisable ? -890 : m.colgado ? 9400 : y0 + m.base * T)
+        if (m.clave === 'bola_disco') this.bolaDisco = img
+        if (m.colgado) {
+          // cuelga del techo: no choca con nada
+        } else if (m.tornos) {
           // solo los postes son sólidos; por los dos brazos se pasa y se abren al acercarse
           for (const px0 of [0, 27, 54]) this.solido(img.x - 32 + px0, img.y - 10, 10, 8)
           this.tornos = { img, x: img.x, y: img.y - 4 }
@@ -376,8 +379,8 @@ export default class Mundo extends Phaser.Scene {
           this.solido(img.x - img.width / 2 + 1, img.y - alto, img.width - 2, alto)
           this.add.rectangle(img.x + 2, img.y - 1, img.width - 2, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-885)
         }
-        if (m.vida || m.zona || m.ir || m.arcade || m.ropa) {
-          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, resena: m.resena, nombre: 'Alejandro' })
+        if (m.vida || m.zona || m.ir || m.arcade || m.ropa || m.entrar || m.musica) {
+          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, resena: m.resena, entrar: m.entrar, musica: m.musica, nombre: 'Alejandro' })
         }
       }
       for (const [i, g] of (o.personas || []).entries()) {
@@ -390,7 +393,7 @@ export default class Mundo extends Phaser.Scene {
         this.gente.push(s)
         this.interactivos.push({ x: s.x, y: s.y, radio: 20, vida: g.vida, nombre: g.nombre, persona: true })
       }
-      this.salas[id] = { x0, y0, W, H, puertaX, salidaY: y0 + H - 3 }
+      this.salas[id] = { x0, y0, W, H, puertaX, salidaY: y0 + H - 3, salida: o.salida }
     })
   }
 
@@ -398,6 +401,7 @@ export default class Mundo extends Phaser.Scene {
   irASala(id, x = null, y = null) {
     const sala = this.salas[id], cam = this.cameras.main
     this.cambiandoSala = true
+    if (id !== 'pena' && hayFiesta()) musicaFiesta(null)
     sfx.puerta()
     registrar('zona', `interior-${id}`, true)
     cam.fadeOut(180, 0, 0, 0)
@@ -419,6 +423,7 @@ export default class Mundo extends Phaser.Scene {
 
   entrar(id) {
     const edificio = EDIFICIOS.find((e) => e.interior === id)
+    if (id === 'cienaga') this.lemaVisto = false // el lema de la peña sale cada vez que entras a la ciénaga
     this.vuelta = { x: edificio.x * T, y: edificio.base * T + 12 }
     this.irASala(id)
     // la primera vez que entras en Reblán, Pedro te pide una reseña (de la tienda de verdad)
@@ -458,6 +463,7 @@ export default class Mundo extends Phaser.Scene {
   salir() {
     const cam = this.cameras.main
     this.cambiandoSala = true
+    if (hayFiesta()) musicaFiesta(null)
     sfx.puerta()
     cam.fadeOut(180, 0, 0, 0)
     cam.once('camerafadeoutcomplete', () => {
@@ -485,11 +491,121 @@ export default class Mundo extends Phaser.Scene {
         if (cerca) { sonar(1320, 0.06, 'square', 0.04); sonar(1760, 0.08, 'square', 0.04, 0.07) }
       }
     }
+    // en la ciénaga, al subir por el camino de tierra sale el nombre de la peña y su lema
+    if (this.dentro === 'cienaga' && !this.lemaVisto) {
+      const sala = this.salas.cienaga
+      if (Math.abs(j.x - (sala.x0 + 12 * T)) < 2 * T && j.y < sala.y0 + 12.5 * T) { this.lemaVisto = true; this.mostrarLema() }
+    }
+    this.lucesDisco()
     for (const g of this.gente) {
       if (Phaser.Math.Distance.Between(g.x, g.y, j.x, j.y) > 44) continue
       const dx = j.x - g.x, dy = j.y - g.y
       g.setFrame(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 3) : (dy > 0 ? 0 : 9))
     }
+  }
+
+  // «PEÑA EL PILÓN · Alegría de vivir» en grande sobre el camino de tierra
+  mostrarLema() {
+    const sala = this.salas.cienaga
+    const cx = sala.x0 + sala.W / 2, cy = sala.y0 + 1.4 * T
+    const titulo = this.add.text(cx, cy, 'PEÑA EL PILON', { fontFamily: '"Press Start 2P"', fontSize: '12px', color: '#f2c200', stroke: '#15171c', strokeThickness: 4, resolution: 6 }).setOrigin(0.5).setDepth(9900).setAlpha(0)
+    const lema = this.add.text(cx, cy + 14, frases('pilon_lema'), { fontFamily: '"Press Start 2P"', fontSize: '7px', color: '#f4f1ea', stroke: '#15171c', strokeThickness: 3, resolution: 6 }).setOrigin(0.5).setDepth(9900).setAlpha(0)
+    ;[392, 523, 659, 784].forEach((fr, i) => sonar(fr, 0.18, 'square', 0.04, i * 0.1))
+    this.tweens.add({ targets: [titulo, lema], alpha: 1, y: '-=4', duration: 500, ease: 'Back.out' })
+    this.tweens.add({ targets: [titulo, lema], alpha: 0, duration: 600, delay: 2600, onComplete: () => [titulo, lema].forEach((o) => o.destroy()) })
+    registrar('zona', 'pilon', true)
+  }
+
+  // Luces de colores que barren el suelo de la peña mientras suena la música, y la bola que destella
+  lucesDisco() {
+    const encender = this.dentro === 'pena' && !!hayFiesta()
+    if (!this.focosDisco && !encender) return
+    const sala = this.salas.pena
+    if (!this.focosDisco) {
+      const colores = [0xff3d7f, 0x3dd9ff, 0xf2c200, 0xa970ff, 0x2fbf71]
+      this.focosDisco = colores.map((c) => this.add.ellipse(0, 0, 34, 18, c, 0.28).setBlendMode(Phaser.BlendModes.ADD).setDepth(-870))
+    }
+    const t = this.time.now / 1000
+    this.focosDisco.forEach((l, i) => {
+      l.setVisible(encender)
+      if (!encender) return
+      l.setPosition(sala.x0 + sala.W / 2 + Math.sin(t * (0.9 + i * 0.23) + i * 1.7) * sala.W * 0.36, sala.y0 + 6.4 * T + Math.cos(t * (1.1 + i * 0.17) + i) * 2.4 * T)
+    })
+    if (this.bolaDisco) this.bolaDisco.setTint(encender && Math.floor(t * 8) % 2 ? 0xfff0a8 : 0xffffff)
+  }
+
+  // El equipo de música de la peña: reguetón, techno o charanga, y se puede cambiar o apagar cuando quieras
+  async equipoMusica() {
+    const opciones = [...ESTILOS_FIESTA.map((k) => nombreFiesta(k) + (hayFiesta() === k ? ' ♪' : '')), frases('equipo_apagar')]
+    const i = await elegir(en() ? 'Sound system' : 'Equipo de música', frases('equipo'), opciones)
+    if (i < ESTILOS_FIESTA.length) {
+      if (musicaFiesta(ESTILOS_FIESTA[i])) pintarHUD()
+      registrar('zona', `pena-${ESTILOS_FIESTA[i]}`, true)
+    } else musicaFiesta(null)
+  }
+
+  // Jandro te ofrece cerezas de los cerezos del pueblo de su madre
+  async cerezasJandro() {
+    const i = await elegir('Jandro', frases('jandro'), en() ? ['Yes, please', 'No, thanks'] : ['Sí, venga', 'No, gracias'])
+    if (i !== 0) return decir('Jandro', frases('jandro_no'))
+    sfx.moneda()
+    await this.comerCerezas()
+    return decir('Jandro', frases('jandro_si'))
+  }
+
+  // Comer como en los juegos de bloques: bocados con trocitos que saltan, la barra de comida (los muslitos) que se
+  // llena, el eructo al final, un corazón y 15 segundos corriendo más
+  async comerCerezas() {
+    if (!this.textures.exists('muslo')) {
+      const icono = (clave, lleno) => {
+        const [c, ctx] = lienzo(9, 9), p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+        p(1, 1, 5, 5, '#1b1f27'); p(5, 5, 3, 3, '#1b1f27')
+        p(2, 2, 3, 3, lleno ? '#b0602a' : '#3a3f48'); p(2, 2, 1, 1, lleno ? '#e0904a' : '#4a515c'); p(5, 5, 2, 2, lleno ? '#f4f1ea' : '#5b6068')
+        this.textures.addCanvas(clave, c)
+      }
+      icono('muslo', true); icono('muslo_vacio', false)
+      const [c, ctx] = lienzo(9, 9), p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+      p(4, 0, 1, 3, '#3f8a46'); p(5, 0, 2, 1, '#4f9e4a'); p(2, 3, 2, 1, '#3f8a46'); p(6, 2, 1, 2, '#3f8a46')
+      p(0, 4, 4, 4, '#1b1f27'); p(5, 4, 4, 4, '#1b1f27'); p(1, 5, 2, 2, '#c8202a'); p(6, 5, 2, 2, '#c8202a'); p(1, 5, 1, 1, '#ff8a8a'); p(6, 5, 1, 1, '#ff8a8a')
+      this.textures.addCanvas('cereza', c)
+      const [h, hx] = lienzo(9, 8), q = (x, y, w, hh, col) => px(hx, x, y, col, w, hh)
+      q(1, 0, 3, 1, '#1b1f27'); q(5, 0, 3, 1, '#1b1f27'); q(0, 1, 9, 4, '#1b1f27'); q(1, 5, 7, 1, '#1b1f27'); q(2, 6, 5, 1, '#1b1f27'); q(3, 7, 3, 1, '#1b1f27')
+      q(1, 1, 3, 4, '#e0303a'); q(5, 1, 3, 4, '#e0303a'); q(4, 2, 1, 3, '#e0303a'); q(2, 5, 5, 1, '#e0303a'); q(3, 6, 3, 1, '#e0303a'); q(2, 2, 1, 1, '#ffb0b0')
+      this.textures.addCanvas('corazon_pixel', h)
+    }
+    const j = this.jugador
+    const sobre = (o, dy) => o.setPosition(j.x, j.y + dy)
+    this.comiendo = true
+    const cereza = this.add.image(j.x, j.y - 36, 'cereza').setDepth(9800).setScale(1.8)
+    // la barra de comida: diez muslitos, tres llenos al empezar, que se llenan con cada bocado
+    let llenos = 3
+    const barra = Array.from({ length: 10 }, (_, k) => this.add.image(0, 0, k < llenos ? 'muslo' : 'muslo_vacio').setDepth(9800))
+    const colocar = () => { barra.forEach((m, k) => m.setPosition(j.x - 40 + k * 9, j.y - 50)); sobre(cereza, -38) }
+    colocar()
+    const seguir = this.time.addEvent({ delay: 16, loop: true, callback: colocar })
+    sfx.comer(7)
+    for (let n = 0; n < 7; n++) {
+      // trocitos que saltan de la boca en cada bocado
+      for (let k = 0; k < 4; k++) {
+        const trozo = this.add.rectangle(j.x + Phaser.Math.Between(-3, 3), j.y - 20, 2, 2, k % 2 ? 0xc8202a : 0x7a1018).setDepth(9810)
+        this.tweens.add({ targets: trozo, x: trozo.x + Phaser.Math.Between(-10, 10), y: trozo.y + Phaser.Math.Between(4, 12), alpha: 0, duration: 380, ease: 'Quad.in', onComplete: () => trozo.destroy() })
+      }
+      this.tweens.add({ targets: cereza, scale: 1.5, duration: 90, yoyo: true })
+      if (llenos < 10) barra[llenos++].setTexture('muslo')
+      await espera(this, 200)
+    }
+    while (llenos < 10) barra[llenos++].setTexture('muslo')
+    cereza.destroy()
+    await espera(this, 150)
+    sfx.eructo()
+    const corazon = this.add.image(j.x, j.y - 36, 'corazon_pixel').setDepth(9800).setScale(1.4)
+    this.tweens.add({ targets: corazon, y: corazon.y - 18, alpha: 0, duration: 1300, ease: 'Sine.out', onComplete: () => corazon.destroy() })
+    this.tweens.add({ targets: barra, alpha: 0, duration: 500, delay: 900, onComplete: () => { seguir.remove(); barra.forEach((m) => m.destroy()) } })
+    this.subidon = this.time.now + 15000
+    this.comiendo = false
+    if (!this.cerezasComidas) { this.cerezasComidas = true; logro(en() ? "Jandro's cherries" : 'Cerezas de Jandro') }
+    registrar('zona', 'cerezas', true)
+    await espera(this, 500)
   }
 
   // ------------------------------------------------------------------------------------------ las siete esferas
@@ -763,6 +879,7 @@ export default class Mundo extends Phaser.Scene {
       this.npcs.push(s)
       // el punto para hablar con ellos se mueve con ellos
       if (p.vida) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, vida: p.vida, nombre: p.nombre })
+      else if (p.especial) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, especial: p.especial, nombre: p.nombre })
       else if (p.grupo) this.interactivos.push({ get x() { return s.x }, get y() { return s.y }, radio: 18, frase: () => fraseAmigo(p), nombre: p.nombre })
     })
 
@@ -825,7 +942,7 @@ export default class Mundo extends Phaser.Scene {
       const dist = Phaser.Math.Distance.Between(s.x, s.y, j.x, j.y)
       // si se queda muy atrás (un árbol en medio, otra sala…) aparece a tu lado
       if (dist > 170) { s.setPosition(j.x + (a.anim ? 14 : -18), j.y + 4); return quieto() }
-      if (dist > a.hueco) return andar(j.x - s.x, j.y - s.y, VELOCIDAD * (this.turbo > ahora ? 1.7 : 0.95))
+      if (dist > a.hueco) return andar(j.x - s.x, j.y - s.y, VELOCIDAD * (this.turbo > ahora ? 1.7 : this.subidon > ahora ? 1.4 : 0.95))
       return quieto()
     }
     // vuelve andando a su zona; si está lejos (en otra sala, al otro lado de la autovía) o se atasca, aparece allí
@@ -937,6 +1054,40 @@ export default class Mundo extends Phaser.Scene {
     if (!conGuia) await decir('Monbus', frases(ida ? 'bus_llegada_madrid' : 'bus_llegada_pueblo'))
   }
 
+  // ------------------------------------------------------------------------------------------ el metro
+  // Tres bocas de la misma línea: residencia, MEDAC y UDIT. Eliges parada, bajas, viaje por el túnel (pasando por
+  // las estaciones de en medio) y sales por la boca de la otra parada
+  async preguntarMetro(origen) {
+    const otras = METRO.filter((p) => p.id !== origen)
+    const i = await elegir('Metro', frases('metro'), [...otras.map((p) => p.nombre), frases('metro_cancelar')])
+    if (i < otras.length) return this.viajarMetro(origen, otras[i].id)
+  }
+
+  async viajarMetro(de, a) {
+    const cam = this.cameras.main, j = this.jugador
+    this.enViaje = true
+    j.setVelocity(0); j.anims.stop(); j.body.enable = false
+    registrar('zona', `metro-${a}`, true)
+    sfx.puerta()
+    cam.fadeOut(250, 0, 0, 0)
+    await espera(this, 300)
+    const indice = (id) => METRO.findIndex((p) => p.id === id)
+    await animarMetro(METRO, indice(de), indice(a))
+    const boca = OBJETOS.find((o) => o.metro === a)
+    // sales delante de la boca: hacia el camino (las de arriba del camino, abajo; las de abajo, arriba)
+    const y = boca.base < CAMINO ? boca.base * T + 14 : (boca.base - 3.3) * T
+    j.setPosition(boca.x * T, y)
+    this.mirando = boca.base < CAMINO ? 'abajo' : 'arriba'
+    this.traerAcompanantes(j.x, j.y)
+    this.limitarCamara()
+    cam.centerOn(j.x, j.y)
+    cam.fadeIn(300)
+    j.body.enable = true
+    this.enViaje = false
+    const parada = METRO[indice(a)].nombre
+    await decir('Metro', frases('metro_llegada').map((s) => s.replace('{parada}', parada)))
+  }
+
   // ------------------------------------------------------------------------------------------ el probador
   async abrirArmario() {
     const i = await elegir('Alejandro', frases('int_armario'), en() ? ['Yes, let me see', 'No'] : ['Sí, a ver', 'No'])
@@ -960,6 +1111,7 @@ export default class Mundo extends Phaser.Scene {
   pausarParaMenu() {
     const cam = this.cameras.main
     if (this.dentro) { this.dentro = null; this.physics.world.setBounds(0, 0, ANCHO * T, ALTO * T); this.ajustarZoom() }
+    if (hayFiesta()) musicaFiesta(null)
     cam.setBounds(0, 0, ANCHO * T, ALTO * T) // en la portada la cámara recorre el mapa entero
     this.jugador?.setVelocity(0)
     cam.stopFollow()
@@ -1075,10 +1227,14 @@ export default class Mundo extends Phaser.Scene {
     const cosa = this.interactivos.filter((o) => cerca(o, o.radio)).sort((a, b) => Phaser.Math.Distance.Between(j.x, j.y, a.x, a.y) - Phaser.Math.Distance.Between(j.x, j.y, b.x, b.y))[0] // lo más cercano, no lo primero de la lista
     if (!cosa) return
     if (cosa.esfera) return this.recogerEsfera(cosa)
+    if (cosa.especial === 'cerezas') return this.cerezasJandro()
+    if (cosa.entrar) return this.irASala(cosa.entrar.sala, cosa.entrar.x, cosa.entrar.y)
+    if (cosa.musica) return this.equipoMusica()
     if (cosa.interior) return this.entrar(cosa.interior)
     if (cosa.ir) return this.usarAscensor(cosa)
     if (cosa.nube) return this.subirNube()
     if (cosa.bus) return this.preguntarBus(cosa.bus)
+    if (cosa.metro) return this.preguntarMetro(cosa.metro)
     if (cosa.ropa) return this.abrirArmario()
     if (cosa.resena) { await decir(cosa.nombre, frases(cosa.vida)); return this.pedirResena() }
     if (cosa.arcade) return abrirArcade(cosa.arcade)
@@ -1212,7 +1368,7 @@ export default class Mundo extends Phaser.Scene {
     if (accion && !probador && !this.enViaje) { if (hayDialogo()) avanzarDialogo(); else if (!hayPanel()) this.interactuar() }
 
     let vx = 0, vy = 0
-    const quieto = pausado || this.cambiandoSala
+    const quieto = pausado || this.cambiandoSala || this.comiendo
     if (!quieto) {
       if (k.A.isDown || k.LEFT.isDown || tt.izquierda) vx = -1
       else if (k.D.isDown || k.RIGHT.isDown || tt.derecha) vx = 1
@@ -1222,7 +1378,7 @@ export default class Mundo extends Phaser.Scene {
     // con la palanca del móvil se anda en cualquier dirección y más o menos deprisa según cuánto se empuje
     const analogico = !quieto && (tt.vx || tt.vy)
     const turbo = this.turbo > this.time.now
-    const rapidez = VELOCIDAD * (turbo ? 1.8 : 1)
+    const rapidez = VELOCIDAD * (turbo ? 1.8 : this.subidon > this.time.now ? 1.45 : 1)
     const v = analogico ? new Phaser.Math.Vector2(tt.vx, tt.vy).scale(rapidez) : new Phaser.Math.Vector2(vx, vy).normalize().scale(rapidez)
     if (analogico) { vx = tt.vx; vy = tt.vy }
     if (!this.enViaje) j.setVelocity(v.x, v.y)
@@ -1258,12 +1414,15 @@ export default class Mundo extends Phaser.Scene {
     // salir de una sala por la puerta de abajo
     if (this.dentro && !this.cambiandoSala) {
       const sala = this.salas[this.dentro]
-      if (sala.puertaX != null && j.y >= sala.salidaY && Math.abs(j.x - sala.puertaX) < T + 2) this.salir()
+      if (sala.puertaX != null && j.y >= sala.salidaY && Math.abs(j.x - sala.puertaX) < T + 2) {
+        if (sala.salida) this.irASala(sala.salida.sala, sala.salida.x, sala.salida.y)
+        else this.salir()
+      }
       this.vidaSalas()
     }
 
     const objetivo = pausado ? null : this.cercano()
-    this.tecla.setVisible(!!objetivo && !(esperando && objetivo.guia))
+    this.tecla.setVisible(!!objetivo && !(esperando && objetivo.guia) && !this.comiendo)
     if (objetivo) this.tecla.setPosition(Math.round(objetivo.x), Math.round(objetivo.y + Math.sin(this.time.now / 180) * 1.5))
   }
 }

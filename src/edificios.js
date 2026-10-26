@@ -894,6 +894,88 @@ function lupa() {
   return c
 }
 
+// ---------------------------------------------------------------------------------------------- la ciénaga
+// Una ciénaga en la esquina del pueblo: árboles oscuros con musgo colgando, charcas verdes con nenúfares, juncos,
+// setas, una valla de troncos con su cancela y un camino de tierra que se mete en la espesura
+function cienaga() {
+  const W = 160, H = 112
+  const [c, ctx] = lienzo(W, H)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  const r = azar(41)
+  // suelo de barro y hierba húmeda, con manchas
+  p(0, 30, W, H - 30, '#3f4d26')
+  for (let i = 0; i < 260; i++) p(Math.floor(r() * W), 30 + Math.floor(r() * (H - 30)), 2 + Math.floor(r() * 3), 1, ['#4a5a2c', '#36421f', '#55652f', '#4b3f24'][i % 4])
+  // el camino de tierra, desde la cancela hasta la espesura
+  for (let y = 44; y < H; y++) {
+    const ancho = 14 + Math.round((y - 44) * 0.12), x = 80 - ancho / 2 + Math.round(Math.sin(y / 9) * 3)
+    p(x, y, ancho, 1, '#7a5c3a'); p(x, y, 1, 1, '#5e4429'); p(x + ancho - 1, y, 1, 1, '#5e4429')
+    if (y % 5 === 0) p(x + 3 + (y % 7), y, 2, 1, '#8f6e48')
+  }
+  // charcas con nenúfares, burbujas y un tronco medio hundido
+  const charca = (cx, cy, rx, ry) => {
+    for (let y = -ry; y <= ry; y++) {
+      const w = Math.round(rx * Math.sqrt(1 - (y * y) / (ry * ry)))
+      p(cx - w - 1, cy + y, 2 * w + 2, 1, '#2a3418')
+      p(cx - w, cy + y, 2 * w, 1, y < -ry / 2 ? '#6b8a4a' : '#557a3c')
+    }
+    p(cx - rx + 4, cy - 1, 6, 1, '#89a866'); p(cx + 2, cy + 2, 4, 1, '#89a866')
+    for (const [dx, dy] of [[-Math.round(rx / 2), 0], [Math.round(rx / 3), -Math.round(ry / 3)]]) { p(cx + dx, cy + dy, 4, 2, '#2f7a3a'); p(cx + dx + 1, cy + dy, 1, 1, '#1f5a2a'); p(cx + dx + 3, cy + dy - 1, 1, 1, '#ff9fc4') }
+    const b = Math.round(rx / 2); p(cx + b, cy - 2, 1, 1, '#a9c98a'); p(cx + b + 2, cy - 4, 1, 1, '#a9c98a')
+  }
+  charca(30, 70, 22, 10); charca(128, 64, 20, 9); charca(118, 92, 12, 6)
+  p(14, 66, 20, 4, '#4a3520'); p(14, 66, 20, 1, '#6b4a2b'); p(33, 66, 2, 4, '#7a5c3a')
+  // juncos con su espiga marrón
+  for (const [x, y] of [[8, 80], [12, 78], [52, 74], [56, 76], [104, 70], [150, 70], [146, 74], [100, 96], [136, 96], [20, 92]]) {
+    p(x, y - 9, 1, 9, '#5a7a2a'); p(x + 2, y - 7, 1, 7, '#6b8a35'); p(x, y - 12, 1, 3, '#6b4a2b'); p(x + 2, y - 9, 1, 2, '#6b4a2b')
+  }
+  // setas
+  for (const [x, y] of [[44, 92], [62, 100], [96, 82], [146, 100]]) { p(x, y - 2, 1, 2, '#e9e4d8'); p(x - 1, y - 4, 3, 2, '#c8302a'); p(x, y - 4, 1, 1, '#ffffff') }
+  // árboles del fondo: copas oscuras con musgo que cuelga y troncos retorcidos
+  const arbol = (x, y, rc) => {
+    p(x - 2, y + rc - 2, 5, 22, '#3a2a18'); p(x - 2, y + rc - 2, 1, 22, '#4f3a22'); p(x - 5, y + rc + 16, 11, 3, '#3a2a18')
+    for (let k = -rc; k <= rc; k++) {
+      const w = Math.round(Math.sqrt(rc * rc - k * k) * 1.3)
+      p(x - w - 1, y + k, 2 * w + 2, 1, '#18240f')
+      p(x - w, y + k, 2 * w, 1, k < -rc / 3 ? '#3b5426' : '#2a3d1c')
+    }
+    p(x - Math.round(rc / 2), y - Math.round(rc / 2), 4, 2, '#4f6b30')
+    for (let k = -rc; k < rc; k += 4) p(x + k, y + rc - 1, 1, 4 + ((k + rc) % 5), '#6b7a3a') // musgo colgando
+  }
+  for (const [x, y, rc] of [[12, 16, 14], [40, 10, 13], [66, 18, 12], [96, 18, 12], [122, 10, 13], [148, 16, 14], [26, 30, 10], [138, 32, 10]]) arbol(x, y, rc)
+  // la entrada de la espesura: oscura, con dos ojillos amarillos que miran
+  p(70, 34, 20, 12, '#141c0c'); p(72, 32, 16, 2, '#141c0c'); p(76, 38, 1, 1, '#f2c200'); p(81, 38, 1, 1, '#f2c200')
+  // niebla baja
+  for (const [x, y, w] of [[6, 84, 40], [96, 78, 50], [40, 58, 30]]) { p(x, y, w, 2, 'rgba(220,235,210,0.18)'); p(x + 4, y + 2, w - 8, 1, 'rgba(220,235,210,0.12)') }
+  // valla de troncos con la cancela abierta en el centro y el cartel de «FUERA»
+  for (let x = 2; x < W - 2; x += 8) {
+    if (x > 62 && x < 94) continue
+    p(x, 98, 3, 13, '#4a3520'); p(x, 98, 3, 1, '#6b4a2b'); p(x + 1, 99, 1, 12, '#5e4429')
+  }
+  p(0, 102, 64, 2, '#6b4a2b'); p(96, 102, 64, 2, '#6b4a2b'); p(0, 107, 64, 2, '#5e4429'); p(96, 107, 64, 2, '#5e4429')
+  p(62, 90, 4, 22, '#3a2a18'); p(94, 90, 4, 22, '#3a2a18'); p(60, 88, 40, 4, '#4a3520'); p(60, 88, 40, 1, '#6b4a2b')
+  p(38, 84, 24, 10, NEGRO); p(39, 85, 22, 8, '#a8854f'); textoCentrado(ctx, 'FUERA', 50, 87, '#3a2a18'); p(49, 94, 2, 6, '#4a3520')
+  return c
+}
+
+// Boca de metro de Madrid vista desde arriba: la escalera que baja entre barandillas rojas y el poste con el rombo
+function bocaMetro() {
+  const [c, ctx] = lienzo(44, 40)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  // el hueco y los escalones, cada vez más oscuros hacia abajo
+  p(6, 14, 30, 24, NEGRO)
+  for (let k = 0; k < 11; k++) { const y = 15 + k * 2; p(7, y, 28, 2, `rgb(${170 - k * 13}, ${172 - k * 13}, ${176 - k * 12})`); p(7, y, 28, 1, `rgb(${196 - k * 13}, ${198 - k * 13}, ${202 - k * 12})`) }
+  p(7, 15, 2, 22, '#d9dee4'); p(33, 15, 2, 22, '#9aa3ad')
+  // barandillas rojas a los lados y detrás
+  p(4, 12, 2, 26, '#8a1f2a'); p(36, 12, 2, 26, '#8a1f2a'); p(4, 12, 34, 2, '#c8302a'); p(4, 12, 34, 1, '#e05a5a')
+  for (const x of [4, 36]) for (let y = 16; y < 38; y += 6) p(x, y, 2, 1, '#e05a5a')
+  // el poste con el rombo rojo y la franja azul
+  p(40, 8, 2, 30, '#5b6068'); p(40, 8, 1, 30, '#8a919a')
+  p(37, 0, 8, 1, NEGRO); p(36, 1, 10, 1, NEGRO); p(35, 2, 12, 5, NEGRO); p(36, 7, 10, 1, NEGRO); p(37, 8, 8, 1, NEGRO)
+  p(38, 1, 6, 1, '#c8302a'); p(37, 2, 8, 1, '#c8302a'); p(36, 3, 10, 3, '#1f4e9b'); p(37, 6, 8, 1, '#c8302a'); p(38, 7, 6, 1, '#c8302a')
+  p(38, 4, 6, 1, '#ffffff')
+  return c
+}
+
 // Fila de carros de la compra encajados unos en otros
 function carritos() {
   const [c, ctx] = lienzo(26, 14)
@@ -1142,7 +1224,7 @@ export function crearEdificios(scene) {
     maquina_nave: maquina('#1f3c9a', 'SHOOT', (p) => { p(5, 6, 2, 2, '#3dd9ff'); p(4, 7, 4, 1, '#3dd9ff'); p(2, 1, 2, 2, '#e05a5a'); p(8, 2, 2, 2, '#e05a5a'); p(6, 3, 1, 2, '#7ee2a8') }),
     maquina_ladrillos: maquina('#a83a2a', 'BRICK', (p) => { for (let x = 0; x < 12; x += 3) { p(x, 0, 2, 1, '#f2b33d'); p(x + 1, 2, 2, 1, '#2fbf71') } p(5, 7, 3, 1, '#ffffff'); p(6, 5, 1, 1, '#f2c200') }),
     maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
-    nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP,
+    nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP, cienaga, boca_metro: bocaMetro,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando

@@ -1,7 +1,8 @@
 // Interiores: salas a las que se entra desde la puerta de algunos edificios (la casa de la familia, Reblán,
 // el MEDAC y la UDIT, que tiene dos: la entrada y la planta 3). Están dibujadas con código como el resto y viven
 // en el mismo mundo, debajo del mapa: al entrar, la cámara y los límites del mundo pasan a la sala; al salir por
-// la puerta, vuelven al pueblo. El ascensor de la UDIT lleva de una sala a otra.
+// la puerta, vuelven al pueblo. El ascensor de la UDIT lleva de una sala a otra. La ciénaga es una sala «exterior»
+// (selva en vez de paredes) con la casa de ladrillo de la peña El Pilón dentro, que es otra sala.
 import { lienzo, px, oscurecer, aclarar, textoCentrado } from './pixel.js'
 
 const NEGRO = '#1b1f27'
@@ -10,7 +11,9 @@ const T = 16
 // Medidas en casillas de 16 px. En los muebles, «base» es la fila donde apoyan; «pared» = colgado en la pared;
 // «pisable» = se puede pisar (alfombras); «ir» = te lleva a otra sala (ascensor); «arcade» = abre una recreativa.
 // «muros» son tabiques interiores [x, y, ancho, alto]; «cristales», mamparas bajas de cristal; «puerta», la x
-// del centro de la puerta de abajo (null = sin puerta); «personas», gente que está dentro.
+// del centro de la puerta de abajo (null = sin puerta); «personas», gente que está dentro. «entrar» = puerta a otra
+// sala; «salida» = al salir por la puerta de abajo se vuelve a otra sala y no al mapa; «colgado» = cuelga del techo
+// (se dibuja por encima y no choca); «musica» = el equipo de música de la peña.
 export const INTERIORES = {
   casa: {
     titulo: { es: 'CASA', en: 'HOME' }, ancho: 18, alto: 11, suelo: 'madera', pared: '#e8d9bd', ventanas: [2.2, 11.5], puerta: 15,
@@ -79,6 +82,9 @@ export const INTERIORES = {
       { nombre: 'Sandra', x: 4.6, y: 9.6, vida: 'profe_sandra', rasgos: { pelo: 'media', colorPelo: '#b8482a', piel: '#f6d3bb', chica: true, ropa: '#2f5a94', tipo: 'chaqueta', interior: '#f4f1ea', pantalon: '#2b2f38', zapatillas: '#2a2d33', sonrisa: true } },
       { nombre: 'Fernando', x: 6.8, y: 9.9, vida: 'profe_fernando', rasgos: { pelo: 'pincho', colorPelo: '#2a1d16', piel: '#e8b896', ropa: '#eef1f4', tipo: 'polo', pantalon: '#3a4a66', zapatillas: '#f4f4f4' } },
       { nombre: 'Siam', x: 14.6, y: 9.7, vida: 'profe_siam', rasgos: { pelo: 'rapado', colorPelo: '#1d1a19', piel: '#d9a07a', barba: 'completa', ropa: '#1f2430', tipo: 'sudadera', pantalon: '#3a3f48', zapatillas: '#2a2d33', sonrisa: true } },
+      // compañeros, junto al sofá amarillo
+      { nombre: 'Diego', x: 7.3, y: 5.7, vida: 'diego', rasgos: { pelo: 'larga', colorPelo: '#3b2a20', piel: '#f2c29b', gafas: true, barba: 'completa', robusto: true, ropa: '#c8302a', tipo: 'cuadros', pantalon: '#34466e', zapatillas: '#6b4527' } },
+      { nombre: 'Arseny', x: 12.7, y: 5.7, vida: 'arseny', rasgos: { pelo: 'media', colorPelo: '#6b4a30', piel: '#f6d3bb', ropa: '#2b2f38', dibujo: 'codigo', pantalon: '#3a3f48', zapatillas: '#f4f4f4' } },
     ],
   },
   // UDIT, planta 3: el pasillo con la recreativa y mis dos clases, iguales pero al revés
@@ -99,11 +105,54 @@ export const INTERIORES = {
       { clave: 'mesa_profe', x: 27.8, base: 8.4, vida: 'int_mesa_profe' },
       ...[25.4, 23, 20.6, 18.2].flatMap((x) => [9.8, 12, 14.2].map((base) => ({ clave: 'pupitre', x, base, vida: 'int_aula' }))),
     ],
+    // compañeras de clase, delante de la pizarra de la clase B
+    personas: [
+      { nombre: 'Emma', x: 16.3, y: 11.4, vida: 'emma', rasgos: { pelo: 'largo', colorPelo: '#141212', piel: '#c98a5e', chica: true, ropa: '#eef1f4', tipo: 'camisa', pantalon: '#34466e', pitillo: true, zapatillas: '#f4f4f4', sonrisa: true } },
+      { nombre: 'Claudia', x: 20.8, y: 8.1, vida: 'claudia', rasgos: { pelo: 'larga', colorPelo: '#141212', piel: '#f2c29b', chica: true, ropa: '#6a6f78', tipo: 'sudadera', pantalon: '#2b2f38', anchos: true, zapatillas: '#f4f4f4' } },
+      { nombre: 'Alba', x: 22.9, y: 8.1, vida: 'alba', rasgos: { pelo: 'melena', colorPelo: '#5e3c24', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, ropa: '#a970ff', pantalon: '#8fa9cc', zapatillas: '#f4f4f4' } },
+      { nombre: 'Lucía', x: 25, y: 8.1, vida: 'lucia_m', rasgos: { pelo: 'largo', colorPelo: '#2e2622', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, sonrisa: true, ropa: '#f2b33d', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
+    ],
+  },
+  // La ciénaga: por dentro es selva, con charcas, juncos y la casa de ladrillo de la peña al fondo del camino de tierra
+  cienaga: {
+    titulo: { es: 'LA CIÉNAGA', en: 'THE SWAMP' }, ancho: 24, alto: 15, suelo: 'selva', exterior: true, ventanas: [], puerta: 12,
+    muebles: [
+      { clave: 'senda_tierra', x: 12, base: 15, pisable: true },
+      { clave: 'casa_ladrillo', x: 12, base: 7.4, entrar: { sala: 'pena', x: 9, y: 9.6 }, vida: 'pena_puerta' },
+      { clave: 'arbol_cienaga', x: 3.2, base: 6.4 }, { clave: 'arbol_cienaga', x: 20.8, base: 6.2 }, { clave: 'arbol_cienaga', x: 22, base: 13.6 },
+      { clave: 'charca', x: 4.8, base: 12 }, { clave: 'charca', x: 18.4, base: 10.6 },
+      { clave: 'tronco', x: 6.8, base: 8.4, vida: 'cienaga_tronco' },
+      { clave: 'juncos', x: 1.6, base: 10 }, { clave: 'juncos', x: 8.4, base: 12.6 }, { clave: 'juncos', x: 15.6, base: 12.2 }, { clave: 'juncos', x: 21.4, base: 9.6 },
+      { clave: 'setas', x: 16.4, base: 8.2, pisable: true }, { clave: 'setas', x: 2.6, base: 14, pisable: true },
+      { clave: 'cartel_fuera', x: 9.4, base: 14, vida: 'cienaga_cartel' },
+    ],
+  },
+  // La peña El Pilón por dentro: la barra, los frigos y el arcón del hielo al fondo; los sofás, la mesa y la bola de
+  // discoteca en el centro, y el equipo de música en la esquina
+  pena: {
+    titulo: { es: 'LA PEÑA', en: 'THE CLUB' }, ancho: 18, alto: 11, suelo: 'cemento', pared: '#b8735a', ladrillo: true, ventanas: [2.4], puerta: 9,
+    salida: { sala: 'cienaga', x: 12, y: 8.7 },
+    muebles: [
+      { clave: 'pancarta_pilon', x: 9.6, base: 2.3, pared: true, vida: 'pena_pancarta' },
+      { clave: 'barra', x: 6, base: 4.9, vida: 'pena_barra' },
+      { clave: 'frigo', x: 11.2, base: 4.6, vida: 'pena_frigo' }, { clave: 'frigo', x: 12.6, base: 4.6, vida: 'pena_frigo' },
+      { clave: 'arcon', x: 15, base: 4.7, vida: 'pena_arcon' },
+      { clave: 'mesa_baja', x: 9, base: 6.9 },
+      { clave: 'sofa_pena', x: 6.6, base: 8.8, vida: 'pena_sofa' }, { clave: 'sofa_pena', x: 11.4, base: 8.8, vida: 'pena_sofa' },
+      { clave: 'bola_disco', x: 9, base: 5.4, colgado: true },
+      { clave: 'altavoz', x: 14.6, base: 10.3 },
+      { clave: 'equipo', x: 16.4, base: 10.3, musica: true },
+      { clave: 'altavoz', x: 1.4, base: 10.3 },
+    ],
+    personas: [
+      { nombre: 'Iker', x: 3.2, y: 7.4, vida: 'iker', rasgos: { pelo: 'rapado', colorPelo: '#3a2618', piel: '#f2c29b', ojos: '#1d1820', ropa: '#15171c', tipo: 'pena', letras: '#f2c200', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
+    ],
   },
 }
 
 // ---------------------------------------------------------------------------------------------- la sala
 function sala(o) {
+  if (o.exterior) return selva(o)
   const W = o.ancho * T, H = o.alto * T
   const [c, ctx] = lienzo(W, H)
   const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
@@ -113,6 +162,9 @@ function sala(o) {
       p(x, y, T, T, '#b8834e')
       for (let k = 0; k < 4; k++) { p(x, y + k * 4, T, 1, '#9c6c3c'); p(x + ((k * 7 + y) % 16), y + k * 4, 1, 4, '#9c6c3c') }
       p(x + 3, y + 2, 4, 1, '#c99460'); p(x + 10, y + 10, 3, 1, '#c99460')
+    } else if (o.suelo === 'cemento') {
+      p(x, y, T, T, '#8f8a84'); p(x, y, T, 1, '#7c7771'); p(x, y, 1, T, '#7c7771')
+      if ((x * 7 + y * 3) % 5 === 0) p(x + 5, y + 7, 3, 1, '#a39e98'); if ((x + y * 5) % 7 === 0) p(x + 10, y + 3, 1, 1, '#76716b')
     } else if (o.suelo === 'baldosa') {
       p(x, y, T, T, (x / T + y / T) % 2 ? '#e9ecef' : '#dde2e7'); p(x, y, T, 1, '#c3c9d0'); p(x, y, 1, T, '#c3c9d0'); p(x + 1, y + 1, 5, 1, '#f6f8fa')
     } else {
@@ -129,6 +181,8 @@ function sala(o) {
   p(0, 0, W, fondo, o.pared)
   for (let x = 8; x < W; x += 16) p(x, 8, 1, fondo - 26, oscurecer(o.pared, 0.95))
   p(0, 6, W, 2, aclarar(o.pared, 0.4)); p(0, 8, W, 1, oscurecer(o.pared, 0.85))
+  // pared de ladrillo visto (la peña)
+  if (o.ladrillo) for (let y = 10; y < fondo - 16; y += 5) { p(0, y, W, 1, oscurecer(o.pared, 0.78)); for (let x = (y / 5) % 2 ? 4 : 10; x < W; x += 12) p(x, y + 1, 1, 4, oscurecer(o.pared, 0.78)) }
   p(0, fondo - 16, W, 10, oscurecer(o.pared, 0.9)); p(0, fondo - 16, W, 1, aclarar(o.pared, 0.3))
   p(0, fondo - 6, W, 6, oscurecer(o.pared, 0.68)); p(0, fondo - 6, W, 1, aclarar(o.pared, 0.25)); p(0, fondo, W, 3, 'rgba(0,0,0,0.22)')
   for (const vx of o.ventanas) {
@@ -172,6 +226,46 @@ function sala(o) {
   v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(10,12,20,0.28)')
   ctx.fillStyle = v; ctx.fillRect(0, 0, W, H)
   return c
+}
+
+// La ciénaga por dentro: suelo de hierba húmeda y barro, la espesura de árboles alrededor (arriba y a los lados) y
+// el hueco de abajo por donde se sale al pueblo
+function selva(o) {
+  const W = o.ancho * T, H = o.alto * T
+  const [c, ctx] = lienzo(W, H)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  let s = 17
+  const r = () => ((s = (s * 9301 + 49297) % 233280) / 233280)
+  p(0, 0, W, H, '#3f4d26')
+  for (let i = 0; i < W * H / 40; i++) p(Math.floor(r() * W), Math.floor(r() * H), 2 + Math.floor(r() * 3), 1, ['#4a5a2c', '#36421f', '#55652f', '#4b3f24', '#5e7034'][i % 5])
+  for (let i = 0; i < 40; i++) { const x = Math.floor(r() * W), y = 50 + Math.floor(r() * (H - 60)); p(x, y, 1, 3, '#5a7a2a'); p(x + 2, y + 1, 1, 2, '#6b8a35') }
+  // la espesura de arriba: copas oscuras pegadas unas a otras, con musgo colgando
+  const copa = (cx, cy, rc) => {
+    for (let k = -rc; k <= rc; k++) {
+      const w = Math.round(Math.sqrt(rc * rc - k * k) * 1.25)
+      p(cx - w - 1, cy + k, 2 * w + 2, 1, '#18240f'); p(cx - w, cy + k, 2 * w, 1, k < -rc / 3 ? '#3b5426' : '#2a3d1c')
+    }
+    for (let k = -rc + 2; k < rc - 2; k += 4) p(cx + k, cy + rc - 1, 1, 3 + ((k + rc) % 4), '#6b7a3a')
+  }
+  for (let x = 0; x < W + 20; x += 22) copa(x, 14 + (x % 3) * 4, 16)
+  // a los lados, troncos y matorrales
+  for (let y = 30; y < H; y += 18) { copa(4, y, 9); copa(W - 4, y + 9, 9) }
+  // abajo, matorral con el hueco del camino de salida
+  const puerta = Math.round(o.puerta * T)
+  for (let x = 0; x < W; x += 12) if (Math.abs(x + 6 - puerta) > 22) copa(x + 6, H - 3, 7)
+  // niebla y luciérnagas pintadas
+  for (const [x, y, w] of [[30, 120, 90], [200, 90, 110], [120, 170, 80]]) { p(x, y, w, 3, 'rgba(220,235,210,0.12)'); p(x + 8, y + 3, w - 16, 2, 'rgba(220,235,210,0.08)') }
+  const v = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.max(W, H) * 0.7)
+  v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(5,12,5,0.4)')
+  ctx.fillStyle = v; ctx.fillRect(0, 0, W, H)
+  return c
+}
+
+// Sofá de dos plazas del color que se pida
+function sofaColor(base, luz, sombra, cojines) {
+  const [c, x] = lienzo(52, 26); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+  p(0, 4, 52, 20, NEGRO); p(1, 5, 50, 8, luz); p(1, 5, 50, 2, aclarar(luz, 0.25)); p(1, 13, 50, 10, base); p(0, 10, 6, 14, sombra); p(46, 10, 6, 14, sombra)
+  p(8, 13, 17, 8, luz); p(27, 13, 17, 8, luz); p(10, 14, 6, 3, cojines[0]); p(30, 14, 6, 3, cojines[1]); p(1, 24, 50, 2, 'rgba(0,0,0,.2)'); return c
 }
 
 // ---------------------------------------------------------------------------------------------- muebles
@@ -340,6 +434,122 @@ const M = {
   // tornos de la entrada: tres postes y dos brazos que se abren al pasar
   tornos: () => tornos(false),
   tornos_abierto: () => tornos(true),
+  // ---- la ciénaga
+  senda_tierra: () => {
+    const [c, x] = lienzo(34, 124); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    for (let y = 0; y < 124; y++) {
+      const d = Math.round(Math.sin(y / 11) * 2), w = 26 + (y > 100 ? 4 : 0)
+      p(17 - w / 2 + d, y, w, 1, '#7a5c3a'); p(17 - w / 2 + d, y, 1, 1, '#5e4429'); p(16 + w / 2 + d, y, 1, 1, '#5e4429')
+      if (y % 6 === 0) p(10 + (y % 13), y, 2, 1, '#8f6e48'); if (y % 9 === 4) p(20 - (y % 7), y, 1, 1, '#5e4429')
+    }
+    return c
+  },
+  // casa de ladrillo con tejado de chapa, la puerta en el centro, una ventana a cada lado y el cartel de la peña
+  casa_ladrillo: () => {
+    const [c, x] = lienzo(112, 82); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(4, 16, 104, 64, NEGRO); p(5, 17, 102, 62, '#b8634a')
+    for (let y = 19; y < 78; y += 4) { p(5, y, 102, 1, '#8f4a36'); for (let k = (y / 4) % 2 ? 6 : 12; k < 106; k += 12) p(k, y + 1, 1, 3, '#8f4a36') }
+    p(5, 17, 3, 62, '#c97a5e'); p(104, 17, 3, 62, '#9a5240')
+    // tejado de chapa ondulada
+    p(0, 4, 112, 14, NEGRO); p(1, 5, 110, 11, '#7c8590'); for (let k = 2; k < 110; k += 4) p(k, 5, 1, 11, '#5f6873'); p(1, 5, 110, 1, '#a9b1ba'); p(1, 15, 110, 1, '#4a525c')
+    p(84, 0, 6, 6, '#5f6873'); p(85, 0, 4, 1, '#a9b1ba') // chimenea
+    // cartel «PEÑA EL PILÓN» y su lema
+    p(26, 21, 60, 13, NEGRO); p(27, 22, 58, 11, '#15171c'); textoCentrado(x, 'EL PILÓN', 56, 26, '#f2c200')
+    // ventanas con luz de colores dentro
+    for (const vx of [14, 82]) { p(vx, 40, 16, 14, NEGRO); p(vx + 1, 41, 14, 12, '#2b2f38'); p(vx + 2, 42, 5, 5, '#a970ff'); p(vx + 8, 46, 5, 5, '#3dd9ff'); p(vx + 1, 47, 14, 1, NEGRO); p(vx + 7, 41, 1, 12, NEGRO); p(vx - 1, 54, 18, 2, '#8a8f96') }
+    // puerta metálica
+    p(44, 46, 24, 34, NEGRO); p(45, 47, 22, 33, '#3a5a7a'); p(45, 47, 22, 2, '#5b7fa3'); for (let y = 52; y < 78; y += 6) p(46, y, 20, 1, '#2b4560'); p(62, 62, 3, 2, '#d6c070')
+    p(40, 79, 32, 3, '#8a8f96')
+    return c
+  },
+  arbol_cienaga: () => {
+    const [c, x] = lienzo(44, 56); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(19, 26, 6, 28, '#3a2a18'); p(19, 26, 2, 28, '#4f3a22'); p(14, 50, 16, 5, '#3a2a18'); p(12, 52, 4, 3, '#3a2a18'); p(28, 52, 4, 3, '#3a2a18')
+    for (let k = -18; k <= 18; k++) { const w = Math.round(Math.sqrt(324 - k * k) * 1.15); p(22 - w - 1, 20 + k, 2 * w + 2, 1, '#18240f'); p(22 - w, 20 + k, 2 * w, 1, k < -6 ? '#3b5426' : '#2a3d1c') }
+    for (let k = 4; k < 40; k += 4) p(k, 34 + (k % 3), 1, 4 + (k % 5), '#6b7a3a')
+    p(12, 8, 5, 3, '#4f6b30'); return c
+  },
+  charca: () => {
+    const [c, x] = lienzo(64, 34); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    for (let y = -16; y <= 16; y++) { const w = Math.round(31 * Math.sqrt(1 - (y * y) / 256)); p(32 - w - 1, 17 + y, 2 * w + 2, 1, '#2a3418'); p(32 - w, 17 + y, 2 * w, 1, y < -8 ? '#6b8a4a' : '#557a3c') }
+    p(10, 14, 8, 1, '#89a866'); p(36, 20, 6, 1, '#89a866')
+    for (const [a, b] of [[16, 18], [40, 10], [46, 22]]) { p(a, b, 6, 3, '#2f7a3a'); p(a + 2, b, 1, 1, '#1f5a2a'); p(a + 4, b - 1, 2, 1, '#ff9fc4') }
+    p(28, 12, 1, 1, '#a9c98a'); p(30, 9, 1, 1, '#a9c98a'); return c
+  },
+  tronco: () => {
+    const [c, x] = lienzo(44, 16); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 3, 44, 12, NEGRO); p(1, 4, 42, 10, '#5e4429'); p(1, 4, 42, 2, '#7a5c3a'); p(1, 12, 42, 2, '#4a3520')
+    p(36, 4, 7, 10, '#a8854f'); p(38, 6, 3, 6, '#7a5c3a'); p(39, 8, 1, 2, '#5e4429') // los anillos del corte
+    p(8, 2, 3, 2, '#6b7a3a'); p(20, 2, 5, 2, '#6b7a3a'); p(14, 5, 2, 1, '#c8302a'); return c
+  },
+  juncos: () => {
+    const [c, x] = lienzo(16, 20); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    for (const [a, h] of [[2, 14], [5, 18], [8, 12], [11, 16], [13, 10]]) { p(a, 20 - h, 1, h, '#5a7a2a'); p(a, 20 - h - 3, 1, 4, '#6b4a2b') }
+    return c
+  },
+  setas: () => {
+    const [c, x] = lienzo(14, 9); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    for (const [a, b] of [[2, 3], [8, 4]]) { p(a + 1, b + 2, 1, 3, '#e9e4d8'); p(a, b, 3, 2, '#c8302a'); p(a + 1, b, 1, 1, '#ffffff') }
+    return c
+  },
+  cartel_fuera: () => {
+    const [c, x] = lienzo(26, 26); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(11, 12, 3, 14, '#4a3520'); p(0, 1, 26, 13, NEGRO); p(1, 2, 24, 11, '#a8854f'); p(1, 2, 24, 1, '#c8a36a')
+    textoCentrado(x, 'FUERA', 13, 5, '#3a2a18'); return c
+  },
+  // ---- la peña
+  pancarta_pilon: () => {
+    const [c, x] = lienzo(110, 19); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 110, 19, NEGRO); p(1, 1, 108, 17, '#15171c'); p(1, 1, 108, 1, '#2b2f38')
+    textoCentrado(x, 'PEÑA EL PILÓN', 55, 3, '#f2c200'); textoCentrado(x, 'ALEGRÍA DE VIVIR', 55, 11, '#f4f1ea')
+    p(1, 18, 3, 1, '#f2c200'); p(106, 18, 3, 1, '#f2c200'); return c
+  },
+  // barra de bar con la encimera, los taburetes y botellas detrás
+  barra: () => {
+    const [c, x] = lienzo(88, 34); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    for (let k = 4; k < 84; k += 9) { p(k, 0, 3, 8, ['#2f7a3a', '#8a1f2a', '#f2b33d', '#3d7be0'][k % 4]); p(k + 1, 0, 1, 2, '#cfd5db') } // botellas en la balda
+    p(0, 8, 88, 2, '#5a3c22')
+    p(0, 12, 88, 20, NEGRO); p(1, 13, 86, 4, '#8a6040'); p(1, 13, 86, 1, '#b07a44'); p(1, 17, 86, 14, '#5a3c22')
+    for (let k = 4; k < 86; k += 10) p(k, 18, 1, 13, '#4a3020')
+    p(12, 10, 4, 3, '#f4f1ea'); p(13, 9, 2, 1, '#f2c200'); p(40, 9, 5, 4, '#2b2f38'); p(66, 10, 3, 3, '#f4f1ea') // vasos y un barril de cerveza
+    p(1, 31, 86, 2, 'rgba(0,0,0,.25)'); return c
+  },
+  frigo: () => {
+    const [c, x] = lienzo(22, 38); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 22, 38, NEGRO); p(1, 1, 20, 36, '#c8302a'); p(1, 1, 20, 2, '#e05a5a'); p(3, 5, 16, 24, '#1b2440'); p(4, 6, 14, 22, '#2b3a5a')
+    for (let y = 8; y < 28; y += 6) { p(4, y + 4, 14, 1, '#8a919a'); for (let k = 5; k < 18; k += 3) p(k, y, 2, 4, ['#f2b33d', '#3dd9ff', '#2fbf71', '#e9e4d8'][(k + y) % 4]) }
+    p(4, 6, 2, 22, 'rgba(255,255,255,0.18)'); p(3, 31, 16, 4, '#15171c'); p(6, 32, 10, 2, '#f4f1ea'); return c
+  },
+  // arcón congelador blanco: aquí se guarda el hielo
+  arcon: () => {
+    const [c, x] = lienzo(36, 24); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 2, 36, 22, NEGRO); p(1, 3, 34, 6, '#f4f6f8'); p(1, 3, 34, 1, '#ffffff'); p(1, 9, 34, 14, '#dfe3e8'); p(1, 9, 34, 1, '#9aa3ad')
+    p(15, 7, 6, 2, '#8a919a'); p(28, 12, 4, 3, '#3dd9ff'); p(5, 13, 10, 5, '#ffffff'); textoCentrado(x, 'HIELO', 18, 15, '#5b7fa3')
+    p(1, 23, 34, 1, 'rgba(0,0,0,.25)'); return c
+  },
+  sofa_pena: () => sofaColor('#3a3f48', '#4a515c', '#2b2f38', ['#f2c200', '#f2c200']),
+  // bola de discoteca colgada del techo por un cable
+  bola_disco: () => {
+    const [c, x] = lienzo(16, 30); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(7, 0, 1, 16, '#5b6068')
+    p(4, 16, 8, 12, '#9aa3ad'); p(2, 18, 12, 8, '#9aa3ad')
+    for (let a = 2; a < 14; a += 2) for (let b = 16; b < 28; b += 2) p(a, b, 1, 1, (a + b) % 4 ? '#e9ecef' : '#5b6068')
+    p(4, 18, 2, 2, '#ffffff'); return c
+  },
+  // equipo de música: mesa de DJ con dos platos y una pantalla
+  equipo: () => {
+    const [c, x] = lienzo(30, 30); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 10, 30, 20, NEGRO); p(1, 11, 28, 5, '#2b2f38'); p(1, 16, 28, 13, '#15171c')
+    for (const a of [3, 18]) { p(a, 11, 9, 5, '#3a3f48'); p(a + 2, 12, 5, 3, '#5b6068'); p(a + 4, 13, 1, 1, '#e05a5a') }
+    p(12, 12, 6, 3, '#3dd9ff'); p(13, 13, 1, 1, '#2fbf71'); p(15, 13, 2, 1, '#a970ff')
+    p(8, 0, 14, 11, NEGRO); p(9, 1, 12, 8, '#0d1117'); for (let k = 10; k < 20; k += 2) p(k, 8 - (k % 5), 1, 1 + (k % 5), '#2fbf71')
+    p(4, 19, 22, 1, '#3a3f48'); p(4, 22, 22, 1, '#3a3f48'); return c
+  },
+  altavoz: () => {
+    const [c, x] = lienzo(16, 30); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 16, 30, NEGRO); p(1, 1, 14, 28, '#2b2f38'); p(4, 4, 8, 8, '#15171c'); p(6, 6, 4, 4, '#5b6068'); p(3, 15, 10, 10, '#15171c'); p(5, 17, 6, 6, '#3a3f48'); p(7, 19, 2, 2, '#8a919a')
+    return c
+  },
   maquina_bits: () => {
     const [c, x] = lienzo(26, 38); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
     p(1, 36, 24, 2, 'rgba(0,0,0,0.25)')

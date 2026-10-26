@@ -11,13 +11,17 @@ const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '
 const paises = new Intl.DisplayNames(['es'], { type: 'region' })
 const nombrePais = (c) => { try { return c ? paises.of(c) : 'País desconocido' } catch { return c } }
 const ARCADE = { serpiente: 'Serpiente', nave: 'Nave', ladrillos: 'Ladrillos', laberinto: 'Commit Hunt', futbol: 'los penaltis del campo', bits: 'Bit Drop (planta 3 de la UDIT)' }
-const SALAS = { casa: 'la casa de la familia', reblan: 'Reblán', medac: 'el aula del MEDAC', udit: 'la UDIT', udit3: 'la planta 3 de la UDIT' }
+const SALAS = { casa: 'la casa de la familia', reblan: 'Reblán', medac: 'el aula del MEDAC', udit: 'la UDIT', udit3: 'la planta 3 de la UDIT', cienaga: 'la ciénaga', pena: 'la peña El Pilón' }
 // Las «zonas» nuevas (salas, esferas, deseo, pantalla completa) van por el mismo tipo para no tocar el servidor
 function zona(d) {
   if (d.startsWith('interior-')) return ['', `Entró en ${SALAS[d.slice(9)] || d.slice(9)}`]
   if (d.startsWith('esfera-')) return ['', `Encontró una esfera (${d.slice(7)}/7)`]
   if (d === 'deseo') return ['oro', 'Reunió las 7 esferas y pidió el deseo']
   if (d === 'pantalla-completa') return ['', 'Jugó a pantalla completa']
+  if (d === 'cerezas') return ['verde', 'Se comió las cerezas de Jandro']
+  if (d === 'pilon') return ['', 'Subió el camino de la peña El Pilón']
+  if (d.startsWith('pena-')) return ['', `Puso ${{ regueton: 'reguetón', techno: 'techno', charanga: 'la charanga' }[d.slice(5)] || d.slice(5)} en la peña`]
+  if (d.startsWith('metro-')) return ['', `Cogió el metro hasta ${{ residencia: 'la residencia', medac: 'el MEDAC', udit: 'la UDIT' }[d.slice(6)] || d.slice(6)}`]
   return ['', `Entró en ${TEXTOS.es.zonas[d]?.titulo || d}`]
 }
 

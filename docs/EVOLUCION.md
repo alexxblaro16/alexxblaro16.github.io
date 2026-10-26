@@ -302,6 +302,34 @@ Tras probar la versión 17, Alejandro pidió:
 - **La nube:** al cogerla desaparece del suelo y va bajo tus pies durante 10 segundos. Cuando se acaba se queda flotando
   donde estés, con su animación, hasta que la vuelvas a coger. La historia de la nube solo sale la primera vez.
 
+### 24. El nombre primero, mucha más ropa, la ciénaga con la peña El Pilón, el metro y más amigos
+
+- **El nombre es obligatorio.** Antes de abrir el creador sale una pantalla que solo pide el nombre, y sin él no se
+  sigue. Si se borra dentro del creador, «A jugar» no deja empezar hasta que se escriba otra vez.
+- **Creador más completo:**
+  - Diez peinados más: canario, degradado, de punta, despeinado, cresta, medio, coleta, trenzas, recogido y afro.
+  - Seis prendas nuevas: cuadros, chándal, tirantes, traje con corbata, vestido y el polo de la peña El Pilón.
+  - Color de ojos, pantalón pitillo, bufanda, reloj y pendientes, boina y gorro de pescador, cuatro dibujos más
+    (calavera, flor, balón y nota) y más colores de pelo, ropa, pantalón y zapatillas.
+- **Amigos nuevos:**
+  - En el instituto, los de toda la vida: Manuel, Iván y Jorge.
+  - En la plaza, Jandro, que te ofrece cerezas de los cerezos del pueblo de su madre. Si dices que sí: moneda, los
+    bocados con la barra de muslitos que se llena y el eructo (guiño a los juegos de bloques), un corazón, el logro
+    «Cerezas de Jandro» y 15 segundos corriendo más. Si dices que no: «Pues tú te lo pierdes, chati».
+  - Detrás del Lupa, Salva, de la peña El Pilón.
+  - En la calle de la UDIT, Lucas (de Brasil, fue a Estonia con Alejandro) y Marcos.
+  - Junto al sofá amarillo de la entrada de la UDIT, Diego (el 3D del proyecto del CSIC) y Arseny (de Rusia, fan de
+    Linux).
+  - En una clase de la planta 3, Emma, Claudia, Alba y Lucía (Jerry y Estonia).
+- **La ciénaga**, arriba a la izquierda: se entra por la cancela y por dentro es selva, con charcas, juncos y un
+  camino de tierra. Al subirlo sale «PEÑA EL PILON · Alegría de vivir». Al fondo, la casa de ladrillo de la peña.
+- **La peña por dentro:** la barra, dos frigos y el arcón del hielo al fondo; sofás, mesa y bola de discoteca en el
+  centro, e Iker con el polo de la peña. En la esquina, el equipo de música: reguetón, techno o charanga (se puede
+  cambiar o apagar). Mientras suena, luces de colores por el suelo. Al salir de la peña vuelve tu música.
+- **El metro:** una boca en la residencia, otra en el MEDAC y otra en la UDIT, de la misma línea. Eliges parada y sale el
+  viaje: el tren por el túnel, las estaciones de azulejo blanco con su nombre y el plano de la línea abajo.
+- Los letreros pintados con la fuente de píxel ya llevan Ñ y tildes.
+
 ## Ideas para más adelante
 
 - Dominio propio.

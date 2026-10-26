@@ -25,6 +25,8 @@ export const EDIFICIOS = [
   { clave: 'lupa', x: 25.4, base: 7.2, letrero: 'SUPERMERCADO LUPA', vida: 'lupa' },
   { clave: 'reblan', x: 10.4, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', interior: 'reblan' },
   { clave: 'piso', x: 50.5, base: 18, interior: 'casa' },
+  // La ciénaga, en la esquina de arriba: dentro hay selva y la casa de ladrillo de la peña El Pilón
+  { clave: 'cienaga', x: 9, base: 9.2, letrero: 'LA CIÉNAGA', interior: 'cienaga' },
   // El instituto, con su camino hasta la puerta
   { clave: 'instituto', x: 36, base: 31.6, vida: 'instituto' },
   // Madrid
@@ -82,6 +84,10 @@ export const OBJETOS = [
   { clave: 'macetero', x: 148.2, base: 18.3 }, { clave: 'macetero', x: 156, base: 18.3 }, { clave: 'banco', x: 147, base: 23.4 },
   { clave: 'telarana', x: 151.25, base: 16.5, encima: true },
   { clave: 'estacion_pueblo', x: 56.2, base: 18.4, bus: 'madrid', letrero: 'AUTOBUSES' },
+  // Metro: una línea con tres paradas (residencia, MEDAC y UDIT); en cada boca eliges adónde vas
+  { clave: 'boca_metro', x: 67.7, base: 18.3, metro: 'residencia', letrero: 'METRO' },
+  { clave: 'boca_metro', x: 82.6, base: 23.6, metro: 'medac', letrero: 'METRO' },
+  { clave: 'boca_metro', x: 99.2, base: 23.7, metro: 'udit', letrero: 'METRO' },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
   // campo de la uni: sin gradas, con su valla, lona verde, banquillos y cuatro focos en las esquinas
   { clave: 'estadio', x: 104, base: 32.4, arcade: 'futbol' },
@@ -112,6 +118,13 @@ export const OBJETOS = [
   { clave: 'banderin_rayo', x: 96.2, base: 29.4, vida: 'rayo' }, { clave: 'banderin_rayo', x: 111.8, base: 31, vida: 'rayo' },
 ]
 
+// Las paradas del metro, en el orden de la línea
+export const METRO = [
+  { id: 'residencia', nombre: 'Residencia' },
+  { id: 'medac', nombre: 'MEDAC' },
+  { id: 'udit', nombre: 'UDIT' },
+]
+
 // Las siete esferas: cinco por el mapa y dos dentro de edificios («dentro» = id del interior, x/y en casillas de la sala)
 export const ESFERAS = [
   { n: 1, dentro: 'casa', x: 6.6, y: 7.6 }, { n: 2, x: 14, y: 24.6 }, { n: 3, x: 56.6, y: 28.6 }, { n: 4, dentro: 'medac', x: 14.4, y: 4.4 },
@@ -128,6 +141,7 @@ export const SUELOS = [
   { tipo: 'arena', x0: 2, x1: 11, y0: 21, y1: 31 }, // rincón de la piña
   { tipo: 'asfalto', x0: AUTOVIA.x0, x1: AUTOVIA.x1, y0: 0, y1: ALTO - 1 }, // la autovía
   { tipo: 'asfalto', x0: 20, x1: 31, y0: 7, y1: 8 }, // el aparcamiento del Lupa
+  { tipo: 'camino', x0: 8, x1: 9, y0: 9, y1: 10 }, // a la cancela de la ciénaga
 ]
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [
@@ -156,6 +170,18 @@ export const PERSONAJES = [
     ['Manu', '#7a5a38', '#1f2124', { pelo: 'ondulado', piel: '#ecbf9c', estampado: '#f2f3f5', anchos: true, pantalon: '#5a6b45', zapatillas: '#f4f4f4', raya: '#e05a5a', cadena: true, frases: { es: ['Nos conocimos en la resi. Desde entonces, conciertos y eventos como la Scrap World: si hay plan, vamos juntos.'], en: ["We met at the halls. Since then it's been gigs and events like Scrap World: if there's a plan, we go together."] } }],
     ['Rodrigo', '#c9a060', '#1f3c66', { tipo: 'polo', robusto: true, ojos: '#4f86b8', pantalon: '#cfc6b0', zapatillas: '#f4f4f4', frases: { es: ['Soy de Cuenca. Coincidí con Alejandro en la resi de Madrid y de ahí salió una amistad de las buenas.'], en: ["I'm from Cuenca. I met Alejandro at the halls in Madrid and we've been good friends ever since."] } }],
   ], 66, 22.8, 'residencia', 1.9),
+  // Amigos de toda la vida, del instituto: siguen siendo amigos
+  ...amigos([
+    ['Manuel', '#6b4527', '#3d7be0', { pelo: 'pincho', ojos: '#5a3a22', pantalon: '#34466e', zapatillas: '#f4f4f4', estampado: '#f4f4f0', frases: { es: ['Soy Manuel. Con Alejandro voy desde siempre: fuimos juntos al IES Tierra de Campos y seguimos igual de amigos.'], en: ["I'm Manuel. Alejandro and I go way back: we went to IES Tierra de Campos together and we're still just as close."] } }],
+    ['Iván', '#141212', '#4a5f80', { pelo: 'canario', ojos: '#4f8f9f', tipo: 'sudadera', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy Iván. Amigos de toda la vida: el instituto juntos y aquí seguimos, como siempre.'], en: ["I'm Iván. Lifelong friends: high school together and we're still here, same as ever."] } }],
+    ['Jorge', '#141212', '#15171c', { pelo: 'canario', ajustada: true, pitillo: true, pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy Jorge. Con Alejandro, desde el instituto. Han pasado los años y seguimos siendo amigos.'], en: ["I'm Jorge. Alejandro and I go back to high school. Years have gone by and we're still friends."] } }],
+  ], 40.6, 32.6, 'instituto'),
+  // Jandro, en la plaza: te ofrece cerezas (Mundo.js, «especial»)
+  { nombre: 'Jandro', x: 39.4, y: 21.6, grupo: 'pueblo', especial: 'cerezas', rasgos: { pelo: 'medio', colorPelo: '#141212', piel: '#f2c29b', ojos: '#5a3a22', ropa: '#2b2f38', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#15171c', pitillo: true, zapatillas: '#f4f4f4' } },
+  // Salva, detrás del Lupa: los dos llevan la peña El Pilón
+  ...amigos([
+    ['Salva', '#6b4527', '#2f5a94', { pelo: 'ondulado', gafas: '#3d7be0', tipo: 'sudadera', pantalon: '#2b2f38', pitillo: true, zapatillas: '#f4f4f4', frases: { es: ['Soy Salva. Soy amigo de Alejandro desde hace años: hacemos la peña juntos, El Pilón.'], en: ["I'm Salva. Alejandro and I have been friends for years: we run our club together, El Pilón."] } }],
+  ], 31.2, 5.6, 'pueblo'),
   ...amigos([
     ['Pablo', '#4e3221', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true, frases: { es: ['Soy integrante, junto a Héctor, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final.'], en: ["Together with Héctor, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment."] } }],
     ['Héctor', '#7a5a38', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy integrante, junto a Pablo, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final. Además, hice las prácticas con Alejandro.'], en: ["Together with Pablo, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment. I also did my internship with Alejandro."] } }],
@@ -181,6 +207,8 @@ export const PERSONAJES = [
     // los Tort, gemelos y vestidos al revés: Jorge de blanco y Miguel de negro
     ['Jorge', '#141212', '#f2f3f5', { pelo: 'rizado', estampado: '#1f2124', pantalon: '#1f2124', anchos: true, zapatillas: '#f4f4f4', cadena: true, frases: { es: ['Estoy con Alejandro en Ingeniería del Software: hacemos PyKV, una base de datos clave-valor en Python.'], en: ["I'm with Alejandro in Software Engineering: we're building PyKV, a key-value database in Python."] } }],
     ['Miguel', '#141212', '#1f2124', { pelo: 'rizado', estampado: '#f2f3f5', pantalon: '#d9dde2', anchos: true, zapatillas: '#2a2d33', cadena: true, frases: { es: ['Soy Miguel, el gemelo de Jorge. Con Alejandro comparto alguna clase y nos llevamos genial.'], en: ["I'm Miguel, Jorge's twin. I share a few classes with Alejandro and we get on great."] } }],
+    ['Lucas', '#141212', '#f2c200', { pelo: 'pincho', piel: '#d9a07a', gafas: '#15171c', sonrisa: true, estampado: '#2fbf71', pantalon: '#1f3c66', zapatillas: '#f4f4f4', frases: { es: ['¡Olá! Soy Lucas, de Brasil. Alejandro y yo nos fuimos juntos a Estonia y desde entonces somos amigos.'], en: ["Olá! I'm Lucas, from Brazil. Alejandro and I went to Estonia together and we've been friends ever since."] } }],
+    ['Marcos', '#a07a48', '#eef1f4', { pelo: 'ondulado', barba: 'perilla', tipo: 'polo', pantalon: '#34466e', zapatillas: '#2a2d33', frases: { es: ['Soy Marcos. Con Alejandro coincido en alguna clase de la UDIT.'], en: ["I'm Marcos. Alejandro and I share a few classes at UDIT."] } }],
   ], 111, 21.8, 'uni', 2),
 ]
 
