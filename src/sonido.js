@@ -284,6 +284,10 @@ const CANCIONES = [
   { id: 'verbena', genero: 'fiestas', artista: 'Orquesta Tierra de Campos', titulo: 'Verbena en la plaza',
     tocar: () => tema({ bpm: 128, ritmo: 'pachanga', acordes: [[48, 52, 55], [55, 59, 62], [55, 59, 62], [48, 52, 55]], lead: 'square', vol: 0.02,
       melodia: mel('72 74 76 . 76 . 76 . 77 76 74 . 74 . 74 . 71 72 74 . 74 . 74 . 76 74 72 . 72 . . . 72 74 76 . 76 . 79 . 77 76 74 . 74 . 71 . 72 . 76 . 74 . 71 . 72 . . . . . . .') }) },
+  // El himno de la peña, a lo punk de carretera (melodía propia; los artistas, de broma como los demás)
+  { id: 'bares_frutas', genero: 'fiestas', artista: 'Los Lamentitos', titulo: 'Bares de frutas',
+    tocar: () => tema({ bpm: 168, ritmo: 'rock', acordes: [[45, 49, 52], [43, 47, 50], [38, 42, 45], [40, 44, 47]], lead: 'square', vol: 0.018, bombo: 0.14,
+      melodia: mel('69 . 69 . 69 . 71 . 72 . 71 . 69 . . . 67 . 67 . 67 . 69 . 71 . 69 . 67 . . . 74 . 74 . 72 . 71 . 69 . 71 . 72 . 71 . 69 . 69 . 67 . 69 . 71 . 69 . . . . .') }) },
 ]
 
 let fiesta = null
