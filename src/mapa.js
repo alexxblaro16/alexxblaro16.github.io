@@ -98,6 +98,7 @@ export const OBJETOS = [
   { clave: 'boca_metro_medac', x: 82.6, base: 23.6, metro: 'medac' },
   { clave: 'boca_metro_udit', x: 99, base: 23.6, metro: 'udit' },
   { clave: 'boca_metro_arcade', x: 164.4, base: 23.6, metro: 'arcade' },
+  { clave: 'buzon_opiniones', x: 168.8, base: 23.4, opinion: true },
   // neón en la esquina de Scranton, con la flecha hacia los recreativos
   { clave: 'neon_arcade', x: 166.8, base: 15.4 },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },

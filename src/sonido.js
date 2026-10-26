@@ -291,6 +291,11 @@ const CANCIONES = [
 ]
 
 let fiesta = null
+// La música solo suena jugando: empieza al darle a jugar y se para en el menú y en el modo clásico.
+// Si el visitante apaga el sonido a mano, se respeta y no se vuelve a encender sola.
+let jugando = false, enPausa = false, apagadoAMano = false
+const suena = () => estado.sonido && jugando && !enPausa
+export const musicaSonando = () => !!canal
 export { GENEROS, CANCIONES }
 export const cancion = (id) => CANCIONES.find((c) => c.id === id)
 
@@ -301,7 +306,7 @@ export function musicaFiesta(clave) {
   fiesta = clave
   let encendido = false
   if (clave && !estado.sonido) { estado.sonido = true; encendido = true; audio().resume() }
-  if (estado.sonido) { cortarMusica(); musica = setTimeout(tocarMusica, 200) }
+  if (suena()) { cortarMusica(); musica = setTimeout(tocarMusica, 200) }
   return encendido
 }
 export const hayFiesta = () => fiesta
@@ -316,7 +321,7 @@ function tocarMusica() {
   destino = canal
   const dura = estilo.tocar()
   destino = null
-  musica = setTimeout(() => estado.sonido && tocarMusica(), dura * 1000)
+  musica = setTimeout(() => suena() && tocarMusica(), dura * 1000)
 }
 
 // Pasa al siguiente estilo y, si está sonando, corta el anterior y empieza el nuevo
@@ -324,14 +329,34 @@ export function cambiarMusica() {
   const lista = Object.keys(ESTILOS)
   estado.musica = lista[(lista.indexOf(estado.musica) + 1) % lista.length]
   guardar()
-  if (estado.sonido) { cortarMusica(); musica = setTimeout(tocarMusica, 250) }
+  if (suena()) { cortarMusica(); musica = setTimeout(tocarMusica, 250) }
   return nombreMusica()
 }
 
 export function alternarSonido() {
   estado.sonido = !estado.sonido
-  if (estado.sonido) { audio().resume(); cortarMusica(); tocarMusica() } else cortarMusica()
+  apagadoAMano = !estado.sonido
+  if (estado.sonido) audio().resume()
+  cortarMusica()
+  if (suena()) tocarMusica()
   return estado.sonido
+}
+
+// Al empezar a jugar (true) o al volver al menú (false)
+export function musicaDeJuego(si) {
+  jugando = si
+  enPausa = false
+  cortarMusica()
+  if (!si) return
+  if (!estado.sonido && !apagadoAMano) { estado.sonido = true; audio().resume() }
+  if (suena()) tocarMusica()
+}
+
+// El modo clásico la para y, al cerrarlo, vuelve si se estaba jugando
+export function pausarMusica(si) {
+  enPausa = si
+  cortarMusica()
+  if (suena()) tocarMusica()
 }
 
 // Efectos sueltos para los minijuegos y las esferas (solo suenan con el sonido activado)

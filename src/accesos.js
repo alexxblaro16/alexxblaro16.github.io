@@ -101,7 +101,7 @@ function tarjeta(v) {
     </article>`
 }
 
-function pintar({ resumen, visitas }) {
+function pintar({ resumen, visitas, opiniones = [] }) {
   const r = resumen
   raiz.innerHTML = `
     <header class="cabecera">
@@ -119,6 +119,7 @@ function pintar({ resumen, visitas }) {
     </section>
     ${r.paises.length ? `<p class="paises">${r.paises.map((p) => `<span>${esc(nombrePais(p.pais))} <b>${p.n}</b></span>`).join('')}</p>` : ''}
     <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s.</p>
+    ${opiniones.length ? `<section class="opiniones"><h2>OPINIONES (${opiniones.length})</h2>${opiniones.map((o) => `<blockquote><p>${esc(o.texto)}</p><footer>${esc(o.nombre || 'Sin nombre')} · ${o.donde === 'buzon' ? 'buzón del metro' : 'hablando contigo'}${o.pais ? ' · ' + esc(nombrePais(o.pais)) : ''} · <time title="${esc(hora(o.hora))}">${esc(hace(o.hora))}</time></footer></blockquote>`).join('')}</section>` : ''}
     <section class="lista">${visitas.length ? visitas.map(tarjeta).join('') : '<p class="nada">Todavía no ha entrado nadie.</p>'}</section>`
   // pulsar una visita la despliega con todos sus datos y lo que hizo minuto a minuto
   const lista = $('.lista')

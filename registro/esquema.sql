@@ -27,3 +27,14 @@ CREATE TABLE IF NOT EXISTS records (
   puntos INTEGER NOT NULL,
   fecha INTEGER NOT NULL
 );
+
+-- Opiniones y sugerencias que dejan los visitantes (a Alejandro en el juego o en el buzón junto al metro)
+CREATE TABLE IF NOT EXISTS opiniones (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  hora INTEGER NOT NULL,
+  visita TEXT,
+  nombre TEXT,
+  donde TEXT,
+  pais TEXT,
+  texto TEXT NOT NULL
+);

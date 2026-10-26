@@ -1,7 +1,8 @@
 // Registro de visitas del portfolio. Recibe cada visita y lo que hace dentro del juego,
 // y se lo enseña solo a Alejandro con su contraseña (secreto CLAVE_ACCESOS).
 // País y ciudad los pone Cloudflare; la IP no se guarda en ningún sitio.
-// También guarda el récord de cada minijuego (nombre del personaje y puntos), que ve todo el mundo.
+// También guarda el récord de cada minijuego (nombre del personaje y puntos), que ve todo el mundo,
+// y las opiniones que dejan los visitantes, que le llegan a Alejandro al correo.
 
 const ORIGENES = ['https://alexxblaro16.github.io', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5180']
 const TIPOS = new Set(['personaje', 'vuelve', 'zona', 'recorrido', 'clasico', 'cv', 'arcade', 'enlace', 'fin'])
@@ -112,6 +113,39 @@ async function nuevoRecord(request, env) {
   return json(request, { ok: true, record: r })
 }
 
+// Una opinión o sugerencia: se guarda y se le manda a Alejandro al correo (con FormSubmit, que reenvía sin
+// necesitar un dominio propio). Tope de 5 por visita y de 40 a la hora en total, para que nadie llene el buzón.
+async function nuevaOpinion(request, env, ctx) {
+  const d = await cuerpo(request)
+  const texto = d && typeof d.texto === 'string' ? d.texto.replace(/[\u0000-\u0008\u000b-\u001f]/g, '').trim().slice(0, 1000) : ''
+  const nombre = d && typeof d.nombre === 'string' ? d.nombre.replace(/[\u0000-\u001f<>]/g, '').trim().slice(0, 20) : null
+  const donde = d?.donde === 'buzon' ? 'buzon' : 'alejandro'
+  const visita = corta(d?.visita, 40)
+  if (texto.length < 2) return json(request, { ok: false }, 400)
+  const hora = Date.now()
+  const [porVisita, total] = await env.DB.batch([
+    env.DB.prepare('SELECT COUNT(*) AS n FROM opiniones WHERE visita = ?').bind(visita || ''),
+    env.DB.prepare('SELECT COUNT(*) AS n FROM opiniones WHERE hora > ?').bind(hora - 3600000),
+  ])
+  if (porVisita.results[0].n >= 5 || total.results[0].n >= 40) return json(request, { ok: false }, 429)
+  const pais = request.cf?.country || null
+  await env.DB.prepare('INSERT INTO opiniones (hora, visita, nombre, donde, pais, texto) VALUES (?, ?, ?, ?, ?, ?)')
+    .bind(hora, visita, nombre, donde, pais, texto).run()
+  if (env.CORREO) {
+    ctx.waitUntil(fetch(`https://formsubmit.co/ajax/${env.CORREO}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json', Origin: ORIGENES[0], Referer: ORIGENES[0] + '/' },
+      body: JSON.stringify({
+        _subject: `Opinión en tu portfolio de ${nombre || 'alguien'}`,
+        _template: 'table', _captcha: 'false',
+        Personaje: nombre || '(sin nombre)', Donde: donde === 'buzon' ? 'Buzón junto al metro' : 'Hablando con Alejandro',
+        Pais: pais || '?', Opinion: texto,
+      }),
+    }).catch(() => {}))
+  }
+  return json(request, { ok: true })
+}
+
 async function verAccesos(request, env) {
   const clave = (request.headers.get('Authorization') || '').replace(/^Bearer /, '')
   if (!env.CLAVE_ACCESOS || !igual(clave, env.CLAVE_ACCESOS)) return json(request, { error: 'Contraseña incorrecta' }, 401)
@@ -119,11 +153,12 @@ async function verAccesos(request, env) {
   const limite = Math.min(Math.max(parseInt(url.searchParams.get('limite'), 10) || 100, 1), 500)
   const hoy = new Date(); hoy.setUTCHours(0, 0, 0, 0)
   const semana = Date.now() - 7 * 86400000
-  const [visitas, totales, paises] = await env.DB.batch([
+  const [visitas, totales, paises, opiniones] = await env.DB.batch([
     env.DB.prepare('SELECT * FROM visitas ORDER BY inicio DESC LIMIT ?').bind(limite),
     env.DB.prepare(`SELECT COUNT(*) AS total, SUM(inicio >= ?) AS hoy, SUM(inicio >= ?) AS semana,
         SUM(personaje IS NOT NULL) AS conPersonaje FROM visitas`).bind(hoy.getTime(), semana),
     env.DB.prepare('SELECT pais, COUNT(*) AS n FROM visitas WHERE pais IS NOT NULL GROUP BY pais ORDER BY n DESC LIMIT 6'),
+    env.DB.prepare('SELECT hora, nombre, donde, pais, texto FROM opiniones ORDER BY hora DESC LIMIT 100'),
   ])
   const ids = visitas.results.map((v) => v.id)
   let eventos = []
@@ -136,11 +171,12 @@ async function verAccesos(request, env) {
   return json(request, {
     resumen: { ...totales.results[0], paises: paises.results },
     visitas: visitas.results.map((v) => ({ ...v, eventos: porVisita[v.id] || [] })),
+    opiniones: opiniones.results,
   })
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cabeceras(request) })
     const { pathname } = new URL(request.url)
     try {
@@ -149,6 +185,7 @@ export default {
       if (request.method === 'GET' && pathname === '/accesos') return await verAccesos(request, env)
       if (request.method === 'GET' && pathname === '/records') return await verRecords(request, env)
       if (request.method === 'POST' && pathname === '/record') return await nuevoRecord(request, env)
+      if (request.method === 'POST' && pathname === '/opinion') return await nuevaOpinion(request, env, ctx)
       return json(request, { error: 'No existe' }, 404)
     } catch {
       return json(request, { error: 'Error del servidor' }, 500)

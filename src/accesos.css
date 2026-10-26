@@ -70,3 +70,10 @@ h1 { font: 18px 'Press Start 2P', monospace; color: var(--verde); margin: 0; let
   .cronologia li { grid-template-columns: 64px 1fr; }
   .cronologia .mas { display: none; }
 }
+
+/* opiniones y sugerencias que dejan en el juego */
+.opiniones { display: grid; gap: 8px; margin: 0 0 18px; }
+.opiniones h2 { font-family: 'Press Start 2P', monospace; font-size: 11px; color: #2fbf71; margin: 0 0 4px; }
+.opiniones blockquote { margin: 0; padding: 10px 14px; background: #1b1f27; border-left: 3px solid #2fbf71; border-radius: 6px; }
+.opiniones p { margin: 0 0 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.opiniones footer { font-size: 12px; color: #8b93a3; }

@@ -3,7 +3,7 @@
 import { ENLACES } from './content.js'
 import { estado, t, cambiarIdioma, guardar } from './estado.js'
 import { registrar } from './registro.js'
-import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
+import { sfx, alternarSonido, cambiarMusica, nombreMusica, musicaDeJuego } from './sonido.js'
 import { abrirClasico, pintarHUD, pantallaCompleta, esTactil, alVolverAlMenu, alCambiarRopa, mostrarHUD, hayDialogo } from './ui.js'
 import { PALETAS, crearPersonaje } from './sprites.js'
 
@@ -71,7 +71,7 @@ function menu(opciones) {
   let sel = 0
   const pintar = () => {
     const lista = caja().querySelector('.menu')
-    lista.innerHTML = opciones.map((o, i) => `<li><button class="${i === sel ? 'sel' : ''}" data-i="${i}">${i === sel ? '▶ ' : ''}${o.texto()}</button></li>`).join('')
+    lista.innerHTML = opciones.map((o, i) => `<li><button class="${i === sel ? 'sel' : ''} ${o.verde ? 'verde' : ''}" data-i="${i}">${i === sel ? '▶ ' : ''}${o.texto()}</button></li>`).join('')
     lista.querySelectorAll('button').forEach((b) => {
       b.onmouseenter = () => { if (sel !== +b.dataset.i) { sel = +b.dataset.i; sfx.mover(); pintar() } }
       b.onclick = () => { sfx.aceptar(); opciones[+b.dataset.i].accion() }
@@ -123,7 +123,7 @@ function principal() {
   if (estado.personaje) ops.push({ texto: () => x().continuar, accion: () => { registrar('vuelve', estado.personaje.nombre, true); jugar() } })
   ops.push(
     { texto: () => x().nueva, accion: () => creador() },
-    { texto: () => x().clasico, accion: () => abrirClasico() },
+    { texto: () => x().clasico, accion: () => abrirClasico(), verde: true },
     { texto: () => x().opciones, accion: () => opciones() },
     { texto: () => x().creditos, accion: () => creditos() },
   )
@@ -314,6 +314,7 @@ function jugar() {
   quitarTeclado()
   clearInterval(creador.reloj)
   caja().hidden = true
+  musicaDeJuego(true)
   alTerminar?.()
 }
 
@@ -335,6 +336,7 @@ function cerrarProbador(cambiada = false) {
 function volverAlMenu() {
   if (hayDialogo()) return
   escena.pausarParaMenu()
+  musicaDeJuego(false)
   mostrarHUD(false)
   caja().hidden = false
   principal()

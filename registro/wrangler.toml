@@ -1,4 +1,4 @@
-﻿# Servidor de registro de visitas del portfolio (Cloudflare Workers + base de datos D1)
+# Servidor de registro de visitas del portfolio (Cloudflare Workers + base de datos D1)
 name = "portfolio-registro"
 main = "src/index.js"
 compatibility_date = "2026-10-01"
@@ -7,3 +7,7 @@ compatibility_date = "2026-10-01"
 binding = "DB"
 database_name = "portfolio-visitas"
 database_id = "357a0a59-a276-41fd-ac13-99e39fdc7032"
+
+# Adónde llegan las opiniones del juego
+[vars]
+CORREO = "alexxblaro@gmail.com"

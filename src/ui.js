@@ -3,7 +3,7 @@
 import { ENLACES, PROYECTOS, STACK } from './content.js'
 import { estado, t, cambiarIdioma, alCambiarIdioma, guardar } from './estado.js'
 import { registrar } from './registro.js'
-import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
+import { sfx, alternarSonido, cambiarMusica, nombreMusica, pausarMusica } from './sonido.js'
 
 const $ = (s) => document.querySelector(s)
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
@@ -122,6 +122,40 @@ export function decir(nombre, frases) {
   })
 }
 export function avanzarDialogo() { dialogo?.avanzar() }
+
+// Caja para escribir en el diálogo (las opiniones). Devuelve el texto o null si se cancela.
+// Las teclas no llegan al juego mientras se escribe (si no, la E o las flechas moverían al personaje).
+export function escribir(nombre, pregunta, textos) {
+  return new Promise((resolver) => {
+    const caja = $('#dialogo')
+    $('#dialogo-nombre').textContent = nombre
+    $('#dialogo-texto').textContent = pregunta.replaceAll('{nombre}', estado.personaje?.nombre || '')
+    const zona = document.createElement('div')
+    zona.className = 'dialogo-escribir'
+    zona.innerHTML = `<textarea maxlength="1000" rows="4"></textarea><div class="dialogo-opciones"><button class="sel">${textos.enviar}</button><button>${textos.cancelar}</button></div>`
+    const area = zona.querySelector('textarea'), [enviar, cancelar] = zona.querySelectorAll('button')
+    const terminar = (valor) => {
+      zona.remove()
+      caja.classList.remove('con-opciones')
+      caja.hidden = true
+      caja.onclick = null
+      dialogo = null
+      resolver(valor)
+    }
+    zona.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Escape') terminar(null) })
+    zona.addEventListener('keyup', (e) => e.stopPropagation())
+    zona.onclick = (e) => e.stopPropagation()
+    enviar.onclick = () => { const t = area.value.trim(); if (t.length < 2) { area.focus(); return } sfx.aceptar?.(); terminar(t) }
+    cancelar.onclick = () => terminar(null)
+    // mientras se escribe, ni E ni espacio avanzan el diálogo
+    dialogo = { avanzar: () => {} }
+    caja.append(zona)
+    caja.classList.add('con-opciones')
+    caja.onclick = null
+    caja.hidden = false
+    setTimeout(() => area.focus(), 50)
+  })
+}
 
 // Pregunta con varias respuestas en la caja de diálogo (Hablar / Sígueme, coger el bus…). Se elige con las
 // flechas o W/S y se confirma con E, espacio, Enter o un clic. Devuelve el número de la opción elegida.
@@ -401,8 +435,8 @@ function animarClasico() {
   limpiarClasico = () => { visto.disconnect(); raiz.removeEventListener('scroll', alScroll); relojes.forEach(clearInterval); limpiarClasico = null }
 }
 
-export function abrirClasico() { registrar('clasico', null, true); pintarClasico(); $('#clasico').hidden = false; $('#clasico').scrollTop = 0; document.body.classList.add('en-clasico') }
-export function cerrarClasico() { limpiarClasico?.(); $('#clasico').hidden = true; document.body.classList.remove('en-clasico') }
+export function abrirClasico() { pausarMusica(true); registrar('clasico', null, true); pintarClasico(); $('#clasico').hidden = false; $('#clasico').scrollTop = 0; document.body.classList.add('en-clasico') }
+export function cerrarClasico() { if (!$('#clasico').hidden) { pausarMusica(false); pintarHUD() } limpiarClasico?.(); $('#clasico').hidden = true; document.body.classList.remove('en-clasico') }
 
 // ---------------------------------------------------------------------------------------------- mando táctil
 // vx y vy van de -1 a 1: la palanca es analógica (cuanto más la empujas, más rápido andas)

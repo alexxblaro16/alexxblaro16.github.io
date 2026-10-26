@@ -946,14 +946,15 @@ function cienaga() {
   p(70, 34, 20, 12, '#141c0c'); p(72, 32, 16, 2, '#141c0c'); p(76, 38, 1, 1, '#f2c200'); p(81, 38, 1, 1, '#f2c200')
   // niebla baja
   for (const [x, y, w] of [[6, 84, 40], [96, 78, 50], [40, 58, 30]]) { p(x, y, w, 2, 'rgba(220,235,210,0.18)'); p(x + 4, y + 2, w - 8, 1, 'rgba(220,235,210,0.12)') }
-  // valla de troncos con la cancela abierta en el centro y el cartel de «FUERA»
+  // valla de troncos con la cancela abierta en el centro y el cartel de «LA CIÉNAGA»
   for (let x = 2; x < W - 2; x += 8) {
     if (x > 62 && x < 94) continue
     p(x, 98, 3, 13, '#4a3520'); p(x, 98, 3, 1, '#6b4a2b'); p(x + 1, 99, 1, 12, '#5e4429')
   }
   p(0, 102, 64, 2, '#6b4a2b'); p(96, 102, 64, 2, '#6b4a2b'); p(0, 107, 64, 2, '#5e4429'); p(96, 107, 64, 2, '#5e4429')
   p(62, 90, 4, 22, '#3a2a18'); p(94, 90, 4, 22, '#3a2a18'); p(60, 88, 40, 4, '#4a3520'); p(60, 88, 40, 1, '#6b4a2b')
-  p(38, 84, 24, 10, NEGRO); p(39, 85, 22, 8, '#a8854f'); textoCentrado(ctx, 'FUERA', 50, 87, '#3a2a18'); p(49, 94, 2, 6, '#4a3520')
+  p(26, 78, 34, 18, NEGRO); p(27, 79, 32, 16, '#a8854f'); p(27, 79, 32, 1, '#c8a36a')
+  textoCentrado(ctx, 'LA', 43, 81, '#3a2a18'); textoCentrado(ctx, 'CIÉNAGA', 43, 89, '#3a2a18'); p(42, 96, 2, 6, '#4a3520')
   return c
 }
 
@@ -1012,6 +1013,19 @@ function neonArcade(f) {
     p(4, 22, 38, 1, 'rgba(255,61,127,0.35)')
     return c
   }
+}
+
+// El buzón de opiniones junto al metro de los recreativos: tablón en dos postes y un buzón rojo delante
+function buzonOpiniones() {
+  const [c, ctx] = lienzo(52, 42)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(6, 18, 3, 24, '#4a3520'); p(43, 18, 3, 24, '#4a3520')
+  p(0, 0, 52, 20, NEGRO); p(1, 1, 50, 18, '#f2ede2'); p(1, 1, 50, 2, '#2fbf71')
+  textoCentrado(ctx, 'OPINIONES Y', 26, 5, '#1b1f27'); textoCentrado(ctx, 'SUGERENCIAS', 26, 12, '#1b1f27')
+  // el buzón con su ranura y la bandera levantada
+  p(18, 24, 16, 14, NEGRO); p(19, 25, 14, 12, '#c8302a'); p(19, 25, 14, 2, '#e05a5a'); p(21, 29, 10, 2, NEGRO)
+  p(34, 22, 2, 8, '#3a3f48'); p(36, 22, 4, 3, '#f2c200'); p(25, 38, 2, 4, '#3a3f48')
+  return c
 }
 
 // Chalet de una urbanización: casa baja con tejado, garaje y su jardín con seto
@@ -1318,7 +1332,7 @@ export function crearEdificios(scene) {
     maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
     nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP, cienaga,
     boca_metro_residencia: bocaMetro('RESIDENCIA'), boca_metro_medac: bocaMetro('MEDAC'), boca_metro_udit: bocaMetro('UDIT'), boca_metro_arcade: bocaMetro('ARCADE'),
-    neon_arcade: neonArcade(0), neon_arcade_1: neonArcade(1), chalet: chalet('#f2ede2', '#b4553a'), chalet_2: chalet('#dfe3e6', '#4a525c'), bar_arte: barArte,
+    neon_arcade: neonArcade(0), neon_arcade_1: neonArcade(1), chalet: chalet('#f2ede2', '#b4553a'), chalet_2: chalet('#dfe3e6', '#4a525c'), bar_arte: barArte, buzon_opiniones: buzonOpiniones,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando

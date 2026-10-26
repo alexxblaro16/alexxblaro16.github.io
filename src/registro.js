@@ -68,3 +68,13 @@ export function registrar(tipo, dato = null, unaVez = false) {
   if (!visita) { pendientes.push({ tipo, dato }); return }
   enviar('/evento', { visita, tipo, dato }).catch(() => {})
 }
+
+// Manda una opinión o sugerencia (se guarda y le llega a Alejandro al correo). Esta sí se manda aunque el
+// navegador no cuente visitas; en desarrollo no sale nada. Devuelve si ha llegado.
+export async function mandarOpinion(texto, nombre, donde) {
+  if (import.meta.env.DEV) { console.info('[opinión de prueba]', donde, nombre, texto); return true }
+  try {
+    const r = await fetch(URL_REGISTRO + '/opinion', { method: 'POST', body: JSON.stringify({ texto, nombre, donde, visita }) })
+    return r.ok
+  } catch { return false }
+}

@@ -5,8 +5,8 @@ import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, AUTOVIA, EDIFICIOS, OBJETOS, SUELOS
 import { INTERIORES, crearInteriores } from '../interiores.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
-import { registrar } from '../registro.js'
-import { decir, elegir, pedirRopa, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD, logro } from '../ui.js'
+import { registrar, mandarOpinion } from '../registro.js'
+import { decir, elegir, escribir, pedirRopa, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD, logro } from '../ui.js'
 import { sfx, sonar, musicaFiesta, hayFiesta, GENEROS, CANCIONES, cancion } from '../sonido.js'
 import { abrirArcade } from '../arcade.js'
 import { animarViaje, animarMetro } from '../viaje.js'
@@ -324,7 +324,7 @@ export default class Mundo extends Phaser.Scene {
       if (o.nube) {
         const nube = this.nubeImg
         this.interactivos.push({ get x() { return nube.visible ? nube.x : -9999 }, get y() { return nube.y + 4 }, radio: 20, nube: true, nombre: 'Alejandro', fija: true })
-      } else if (o.zona || o.vida || o.arcade || o.bus || o.metro) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : 4), radio: grande ? 68 : o.bus || o.metro ? 26 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, metro: o.metro, nombre: 'Alejandro' })
+      } else if (o.zona || o.vida || o.arcade || o.bus || o.metro || o.opinion) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : o.opinion ? 14 : 4), radio: grande ? 68 : o.bus || o.metro ? 26 : o.opinion ? 24 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, metro: o.metro, opinion: o.opinion, nombre: 'Alejandro' })
     }
   }
 
@@ -1243,6 +1243,8 @@ export default class Mundo extends Phaser.Scene {
     if (cerca(this.dantePW, 22)) return this.hablarAcompanante(this.acompanante(this.dantePW), 'DANTE P.W.', 'dante_pw_hablar')
     if (cerca(this.guia, 24) && !this.guiaEnMarcha) {
       if (this.paso < RECORRIDO.length) return this.contarPaso()
+      // la primera vez que le ves de nuevo (en cada visita, hasta que le mandes algo) te pregunta qué te parece
+      if (!this.opinionPreguntada && !this.opinionMandada()) { this.opinionPreguntada = true; return this.pedirOpinion('alejandro') }
       return decir('Alejandro', frases('final').slice(1))
     }
     const cosa = this.interactivos.filter((o) => cerca(o, o.radio)).sort((a, b) => Phaser.Math.Distance.Between(j.x, j.y, a.x, a.y) - Phaser.Math.Distance.Between(j.x, j.y, b.x, b.y))[0] // lo más cercano, no lo primero de la lista
@@ -1256,12 +1258,28 @@ export default class Mundo extends Phaser.Scene {
     if (cosa.nube) return this.subirNube()
     if (cosa.bus) return this.preguntarBus(cosa.bus)
     if (cosa.metro) return this.preguntarMetro(cosa.metro)
+    if (cosa.opinion) return this.pedirOpinion('buzon')
     if (cosa.ropa) return this.abrirArmario()
     if (cosa.resena) { await decir(cosa.nombre, frases(cosa.vida)); return this.pedirResena() }
     if (cosa.arcade) return abrirArcade(cosa.arcade)
     if (cosa.zona) return abrirPanel(cosa.zona)
     if (cosa.frase) return decir(cosa.nombre, cosa.frase())
     if (cosa.vida) return decir(cosa.nombre, frases(cosa.vida))
+  }
+
+  // Opiniones y sugerencias: Alejandro te pregunta (o el buzón junto al metro), escribes y le llega al correo
+  opinionMandada() { try { return !!localStorage.getItem('opinion-mandada') } catch { return false } }
+
+  async pedirOpinion(donde) {
+    if (hayDialogo()) return
+    const quien = donde === 'buzon' ? (en() ? 'Feedback box' : 'Buzón') : 'Alejandro'
+    const i = await elegir(quien, frases(donde === 'buzon' ? 'opinion_buzon' : 'opinion_pregunta'), en() ? ['Yes', 'No'] : ['Sí', 'No'])
+    if (i !== 0) return donde === 'buzon' ? null : decir('Alejandro', frases('opinion_no'))
+    const texto = await escribir(quien, frases('opinion_escribe'), en() ? { enviar: 'Send', cancelar: 'Cancel' } : { enviar: 'Enviar', cancelar: 'Cancelar' })
+    if (!texto) return
+    const ok = await mandarOpinion(texto, estado.personaje?.nombre, donde)
+    if (ok) { try { localStorage.setItem('opinion-mandada', '1') } catch { /* sin almacenamiento */ } sfx.logro() }
+    return decir('Alejandro', frases(ok ? 'opinion_gracias' : 'opinion_fallo'))
   }
 
   // Al acabar el recorrido, Alejandro no se queda quieto: va andando por el camino de un sitio a otro,

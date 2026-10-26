@@ -531,9 +531,9 @@ const M = {
     return c
   },
   cartel_fuera: () => {
-    const [c, x] = lienzo(26, 26); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
-    p(11, 12, 3, 14, '#4a3520'); p(0, 1, 26, 13, NEGRO); p(1, 2, 24, 11, '#a8854f'); p(1, 2, 24, 1, '#c8a36a')
-    textoCentrado(x, 'FUERA', 13, 5, '#3a2a18'); return c
+    const [c, x] = lienzo(34, 30); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(15, 18, 3, 12, '#4a3520'); p(0, 1, 34, 18, NEGRO); p(1, 2, 32, 16, '#a8854f'); p(1, 2, 32, 1, '#c8a36a')
+    textoCentrado(x, 'LA', 17, 4, '#3a2a18'); textoCentrado(x, 'CIÉNAGA', 17, 11, '#3a2a18'); return c
   },
   // ---- la peña
   pancarta_pilon: () => {
