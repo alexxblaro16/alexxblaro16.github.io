@@ -23,7 +23,10 @@ Todo lo que hay en el mundo está descrito como datos, en casillas de 16 px:
 - `OBJETOS`: igual, para el decorado (farolas, bancos, coches, la furgoneta, los guiños…).
 - `SUELOS` y `SENDAS`: zonas de plaza, asfalto, baldosa o agua, y caminos verticales.
 - `PERSONAJES`: familia y amigos con sus rasgos.
-- `RECORRIDO`: las paradas del guía, con puntos intermedios (`via`) para que no atraviese edificios.
+- `RECORRIDO`: las paradas del guía, con puntos intermedios (`via`) para que no atraviese edificios. La parada del
+  autobús lleva `bus: 'madrid'`: Alejandro se sube contigo al Monbus.
+- `AUTOVIA`: las columnas (58 y 59) de la autovía que separa Villalpando de Madrid.
+- Un objeto con `bus` es una estación (`'madrid'` sale del pueblo y `'pueblo'` sale de Madrid).
 
 Cambiar algo de sitio o añadir un banco es editar una línea de este fichero.
 
@@ -37,9 +40,26 @@ Cambiar algo de sitio o añadir un banco es editar una línea de este fichero.
 
 ## Personajes que pasean
 
-Cada NPC guarda su sitio de origen y un radio. Cada pocos segundos elige un punto al azar dentro de ese círculo,
-anda hasta él con su animación y espera. Si el jugador se acerca, se para y le mira, para que se pueda hablar con él.
-El punto de interacción de los NPC con diálogo se calcula con *getters*, así sigue al personaje allá donde vaya.
+Cada NPC guarda su sitio de origen y un radio: 54 px los amigos y 34 la familia. Cada pocos segundos elige un punto
+al azar dentro de ese círculo, anda hasta él con su animación y espera. Si el jugador se acerca, se para y le mira,
+para que se pueda hablar con él. El punto de interacción de los NPC con diálogo se calcula con *getters*, así sigue
+al personaje allá donde vaya.
+
+**Charlas:** a veces, en vez de pasear, un NPC va hacia otro de su mismo grupo (residencia, MEDAC, uni) que esté
+cerca y libre. Al llegar, `charlar()` los pone mirándose y les saca bocadillos por turnos («...», «jaja», «!?»,
+«xD»…). Los bocadillos valen para los dos idiomas.
+
+## Jerry y DANTE P.W. (`acompanantes`)
+
+Los dos son «acompañantes», con su zona de origen y tres estados:
+- **Sueltos:** pasean por su zona (120 px Jerry, 80 px DANTE P.W.) y chocan con los sólidos.
+- **Siguiéndote:** van detrás a cierta distancia. Si se quedan muy atrás (más de 170 px), aparecen a tu lado.
+  Entran contigo en las salas (`traerAcompanantes()`) y suben al autobús. Mientras te siguen no chocan contigo,
+  gracias a un `processCallback` en el colisionador.
+- **Volviendo:** al decirles «Vuelve a tu sitio» van andando a su zona. Si están lejos (otra sala, el otro lado de
+  la autovía o más de 520 px) o se atascan, aparecen allí cuando no se les ve en pantalla.
+
+Al hablarles, `hablarAcompanante()` pregunta con `elegir()`: Hablar / Sígueme (o Vuelve a tu sitio) / Adiós.
 
 ## Tecla «E»
 
@@ -56,6 +76,10 @@ por los puntos `via`. El progreso se guarda en `localStorage`, así que al volve
 ## Interfaz (`ui.js` y `pantallas.js`)
 
 - `decir()` devuelve una promesa que se resuelve al cerrar el diálogo, lo que permite encadenar frases con `await`.
+- `elegir(nombre, pregunta, opciones)` hace una pregunta con botones en la misma caja de diálogo. Se elige con las
+  flechas o W/S y se confirma con E, espacio o Enter, o con un clic. Devuelve el número de la opción. Se usa para
+  Jerry y DANTE P.W., el autobús, el armario y la reseña de Reblán.
+- El botón **ROPA** de la barra llama a `pedirRopa()`, que abre el probador (ver el creador).
 - Los paneles se generan a partir de `content.js` y desbloquean un logro la primera vez.
 - El modo clásico es una página normal con la misma información, para reclutadores con prisa.
 - En móvil aparece una cruceta táctil que escribe en `teclasTactiles`, que la escena lee igual que el teclado.
@@ -67,6 +91,13 @@ Los rasgos del personaje son un objeto plano (`pelo`, `colorPelo`, `piel`, `ropa
 convierte en una hoja de sprites. El creador tiene tres pestañas (cuerpo, ropa y extras) para no mostrar todas las
 opciones a la vez, una vista previa de 144 × 192 que anda y se puede girar a las cuatro direcciones, y un botón que
 elige todo al azar. Cada cambio vuelve a dibujar la hoja, así que lo que se ve es exactamente lo que saldrá en el juego.
+
+**El probador** es el mismo creador en modo `creador(true)`. Se abre jugando, con el botón ROPA o con el armario de su
+cuarto (`ropa: true` en `interiores.js`):
+- Solo enseña las pestañas de ropa y extras, sin nombre ni cuerpo.
+- El juego queda en pausa (`modo = 'ropa'`).
+- Al ponértela, `volverDelProbador()` rehace la hoja `jugador` y se la cambia al sprite en el sitio, sin empezar
+  otra partida.
 
 ## Ambiente
 
@@ -89,17 +120,59 @@ una al lado de otra, con paredes y muebles sólidos. Un edificio con `interior` 
 negro, mueve al jugador, cambia los límites del mundo y de la cámara y centra la sala si cabe en pantalla (si no, la cámara sigue
 al jugador). Al pisar el felpudo de la puerta, `salir()` devuelve al jugador delante del edificio.
 
+## La autovía, la cámara por lados y el Monbus
+
+- **La autovía:** se pinta en el canvas del suelo (asfalto, líneas, biondas) y lleva un sólido invisible a todo lo alto.
+  Por ella pasan coches (`coche_v0` a `coche_v4`) en los dos sentidos.
+- **La cámara por lados:** `limitarCamara()` encierra la cámara en el lado de la autovía donde está el jugador, así
+  desde Villalpando no se ve Madrid ni al revés. Se llama al empezar, al salir de una sala y al bajar del autobús.
+  En la portada y el menú la cámara vuelve a recorrer el mapa entero.
+- **El guía:** cuando pasea libre, se queda en su lado.
+- **El viaje:** `preguntarBus()` pregunta con `elegir()` y `viajarBus()` hace el trayecto:
+  1. Llega el autocar (`bus`, blanco con franjas azul y amarilla).
+  2. Suben el jugador, el guía si va en el recorrido y los acompañantes que te sigan.
+  3. Se va y la cámara funde a negro.
+  4. `viaje.js` pinta a pantalla completa la escena de la meseta (lienzo de 320 × 180, kilómetros de 0 a 230).
+  5. El autocar llega a la otra estación y bajáis.
+
 ## Día y noche
 
 `cicloDia()` crea un velo azul, otro naranja para el atardecer, una luz (degradado en modo `ADD`) por farola, foco y puerta, y
 luciérnagas. `noche()` calcula en qué momento del día estamos (`DURACION_DIA`, 6 minutos) y `actualizarLuz()` ajusta todo en cada
 fotograma. Dentro de las salas siempre hay luz. `cambiarHora()` salta al día o a la noche (botón de la barra).
 
+**La noche no tapa nada:** cada cosa se tiñe (`teñir()`). Las personas se tiñen menos y el jugador menos aún.
+`ventanasNoche()` saca de cada edificio una capa con solo sus cristales encendidos, que va justo encima de su edificio.
+En la casa-cabeza y en el marcador solo se encienden unos colores concretos (`soloVentanas`). El marcador del campo
+también tiene su propia luz.
+
 ## Esferas, nube y penaltis
 
 `ESFERAS` (en `mapa.js`) dice dónde está cada una de las siete, fuera o dentro de una sala. Las encontradas se guardan en
 `estado.esferas`; con las siete, `pedirDeseo()` oscurece el cielo y hace girar las esferas alrededor del jugador. La nube amarilla
 activa un turbo de 20 s. Los penaltis son el quinto juego de `arcade.js` y se abren desde el campo de fútbol.
+Si cargas el tiro en la franja naranja sale el **tornado de fuego**, que no para el portero.
+
+El campo mide 208 × 128. Sus medidas (valla, puertas y banquillos) están en `ESTADIO` (`sprites.js`) y sirven tanto
+para dibujarlo como para sus colisiones. Al lado está el marcador `marcador_raimon` (UDIT 0 – RAIMON 8).
+
+## Récords de las recreativas
+
+Cada máquina enseña dos récords:
+- **TU RECORD:** tu mejor puntuación, guardada en el navegador.
+- **BEST SCORE: nombre puntos:** el récord de todos. Se pide al Worker al abrir la máquina (`GET /records`).
+
+Si lo superas, se manda con el nombre de tu personaje (`POST /record`). El servidor solo lo guarda si es mayor que
+el que hay (lo compara la propia base de datos) y rechaza puntuaciones por encima de un tope para cada juego.
+En desarrollo solo se lee: no se manda nada.
+
+## La reseña de Reblán
+
+Al entrar por primera vez en la tienda (y desde el mostrador, `resena: true`), `pedirResena()` pregunta si has
+comprado alguna vez allí y ofrece abrir las reseñas de Google de la tienda real (`ENLACES.resenaReblan`):
+- Se abre en otra pestaña, porque Google no deja incrustar su página en otra web.
+- El texto deja claro que es una reseña de verdad, de la tienda real, no del juego.
+- No hay premio, porque las reseñas tienen que ser de clientes reales.
 
 ## Mando táctil
 
@@ -122,6 +195,9 @@ guarda y no hay cookies. No cuenta en desarrollo, ni a los robots, ni el navegad
 `/accesos/` es una segunda página de Vite (`accesos/index.html` y `accesos.js`) que pide la contraseña
 (secreto `CLAVE_ACCESOS` del Worker) y muestra las últimas 150 visitas, con un resumen de hoy, la semana y los
 países. Se actualiza cada 30 s y, al entrar, marca ese navegador para que no cuente como visita.
+
+El mismo Worker guarda los récords de las recreativas en la tabla `records` (`esquema.sql`), con las rutas
+`GET /records` y `POST /record`.
 
 Para cambiar el servidor: `cd registro`, `npx wrangler deploy`. Para cambiar la contraseña:
 `npx wrangler secret put CLAVE_ACCESOS`.

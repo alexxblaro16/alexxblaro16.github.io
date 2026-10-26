@@ -18,6 +18,9 @@ El juego empieza al sur del pueblo: se cruza la **Puerta de la Villa de San Andr
 
 - **Reblán Electrodomésticos**, la tienda de su padre. **Pedro** en la puerta.
   > Esta es la tienda de mi padre. Aquí he trabajado todos los veranos, atendiendo y echando una mano con las averías.
+  Dentro, la primera vez, Pedro pregunta:
+  > ¿Has comprado alguna vez en Reblán? Puedes dejarnos una reseña en Google. Ojo: es una reseña de verdad, de la tienda real de Villalpando, no del juego.
+  Opciones: «Abrir las reseñas de Google» (se abren en otra pestaña) o «Ahora no».
 - **Su casa** (un bloque de pisos, sin dirección). **Martha**, su madre, y **Dante**, su hermano.
   > Aquí vive mi familia. Mi hermano Dante tiene 15 años… y luego te presento a alguien que se parece mucho a él.
 - **IES Tierra de Campos**:
@@ -26,11 +29,18 @@ El juego empieza al sur del pueblo: se cruza la **Puerta de la Villa de San Andr
 - Secreto: un bloque de tierra y hierba en una esquina («Minecraft me trajo hasta aquí»).
 
 ## 3. Rumbo a Madrid
-Una parada de autobús con un cartel «Madrid · 2023».
-> Con 18 años me fui a Madrid a estudiar programación.
+Entre el pueblo y Madrid hay una autovía que no se cruza andando, y desde un lado no se ve el otro. En la **estación de
+autobuses de Villalpando**:
+> 2023. Con 18 años me subí a este autobús y me fui yo solo a Madrid. […] Venga, súbete conmigo al Monbus: nos deja en la Estación Sur.
+
+Llega el Monbus y subís los dos. Sale la escena del viaje por la meseta (Villalpando → Madrid, 0 a 230 km) y bajáis en la
+**Estación Sur (Méndez Álvaro)**. Jugando libre, cada estación pregunta «¿Subes?» y se puede ir y volver.
 
 ## 4. Residencia José Pérez de Vargas
-Personajes de fondo: **Beatriz, Natalia, Andrea, Hugo y Jorge**.
+Personajes de fondo: **Beatriz, Natalia, Andrea, Hugo, Jorge, Manu y Rodrigo**. Charlan entre ellos.
+- **Natalia**: «Nos conocimos en la resi y ahora vivimos juntos. Pasamos tanto tiempo juntos que ya nos lo sabemos todo el uno del otro.»
+- **Manu** (pelo como Héctor, cara como Iván, ropa de calle): conciertos y eventos como la Scrap World.
+- **Rodrigo** (de Cuenca, rubio, ojos claros, polo): «Coincidí con Alejandro en la resi de Madrid y de ahí salió una amistad de las buenas.»
 > Mi primera casa en Madrid. Aquí conocí a gente de muchos sitios y viví un montón de experiencias.
 
 ## 5. MEDAC Albalá
@@ -41,14 +51,19 @@ Personajes de fondo: **Pablo y Héctor**.
   > Hice las prácticas en Anexia: rehicimos la web del departamento de tecnología con Astro, aprendiendo desde cero.
 
 ## 6. UDIT, la uni
-Personajes de fondo: **Manuel, Carlos, Gonzalo, Hugo, Iván, Pablo, Rodrigo, Andrea y Gabriel**.
+Personajes de fondo: **Manuel, Carlos, Gonzalo, Hugo, Iván, Pablo, Rodrigo, Andrea y Gabriel** (este, con la equipación
+dentro del campo), y además **Gonzalo** (gafas y barba; van juntos a clase), **Lucía** (pelo negro rizado en moño, aros;
+comparten alguna clase) y los gemelos **Jorge** (de blanco; Ingeniería del Software, PyKV) y **Miguel** (de negro;
+«compartimos alguna clase y nos llevamos genial»).
 > Y ahora estoy en 3.º de Desarrollo de Software Full Stack en UDIT.
-- **Campo de fútbol**: > Juego en el equipo de fútbol de la uni.
+- **Campo de fútbol** (sin gradas, es universitario): > Juego en el equipo de fútbol de la uni. […] sale el tornado de fuego y no lo para nadie.
+  Al lado, el marcador **UDIT 0 – RAIMON 8**, que de noche se enciende.
 - **Avión a Tallin**: > Me fui de Erasmus a Tallin, a un programa intensivo, con amigos de la uni.
 - **Sala de hackatones**: > IndesIAhack con CityScan y OdiseIA4Good con MedScan.
-- **Robot Jerry** paseando: si le hablas cuenta cómo lo programaste (siguelíneas, sumo y mando web).
+- **Robot Jerry** paseando por su zona. Al hablarle: Hablar (cómo lo programaste: siguelíneas, sumo y mando web) / Sígueme / Adiós.
 - **DANTE P.W.**: un robot con la cara de Dante.
-  > Hice esta IA para estar siempre con mi hermano. Se llama como él. Si le hablas, te sigue.
+  > Hice esta IA para estar siempre con mi hermano, por eso se llama como él. Háblale: te cuenta cosas o se viene contigo.
+  Igual que Jerry: Hablar / Sígueme / Adiós. Si le dices «Vuelve a tu sitio», vuelve a su zona.
 - **Laboratorio → Proyectos** · **Sala de trofeos → MedScan** · **Terminal → Stack** · **Correos → Contacto y CV**
 
 ## 7. Final
@@ -59,6 +74,8 @@ Al terminar el recorrido se puede explorar libremente. Al visitar todas las zona
 
 ## Secretos
 - Código Konami (↑↑↓↓←→←→ B A): todo pasa a verde de terminal.
-- DANTE P.W. te sigue si le hablas (y deja de seguirte si le vuelves a hablar).
+- Jerry y DANTE P.W. te siguen a todas partes si se lo pides (también dentro de los edificios y en el autobús).
+- El armario de su cuarto o el botón ROPA: te cambias de ropa sin empezar otra partida.
+- Récords de todos en las recreativas: «BEST SCORE: nombre puntos».
 - Rincón de arena junto al agua con la casa-piña, la casa-roca y la casa-cabeza de piedra (guiños a Bob Esponja), murciélago en la veleta (Batman) y mochila con una araña (Spider-Man).
 - Bloque de tierra en Villalpando.
