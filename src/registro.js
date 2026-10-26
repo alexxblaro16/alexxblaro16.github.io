@@ -29,6 +29,8 @@ export async function empezarRegistro() {
     const r = await enviar('/visita', {
       idioma: navigator.language,
       pantalla: `${screen.width}x${screen.height}`,
+      // las tabletas suelen decir que son un ordenador (Linux o Mac): esto lo delata
+      tactil: navigator.maxTouchPoints || 0,
       origen,
       campana: params.get('utm_source') || params.get('ref'),
     })

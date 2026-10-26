@@ -4,7 +4,7 @@
 // También guarda el récord de cada minijuego (nombre del personaje y puntos), que ve todo el mundo.
 
 const ORIGENES = ['https://alexxblaro16.github.io', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5180']
-const TIPOS = new Set(['personaje', 'zona', 'recorrido', 'clasico', 'cv', 'arcade', 'enlace', 'fin'])
+const TIPOS = new Set(['personaje', 'vuelve', 'zona', 'recorrido', 'clasico', 'cv', 'arcade', 'enlace', 'fin'])
 const MAX_EVENTOS = 300
 // tope razonable de puntos de cada minijuego (lo que pase de ahí es trampa)
 const JUEGOS = { serpiente: 300, nave: 5000, ladrillos: 500, laberinto: 1000, futbol: 1000, bits: 100000 }
@@ -31,9 +31,14 @@ async function cuerpo(request) {
   try { return JSON.parse(texto) } catch { return null }
 }
 
-function leerAgente(ua = '') {
-  const dispositivo = /iPad|Tablet/i.test(ua) ? 'Tableta' : /Mobi|Android|iPhone/i.test(ua) ? 'Móvil' : 'Ordenador'
+// Las tabletas Android (Chrome en «versión de escritorio») se presentan como Linux y los iPad como Mac;
+// si la pantalla es táctil, se trata como tableta
+function leerAgente(ua = '', tactil = 0) {
+  const disfrazada = tactil > 1 && !/Windows|Android|iPhone|iPad|CrOS/i.test(ua) && /Mac OS|Linux/i.test(ua)
+  const dispositivo = disfrazada || /iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobi/i.test(ua)) ? 'Tableta'
+    : /Mobi|Android|iPhone/i.test(ua) ? 'Móvil' : 'Ordenador'
   const sistema = /Windows/i.test(ua) ? 'Windows' : /iPhone|iPad|iOS/i.test(ua) ? 'iOS' : /Android/i.test(ua) ? 'Android'
+    : disfrazada ? (/Mac OS/i.test(ua) ? 'iPadOS' : 'Android')
     : /Mac OS/i.test(ua) ? 'macOS' : /Linux/i.test(ua) ? 'Linux' : 'Otro'
   const navegador = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /SamsungBrowser/.test(ua) ? 'Samsung'
     : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Otro'
@@ -55,7 +60,7 @@ async function nuevaVisita(request, env) {
   if (esRobot(ua)) return json(request, { id: null })
   const d = (await cuerpo(request)) || {}
   const cf = request.cf || {}
-  const { dispositivo, sistema, navegador } = leerAgente(ua)
+  const { dispositivo, sistema, navegador } = leerAgente(ua, Number(d.tactil) || 0)
   const id = crypto.randomUUID()
   const ahora = Date.now()
   await env.DB.prepare(`INSERT INTO visitas (id, inicio, ultima, pais, region, ciudad, dispositivo, sistema, navegador, idioma, pantalla, origen, campana)
@@ -81,7 +86,8 @@ async function nuevoEvento(request, env) {
     pasos.push(env.DB.prepare('UPDATE visitas SET duracion = MAX(duracion, ?) WHERE id = ?').bind(segundos, d.visita))
   } else {
     pasos.push(env.DB.prepare('INSERT INTO eventos (visita, hora, tipo, dato) VALUES (?, ?, ?, ?)').bind(d.visita, ahora, d.tipo, dato))
-    if (d.tipo === 'personaje') pasos.push(env.DB.prepare('UPDATE visitas SET personaje = ? WHERE id = ?').bind(corta(dato, 24), d.visita))
+    // 'vuelve' = un visitante que ya tenía personaje de otra vez y le dio a Continuar
+    if (d.tipo === 'personaje' || d.tipo === 'vuelve') pasos.push(env.DB.prepare('UPDATE visitas SET personaje = ? WHERE id = ?').bind(corta(dato, 24), d.visita))
   }
   await env.DB.batch(pasos)
   return json(request, { ok: true })

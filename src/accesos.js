@@ -40,6 +40,7 @@ function evento(e) {
   const d = e.dato
   switch (e.tipo) {
     case 'personaje': return ['verde', `Creó a «${d}»`]
+    case 'vuelve': return ['verde', `«${d}» entró de nuevo`]
     case 'zona': return zona(d || '')
     case 'recorrido': return d === 'completo' ? ['verde', 'Terminó el recorrido'] : ['', `Se saltó el recorrido (${d.replace('saltado en el ', '')})`]
     case 'clasico': return ['', 'Abrió el modo clásico']
@@ -68,9 +69,11 @@ function tarjeta(v) {
   const origen = de ? `Viene de ${esc(de)}` : 'Entró directo'
   const cosas = v.eventos.map(evento)
   const cv = v.eventos.some((e) => e.tipo === 'cv')
+  // si no creó personaje en esta visita pero volvió con el de otra vez, se dice en la cabecera
+  const vuelve = !v.eventos.some((e) => e.tipo === 'personaje') && v.eventos.some((e) => e.tipo === 'vuelve')
   return `<article class="visita${cv ? ' cv' : ''}">
       <header>
-        <h2>${v.personaje ? esc(v.personaje) : '<span class="sin">Sin personaje</span>'}</h2>
+        <h2>${v.personaje ? esc(v.personaje) : '<span class="sin">Sin personaje</span>'}${vuelve ? ' <span class="sin">· entró de nuevo</span>' : ''}</h2>
         <time title="${esc(hora(v.inicio))}">${esc(hace(v.inicio))}</time>
       </header>
       <p class="lugar">${esc(lugar)}</p>
@@ -93,7 +96,7 @@ function pintar({ resumen, visitas }) {
       <div><b>${r.hoy || 0}</b><span>hoy</span></div>
       <div><b>${r.semana || 0}</b><span>últimos 7 días</span></div>
       <div><b>${r.total || 0}</b><span>en total</span></div>
-      <div><b>${r.conPersonaje || 0}</b><span>crearon personaje</span></div>
+      <div><b>${r.conPersonaje || 0}</b><span>con personaje</span></div>
     </section>
     ${r.paises.length ? `<p class="paises">${r.paises.map((p) => `<span>${esc(nombrePais(p.pais))} <b>${p.n}</b></span>`).join('')}</p>` : ''}
     <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s.</p>

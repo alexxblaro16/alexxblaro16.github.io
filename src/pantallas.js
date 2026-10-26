@@ -114,7 +114,7 @@ function principal() {
       <a class="boton" href="${ENLACES.github}" target="_blank" rel="noopener">GitHub</a>
       <a class="boton" href="${ENLACES.linkedin}" target="_blank" rel="noopener">LinkedIn</a></div>`
   const ops = []
-  if (estado.personaje) ops.push({ texto: () => x().continuar, accion: () => jugar() })
+  if (estado.personaje) ops.push({ texto: () => x().continuar, accion: () => { registrar('vuelve', estado.personaje.nombre, true); jugar() } })
   ops.push(
     { texto: () => x().nueva, accion: () => creador() },
     { texto: () => x().clasico, accion: () => abrirClasico() },
