@@ -19,6 +19,7 @@ export function pintarHUD() {
   $('#btn-idioma').textContent = x.hud.idioma
   $('#btn-clasico').textContent = x.hud.clasico
   $('#btn-menu').textContent = estado.idioma === 'es' ? 'MENU' : 'MENU'
+  $('#btn-ropa').textContent = estado.idioma === 'es' ? 'ROPA' : 'OUTFIT'
   $('#btn-sonido').textContent = estado.sonido ? '♪ ON' : '♪ OFF'
   $('#btn-musica').textContent = `♫ ${nombreMusica()}`
   $('#hud-zonas').textContent = `${x.hud.misiones} ${estado.visitados.size}/6`
@@ -40,6 +41,7 @@ export function iniciarUI() {
   $('#btn-clasico').onclick = () => { cerrarMenuHUD(); abrirClasico() }
   $('#btn-pantalla').onclick = () => pantallaCompleta(!document.fullscreenElement)
   $('#btn-menu').onclick = () => { cerrarMenuHUD(); alPedirMenu?.() }
+  $('#btn-ropa').onclick = () => { cerrarMenuHUD(); alPedirRopa?.() }
   // en el móvil, el resto de botones van en un menú desplegable para no tapar el juego
   $('#btn-mas').onclick = () => { const abierto = $('#hud').classList.toggle('abierto'); $('#btn-mas').setAttribute('aria-expanded', abierto) }
   $('#clasico-volver').onclick = () => cerrarClasico()
@@ -56,6 +58,10 @@ export function iniciarUI() {
 // pantallas.js se apunta aquí para que el botón «Menú» de la barra vuelva al menú principal
 let alPedirMenu = null
 export function alVolverAlMenu(f) { alPedirMenu = f }
+// y aquí, para que el botón «Ropa» (o el armario de su cuarto) abra el probador
+let alPedirRopa = null
+export function alCambiarRopa(f) { alPedirRopa = f }
+export function pedirRopa() { alPedirRopa?.() }
 
 function cerrarMenuHUD() { $('#hud').classList.remove('abierto'); $('#btn-mas').setAttribute('aria-expanded', 'false') }
 
@@ -116,6 +122,51 @@ export function decir(nombre, frases) {
   })
 }
 export function avanzarDialogo() { dialogo?.avanzar() }
+
+// Pregunta con varias respuestas en la caja de diálogo (Hablar / Sígueme, coger el bus…). Se elige con las
+// flechas o W/S y se confirma con E, espacio, Enter o un clic. Devuelve el número de la opción elegida.
+export function elegir(nombre, pregunta, opciones) {
+  return new Promise((resolver) => {
+    const caja = $('#dialogo')
+    let sel = 0
+    $('#dialogo-nombre').textContent = nombre
+    $('#dialogo-texto').textContent = pregunta.replaceAll('{nombre}', estado.personaje?.nombre || '')
+    const lista = document.createElement('div')
+    lista.className = 'dialogo-opciones'
+    const pintar = () => lista.querySelectorAll('button').forEach((b, i) => b.classList.toggle('sel', i === sel))
+    const terminar = (i) => {
+      document.removeEventListener('keydown', teclas)
+      lista.remove()
+      caja.classList.remove('con-opciones')
+      caja.hidden = true
+      caja.onclick = null
+      dialogo = null
+      sfx.aceptar?.()
+      resolver(i)
+    }
+    opciones.forEach((texto, i) => {
+      const b = document.createElement('button')
+      b.textContent = texto
+      b.onclick = (e) => { e.stopPropagation(); terminar(i) }
+      b.onmouseenter = () => { sel = i; pintar() }
+      lista.append(b)
+    })
+    const teclas = (e) => {
+      const k = e.key.toLowerCase()
+      if (['arrowup', 'w', 'arrowleft', 'a'].includes(k)) sel = (sel + opciones.length - 1) % opciones.length
+      else if (['arrowdown', 's', 'arrowright', 'd'].includes(k)) sel = (sel + 1) % opciones.length
+      else return
+      sfx.mover?.(); pintar()
+    }
+    document.addEventListener('keydown', teclas)
+    dialogo = { avanzar: () => terminar(sel) }
+    caja.append(lista)
+    caja.classList.add('con-opciones')
+    caja.onclick = null
+    caja.hidden = false
+    pintar()
+  })
+}
 
 // ---------------------------------------------------------------------------------------------- logros
 export function logro(texto) {

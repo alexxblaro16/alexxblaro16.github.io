@@ -4,7 +4,7 @@ import { ENLACES } from './content.js'
 import { estado, t, cambiarIdioma, guardar } from './estado.js'
 import { registrar } from './registro.js'
 import { sfx, alternarSonido, cambiarMusica, nombreMusica } from './sonido.js'
-import { abrirClasico, pintarHUD, pantallaCompleta, esTactil, alVolverAlMenu, mostrarHUD, hayDialogo } from './ui.js'
+import { abrirClasico, pintarHUD, pantallaCompleta, esTactil, alVolverAlMenu, alCambiarRopa, mostrarHUD, hayDialogo } from './ui.js'
 import { PALETAS, crearPersonaje } from './sprites.js'
 
 const $ = (s) => document.querySelector(s)
@@ -151,11 +151,12 @@ const ABAJOS = ['pantalon', 'falda', 'corto']
 const CORTOS = ['corto', 'rapado', 'calvo', 'degradado', 'despeinado']
 const azarDe = (lista) => lista[Math.floor(Math.random() * lista.length)]
 
-function creador() {
+// soloRopa: el probador que se abre jugando (botón «Ropa» o el armario): solo ropa y extras, y se sigue jugando
+function creador(soloRopa = false) {
   quitarTeclado()
   const p = { pelo: 'corto', colorPelo: PALETAS.pelo[0], piel: PALETAS.piel[0], ropa: PALETAS.ropa[1], pantalon: PALETAS.pantalon[0], tipo: 'camiseta', zapatillas: PALETAS.zapatillas[0], barba: '', chica: false, abajo: 'pantalon', gafas: false, cadena: false, anchos: false, sonrisa: false, dibujo: '', sombrero: '', colorExtra: PALETAS.ropa[4], auriculares: false, mochila: false, ...(estado.personaje?.rasgos || {}) }
   let nombre = estado.personaje?.nombre || ''
-  let pestana = 'cuerpo'
+  let pestana = soloRopa ? 'ropa' : 'cuerpo'
   let direccion = 0 // 0 abajo, 1 izquierda, 2 derecha, 3 arriba
   caja().className = 'pantalla portada'
   const fila = (clave, contenido) => `<div class="fila-creador"><span>${x()[clave]}</span><div>${contenido}</div></div>`
@@ -171,7 +172,9 @@ function creador() {
     extras: fila('sombrero', opciones('sombrero', SOMBREROS, x().sombreros)) + fila('colorExtra', colores('colorExtra', PALETAS.ropa)) + fila('gafas', opciones('gafas', [1, ''], siNo)) + fila('auriculares', opciones('auriculares', [1, ''], siNo)) + fila('mochila', opciones('mochila', [1, ''], siNo)) + fila('cadena', opciones('cadena', [1, ''], siNo)) + fila('sonrisa', opciones('sonrisa', [1, ''], siNo)),
   })[pestana]
   const pintar = () => {
-    caja().innerHTML = `<div class="cuadro creador"><h2>${x().crea}</h2>
+    const titulo = soloRopa ? (estado.idioma === 'en' ? 'Change outfit' : 'Cambia de ropa') : x().crea
+    const pestanas = Object.entries(x().pestanas).filter(([k]) => !soloRopa || k !== 'cuerpo')
+    caja().innerHTML = `<div class="cuadro creador"><h2>${titulo}</h2>
       <div class="creador-cuerpo">
         <div class="creador-vista">
           <canvas id="vista" width="144" height="192"></canvas>
@@ -179,12 +182,12 @@ function creador() {
           <button class="opcion" id="aleatorio">${x().aleatorio}</button>
         </div>
         <div class="creador-opciones">
-          ${fila('nombre', `<input id="nombre" maxlength="12" value="${nombre.replace(/"/g, '')}" placeholder="${x().visitante}">`)}
-          <div class="pestanas">${Object.entries(x().pestanas).map(([k, t]) => `<button class="opcion ${pestana === k ? 'sel' : ''}" data-pestana="${k}">${t}</button>`).join('')}</div>
+          ${soloRopa ? '' : fila('nombre', `<input id="nombre" maxlength="12" value="${nombre.replace(/"/g, '')}" placeholder="${x().visitante}">`)}
+          <div class="pestanas">${pestanas.map(([k, t]) => `<button class="opcion ${pestana === k ? 'sel' : ''}" data-pestana="${k}">${t}</button>`).join('')}</div>
           ${contenido()}
         </div>
       </div>
-      <div class="botones"><button class="boton" id="volver">${x().volver}</button><button class="boton verde" id="jugar">${x().jugar} ▶</button></div></div>`
+      <div class="botones"><button class="boton" id="volver">${x().volver}</button><button class="boton verde" id="jugar">${soloRopa ? (estado.idioma === 'en' ? 'Put it on' : 'Ponérmelo') : x().jugar} ▶</button></div></div>`
     caja().querySelectorAll('[data-k]').forEach((b) => b.onclick = () => {
       const k = b.dataset.k, v = b.dataset.v
       p[k] = BOOLEANOS.includes(k) ? !!v : k === 'barba' ? (v || false) : v
@@ -193,12 +196,18 @@ function creador() {
       if (k === 'chica' && p.chica && CORTOS.includes(p.pelo)) p.pelo = 'media'
       if (k === 'chica' && p.chica) p.barba = false
       if (k === 'chica' && !p.chica && p.abajo === 'falda') p.abajo = 'pantalon'
-      sfx.mover(); nombre = $('#nombre').value; pintar()
+      sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar()
     })
-    caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre').value; pintar() })
+    caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar() })
     $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover() }
     $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover() }
     $('#aleatorio').onclick = () => {
+      if (soloRopa) {
+        // en el probador, al azar solo la ropa: el cuerpo se queda como está
+        Object.assign(p, { ropa: azarDe(PALETAS.ropa), pantalon: azarDe(PALETAS.pantalon), tipo: azarDe(TIPOS), zapatillas: azarDe(PALETAS.zapatillas), anchos: Math.random() < 0.5,
+          dibujo: Math.random() < 0.5 ? azarDe(DIBUJOS) : '', sombrero: Math.random() < 0.4 ? azarDe(SOMBREROS) : '', colorExtra: azarDe(PALETAS.ropa), auriculares: Math.random() < 0.2, mochila: Math.random() < 0.3, cadena: Math.random() < 0.3 })
+        sfx.aceptar(); pintar(); return
+      }
       const chica = Math.random() < 0.5
       Object.assign(p, {
         chica, abajo: chica ? azarDe(ABAJOS) : azarDe(['pantalon', 'corto']),
@@ -208,9 +217,11 @@ function creador() {
       })
       sfx.aceptar(); nombre = $('#nombre').value; pintar()
     }
-    $('#nombre').oninput = (e) => { nombre = e.target.value }
-    $('#nombre').onkeydown = (e) => { if (e.key === 'Enter') confirmar() }
-    $('#volver').onclick = () => principal()
+    if (!soloRopa) {
+      $('#nombre').oninput = (e) => { nombre = e.target.value }
+      $('#nombre').onkeydown = (e) => { if (e.key === 'Enter') confirmar() }
+    }
+    $('#volver').onclick = () => soloRopa ? cerrarProbador() : principal()
     $('#jugar').onclick = () => confirmar()
     crearPersonaje(escena, 'vista-previa', p)
     vista()
@@ -232,6 +243,14 @@ function creador() {
   creador.reloj = setInterval(() => { marco++; vista() }, 200)
   const confirmar = () => {
     clearInterval(creador.reloj)
+    if (soloRopa) {
+      estado.personaje.rasgos = { ...p }
+      guardar()
+      registrar('zona', 'cambio-de-ropa', true)
+      sfx.aceptar()
+      cerrarProbador(true)
+      return
+    }
     estado.personaje = { nombre: ($('#nombre')?.value || nombre).trim() || x().visitante, rasgos: { ...p } }
     estado.recorridoHecho = false
     estado.visitados.clear()
@@ -252,6 +271,20 @@ function jugar() {
   alTerminar?.()
 }
 
+// El probador: se abre jugando, el juego se queda en pausa detrás y al ponerse la ropa se rehace el personaje
+function abrirProbador() {
+  if (hayDialogo() || !estado.personaje || escena.modo !== 'juego') return
+  escena.modo = 'ropa'
+  escena.jugador?.setVelocity(0)
+  caja().hidden = false
+  creador(true)
+}
+function cerrarProbador(cambiada = false) {
+  clearInterval(creador.reloj)
+  caja().hidden = true
+  escena.volverDelProbador(cambiada)
+}
+
 // Botón «Menú» de la barra: el juego se queda de fondo (la cámara vuelve a pasear) y sale el menú principal
 function volverAlMenu() {
   if (hayDialogo()) return
@@ -265,6 +298,7 @@ export function iniciarPantallas(scene, empezar) {
   escena = scene
   alTerminar = empezar
   alVolverAlMenu(volverAlMenu)
+  alCambiarRopa(abrirProbador)
   caja().hidden = false
   arranque()
 }

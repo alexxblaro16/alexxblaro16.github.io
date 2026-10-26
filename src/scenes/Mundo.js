@@ -1,14 +1,15 @@
 // La escena principal: el mundo en píxeles, el personaje del visitante, Alejandro como guía y todos los NPC.
 import Phaser from 'phaser'
 import { T, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdificios, crearDecorado } from '../sprites.js'
-import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO, ESFERAS } from '../mapa.js'
+import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, AUTOVIA, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO, ESFERAS } from '../mapa.js'
 import { INTERIORES, crearInteriores } from '../interiores.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { registrar } from '../registro.js'
-import { decir, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD, logro } from '../ui.js'
+import { decir, elegir, pedirRopa, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD, logro } from '../ui.js'
 import { sfx, sonar } from '../sonido.js'
 import { abrirArcade } from '../arcade.js'
+import { animarViaje } from '../viaje.js'
 import { lienzo, px, texto, ruido2D } from '../pixel.js'
 
 const VELOCIDAD = 90
@@ -19,6 +20,11 @@ const ALEJANDRO = { pelo: 'ondulado', colorPelo: '#241812', piel: '#e6b28e', rop
 const DANTE_PW = { pelo: 'flequillo', colorPelo: '#9aa3ad', piel: '#b8c4d0', ojos: '#3dd9ff', ropa: '#3dd9ff', pantalon: '#5b6068', robot: true }
 
 const frases = (clave) => HISTORIA[estado.idioma][clave] || []
+const en = () => estado.idioma === 'en'
+// lo que dicen los NPC cuando charlan entre ellos (sirve en los dos idiomas)
+const BOCADILLOS = ['...', 'jaja', '!?', 'xD', '!!', '?']
+const espera = (escena, ms) => new Promise((r) => escena.time.delayedCall(ms, r))
+const mover = (escena, opciones) => new Promise((r) => escena.tweens.add({ ...opciones, onComplete: r }))
 // Lo que dice cada amigo: su frase propia si la tiene y, si no, de qué conoce a Alejandro
 const fraseAmigo = (p) => {
   const propia = p.frases?.[estado.idioma]
@@ -167,6 +173,11 @@ export default class Mundo extends Phaser.Scene {
     for (let x = 62 * T; x < 97 * T; x += 12) if (!cebras.some((c) => x >= c * T - 4 && x < (c + 2) * T + 4)) rect(x, (CAMINO + 1) * T - 1, 7, 2, '#e9ecef')
     for (const c of cebras) for (let y = CAMINO * T + 2; y < (CAMINO + 2) * T - 2; y += 4) rect(c * T + 2, y, 2 * T - 4, 2, '#eef1f4')
 
+    // La autovía: líneas blancas, discontinua en el centro y biondas a los dos lados
+    const ax0 = AUTOVIA.x0 * T, ax1 = (AUTOVIA.x1 + 1) * T, H = ALTO * T
+    rect(ax0 + 2, 0, 1, H, '#e9ecef'); rect(ax1 - 3, 0, 1, H, '#e9ecef')
+    for (let y = 0; y < H; y += 14) rect(ax0 + T - 1, y, 2, 8, '#e9ecef')
+    for (const x of [ax0 - 3, ax1 + 1]) { rect(x, 0, 2, H, '#c9ced5'); rect(x, 0, 1, H, '#eef1f4'); for (let y = 4; y < H; y += 12) rect(x, y, 2, 3, '#5b6068') }
     if (this.textures.exists('suelo')) this.textures.remove('suelo')
     this.textures.addCanvas('suelo', lienzo)
     this.add.image(0, 0, 'suelo').setOrigin(0).setDepth(-1000)
@@ -222,6 +233,8 @@ export default class Mundo extends Phaser.Scene {
   }
 
   colocarEdificios() {
+    // la autovía no se cruza andando (para eso está el Monbus)
+    this.solido(AUTOVIA.x0 * T - 3, 0, (AUTOVIA.x1 - AUTOVIA.x0 + 1) * T + 6, ALTO * T)
     for (const e of EDIFICIOS) {
       const img = this.add.image(e.x * T, e.base * T, e.clave).setOrigin(0.5, 1).setDepth(e.base * T)
       const w = img.width, h = img.height
@@ -240,10 +253,11 @@ export default class Mundo extends Phaser.Scene {
       } else if (o.clave === 'campo' || o.clave === 'estadio') {
         img.setDepth(-500)
         if (o.clave === 'estadio') {
-          // la valla es sólida y solo se entra por las dos puertas, la de arriba y la de abajo
+          // la valla es sólida y solo se entra por las dos puertas, la de arriba y la de abajo; los banquillos también
           const x0 = o.x * T - img.width / 2, y0 = o.base * T - img.height
-          for (const y of [y0, y0 + img.height - 3]) { this.solido(x0, y, 66, 3); this.solido(x0 + 78, y, img.width - 78, 3) }
+          for (const y of [y0, y0 + img.height - 4]) { this.solido(x0, y, 82, 4); this.solido(x0 + 106, y, img.width - 106, 4) }
           this.solido(x0, y0, 3, img.height); this.solido(x0 + img.width - 3, y0, 3, img.height)
+          for (const bx of [44, 116]) this.solido(x0 + bx, y0 + 98, 18, 6)
         }
       } else if (o.clave === 'pato') {
         img.setDepth(-460) // flota en la laguna
@@ -290,7 +304,7 @@ export default class Mundo extends Phaser.Scene {
       }
       if (o.letrero) this.letrero(o.letrero, o.x * T, o.base * T - img.height - 1, o.zona ? '#2fbf71' : '#ffffff')
       const grande = o.clave === 'campo' || o.clave === 'estadio'
-      if (o.zona || o.vida || o.arcade) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -40 : 4), radio: grande ? 44 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, nombre: 'Alejandro' })
+      if (o.zona || o.vida || o.arcade || o.bus) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : 4), radio: grande ? 56 : o.bus ? 32 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, nombre: 'Alejandro' })
     }
   }
 
@@ -346,8 +360,8 @@ export default class Mundo extends Phaser.Scene {
           this.solido(img.x - img.width / 2 + 1, img.y - alto, img.width - 2, alto)
           this.add.rectangle(img.x + 2, img.y - 1, img.width - 2, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-885)
         }
-        if (m.vida || m.zona || m.ir || m.arcade) {
-          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, nombre: 'Alejandro' })
+        if (m.vida || m.zona || m.ir || m.arcade || m.ropa) {
+          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, nombre: 'Alejandro' })
         }
       }
       for (const [i, g] of (o.personas || []).entries()) {
@@ -377,7 +391,7 @@ export default class Mundo extends Phaser.Scene {
       const py0 = y == null ? sala.salidaY - 20 : sala.y0 + y * T
       this.jugador.setPosition(px0, py0)
       this.mirando = y == null ? 'arriba' : 'abajo'
-      if (this.dantePWsigue) this.dantePW.setPosition(px0 + 14, py0 + 6)
+      this.traerAcompanantes(px0, py0)
       this.physics.world.setBounds(sala.x0, sala.y0, sala.W, sala.H)
       // la cámara se centra en la sala (con margen alrededor, que es negro) y sigue al jugador si la sala no cabe
       cam.setBounds(sala.x0 - 240, sala.y0 - 200, sala.W + 480, sala.H + 400)
@@ -422,7 +436,7 @@ export default class Mundo extends Phaser.Scene {
       this.dentro = null
       this.jugador.setPosition(this.vuelta.x, this.vuelta.y)
       this.mirando = 'abajo'
-      if (this.dantePWsigue) this.dantePW.setPosition(this.vuelta.x + 16, this.vuelta.y + 6)
+      this.traerAcompanantes(this.vuelta.x, this.vuelta.y)
       this.physics.world.setBounds(0, 0, ANCHO * T, ALTO * T)
       cam.setBounds(0, 0, ANCHO * T, ALTO * T)
       this.ajustarZoom()
@@ -527,6 +541,13 @@ export default class Mundo extends Phaser.Scene {
       vuela()
       return m
     })
+    // coches por la autovía, en los dos sentidos
+    this.time.addEvent({ delay: 1500, loop: true, callback: () => {
+      if (this.dentro || Math.random() < 0.3) return
+      const baja = Math.random() < 0.5
+      const coche = this.add.image((baja ? AUTOVIA.x0 + 0.5 : AUTOVIA.x1 + 0.5) * T, baja ? -10 : ALTO * T + 24, `coche_v${Phaser.Math.Between(0, 4)}`).setOrigin(0.5, 1).setFlipY(baja)
+      this.tweens.add({ targets: coche, y: baja ? ALTO * T + 30 : -30, duration: Phaser.Math.Between(3600, 5200), onUpdate: () => coche.setDepth(coche.y), onComplete: () => coche.destroy() })
+    } })
     this.nubes = [0, 1, 2, 3, 4].map((i) => this.add.image(aleatorio(0, ANCHO * T), aleatorio(4, ALTO - 4) * T, 'sombra_nube').setDepth(9300).setScale(i % 2 ? 1.4 : 1))
     this.time.addEvent({ delay: 50, loop: true, callback: () => this.nubes.forEach((n, i) => { n.x += 0.35 + i * 0.05; if (n.x > ANCHO * T + 160) n.x = -160 }) })
     this.time.addEvent({ delay: 6500, loop: true, callback: () => {
@@ -591,7 +612,7 @@ export default class Mundo extends Phaser.Scene {
   // unas tres de cada cuatro, como en un pueblo de noche). Va por encima del velo y se enciende al anochecer.
   ventanasNoche() {
     this.ventanas = []
-    const claves = new Set([...EDIFICIOS.map((e) => e.clave), 'recreativos', 'quiosco', 'casa_pina', 'casa_cabeza'])
+    const claves = new Set([...EDIFICIOS.map((e) => e.clave), 'recreativos', 'quiosco', 'casa_pina', 'casa_cabeza', 'estacion_sur'])
     // casas cuya piedra o pared se confunde con cristal: solo se encienden los colores de sus ventanas
     const soloVentanas = { casa_cabeza: ['127,200,255', '214,236,250'] }
     for (const clave of claves) {
@@ -690,7 +711,7 @@ export default class Mundo extends Phaser.Scene {
       crearAnimaciones(this, clave)
       const s = this.physics.add.sprite(p.x * T, p.y * T, clave, 0).setOrigin(0.5, 1).setImmovable(true)
       s.body.setSize(10, 6).setOffset(7, 25)
-      s.setData('paseo', { clave, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 18 : 22, destino: null, espera: 1000 + (i * 977) % 3000 })
+      s.setData('paseo', { clave, grupo: p.grupo, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 34 : 54, destino: null, espera: 1000 + (i * 977) % 3000 })
       s.setInteractive({ useHandCursor: true })
       s.on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointermove', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
@@ -720,10 +741,9 @@ export default class Mundo extends Phaser.Scene {
     this.guia.on('pointerover', (ptr) => etiqueta('Alejandro', ptr.x, ptr.y))
     this.guia.on('pointerout', () => etiqueta(null))
 
-    // Jerry da vueltas por la zona de la uni
-    this.jerry = this.physics.add.sprite(112 * T, 22.6 * T, 'jerry', 0).setOrigin(0.5, 1).setImmovable(true).play('jerry-andar')
+    // Jerry anda suelto por la zona de la uni
+    this.jerry = this.physics.add.sprite(120 * T, 22.6 * T, 'jerry', 0).setOrigin(0.5, 1).setImmovable(true)
     this.jerry.body.setSize(12, 6).setOffset(2, 10)
-    this.tweens.add({ targets: this.jerry, x: 128 * T, duration: 9000, yoyo: true, repeat: -1, onYoyo: () => this.jerry.setFlipX(true), onRepeat: () => this.jerry.setFlipX(false) })
     this.jerry.setInteractive({ useHandCursor: true }).on('pointerover', (ptr) => etiqueta('Jerry', ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
 
     // DANTE P.W., la IA con cara de robot de Dante
@@ -731,7 +751,151 @@ export default class Mundo extends Phaser.Scene {
     this.dantePW.body.setSize(10, 6).setOffset(7, 25)
     this.dantePW.setImmovable(true)
     this.dantePW.setInteractive({ useHandCursor: true }).on('pointerover', (ptr) => etiqueta('DANTE P.W.', ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
-    this.dantePWsigue = false
+    // los dos andan libres por su zona (radio en píxeles) y, si se lo pides, te siguen a todas partes
+    this.acompanantes = [
+      { s: this.jerry, anim: null, sigue: false, casaX: this.jerry.x, casaY: this.jerry.y, radio: 120, destino: null, espera: 0, hueco: 34 },
+      { s: this.dantePW, anim: 'dante_pw', sigue: false, casaX: this.dantePW.x, casaY: this.dantePW.y, radio: 80, destino: null, espera: 0, hueco: 22 },
+    ]
+    this.physics.add.collider([this.jerry, this.dantePW], this.solidos)
+  }
+
+  acompanante(s) { return this.acompanantes.find((a) => a.s === s) }
+
+  // Al entrar en una sala, salir o bajar del autobús, los que te siguen aparecen a tu lado
+  traerAcompanantes(x, y) {
+    let i = 0
+    for (const a of this.acompanantes) if (a.sigue) { a.s.setPosition(x + (i++ ? -16 : 16), y + 6).setVelocity(0); a.destino = null }
+  }
+
+  moverAcompanante(a, pausado) {
+    const s = a.s, j = this.jugador, ahora = this.time.now
+    const quieto = () => { s.setVelocity(0); s.anims.stop(); if (a.anim) s.setFrame(s.frame.name - (s.frame.name % 3)) }
+    if (pausado || this.cambiandoSala || this.enViaje) return quieto()
+    const andar = (dx, dy, rapidez) => {
+      const v = new Phaser.Math.Vector2(dx, dy).normalize().scale(rapidez)
+      s.setVelocity(v.x, v.y)
+      if (a.anim) s.play(`${a.anim}-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`, true)
+      else { s.play('jerry-andar', true); if (Math.abs(dx) > 1) s.setFlipX(dx < 0) }
+    }
+    if (a.sigue) {
+      const dist = Phaser.Math.Distance.Between(s.x, s.y, j.x, j.y)
+      // si se queda muy atrás (un árbol en medio, otra sala…) aparece a tu lado
+      if (dist > 170) { s.setPosition(j.x + (a.anim ? 14 : -18), j.y + 4); return quieto() }
+      if (dist > a.hueco) return andar(j.x - s.x, j.y - s.y, VELOCIDAD * (this.turbo > ahora ? 1.7 : 0.95))
+      return quieto()
+    }
+    // suelto: da paseos alrededor de su sitio y se para a mirarte si te acercas
+    const cerca = Phaser.Math.Distance.Between(s.x, s.y, j.x, j.y) < 30
+    if (cerca) {
+      quieto(); a.destino = null; a.espera = ahora + 1200
+      if (a.anim) { const dx = j.x - s.x, dy = j.y - s.y; s.setFrame(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 6 : 3) : (dy > 0 ? 0 : 9)) }
+      return
+    }
+    if (!a.destino) {
+      if (ahora < a.espera) return quieto()
+      const ang = Math.random() * Math.PI * 2, r = Math.random() * a.radio
+      a.destino = { x: a.casaX + Math.cos(ang) * r, y: a.casaY + Math.sin(ang) * r * 0.6, hasta: ahora + 5000 }
+    }
+    const dx = a.destino.x - s.x, dy = a.destino.y - s.y
+    if (Math.hypot(dx, dy) < 3 || ahora > a.destino.hasta) { quieto(); a.destino = null; a.espera = ahora + 1500 + Math.random() * 3000; return }
+    andar(dx, dy, 30)
+  }
+
+  // Hablar con Jerry o con DANTE P.W.: que te cuente algo o que se venga contigo (o se quede)
+  async hablarAcompanante(a, nombre, claveHablar) {
+    const opciones = en() ? ['Talk', a.sigue ? 'Stay here' : 'Follow me', 'Bye'] : ['Hablar', a.sigue ? 'Quédate aquí' : 'Sígueme', 'Adiós']
+    const pregunta = a.sigue ? (en() ? 'Still with you. What now?' : 'Sigo contigo. ¿Qué hacemos?') : (en() ? 'Hi! What do you want to do?' : '¡Hola! ¿Qué quieres hacer?')
+    const i = await elegir(nombre, pregunta, opciones)
+    if (i === 0) return decir(nombre, frases(claveHablar))
+    if (i !== 1) return
+    a.sigue = !a.sigue
+    if (!a.sigue) { a.casaX = a.s.x; a.casaY = a.s.y; a.destino = null } // se queda dando vueltas por donde lo dejas
+    registrar('zona', `${nombre === 'Jerry' ? 'jerry' : 'dante-pw'}-${a.sigue ? 'sigue' : 'se-queda'}`, true)
+    const clave = nombre === 'Jerry' ? (a.sigue ? 'jerry_sigue' : 'jerry_parar') : (a.sigue ? 'dante_pw_sigue' : 'dante_pw_parar')
+    return decir(nombre, frases(clave))
+  }
+
+  // ------------------------------------------------------------------------------------------ el Monbus
+  // Villalpando y Madrid están separados por la autovía: se coge el autobús en la parada del pueblo y te deja en
+  // la Estación Sur (o al revés). Llega el autocar, subís (con Alejandro si estás en el recorrido y con quien te
+  // siga), se va, el viaje por la meseta y bajáis en el otro lado.
+  async preguntarBus(destino) {
+    const i = await elegir('Monbus', frases(destino === 'madrid' ? 'bus_madrid' : 'bus_pueblo'), en() ? ['Get on', 'Not now'] : ['Subir', 'Ahora no'])
+    if (i === 0) return this.viajarBus(destino)
+  }
+
+  async viajarBus(destino, conGuia = false) {
+    const cam = this.cameras.main, j = this.jugador
+    const ida = destino === 'madrid'
+    const salidaX = (ida ? 57 : 62.2) * T, llegadaX = (ida ? 62.2 : 57) * T
+    const yBus = (CAMINO + 1.7) * T
+    const puerta = (x) => x + (ida ? 27 : -27) // la puerta va delante, en el lado hacia el que va el autocar
+    this.enViaje = true
+    j.setVelocity(0); j.body.enable = false
+    if (conGuia) { this.tweens.killTweensOf(this.guia); this.guiaEnMarcha = true }
+    registrar('zona', `bus-${destino}`, true)
+    const bus = this.add.image(salidaX + (ida ? -280 : 280), yBus, 'bus').setOrigin(0.5, 1).setFlipX(!ida)
+    const profundidad = () => bus.setDepth(yBus)
+    profundidad()
+    cam.stopFollow()
+    cam.pan(salidaX, yBus - 30, 700, 'Sine.easeInOut')
+    const motor = (n) => { for (let k = 0; k < n; k++) sonar(68 + (k % 2) * 5, 0.2, 'sawtooth', 0.025, k * 0.2) }
+    motor(8)
+    await mover(this, { targets: bus, x: salidaX, duration: 1500, ease: 'Cubic.out' })
+    ;[660, 520].forEach((f, k) => sonar(f, 0.08, 'square', 0.03, k * 0.1)) // se abren las puertas
+    // suben: el jugador, Alejandro si viene y los que te siguen
+    const pasajeros = [j, ...(conGuia ? [this.guia] : []), ...this.acompanantes.filter((a) => a.sigue).map((a) => a.s)]
+    pasajeros.forEach((s) => s.body && s !== j && s.setVelocity(0))
+    await Promise.all(pasajeros.map((s, k) => {
+      const dir = s.x < puerta(bus.x) ? 'derecha' : 'izquierda'
+      if (s === j) j.play(`jugador-${dir}`, true); else if (s === this.guia) s.play(`alejandro-${dir}`, true)
+      return mover(this, { targets: s, x: puerta(bus.x), y: yBus + 2, duration: 450 + k * 120 }).then(() => mover(this, { targets: s, alpha: 0, duration: 150 }))
+    }))
+    j.anims.stop(); this.guia.anims.stop()
+    motor(7)
+    await mover(this, { targets: bus, x: salidaX + (ida ? 320 : -320), duration: 1400, ease: 'Cubic.in' })
+    cam.fadeOut(260, 0, 0, 0)
+    await espera(this, 300)
+    await animarViaje(this.textures.get('bus').getSourceImage(), ida)
+    // llegada al otro lado
+    bus.setPosition(llegadaX + (ida ? -280 : 280), yBus)
+    pasajeros.forEach((s) => s.setPosition(puerta(llegadaX), yBus + 2))
+    cam.centerOn(llegadaX, yBus - 30)
+    cam.fadeIn(300)
+    motor(8)
+    await mover(this, { targets: bus, x: llegadaX, duration: 1500, ease: 'Cubic.out' })
+    ;[520, 660].forEach((f, k) => sonar(f, 0.08, 'square', 0.03, k * 0.1))
+    await Promise.all(pasajeros.map((s, k) => {
+      s.setAlpha(1)
+      return mover(this, { targets: s, x: puerta(llegadaX) + (k - 1) * 16 * (ida ? 1 : -1), y: yBus + 12 + (k % 2) * 6, duration: 380 })
+    }))
+    this.mirando = 'abajo'
+    this.tweens.add({ targets: bus, x: llegadaX + (ida ? 340 : -340), duration: 1600, ease: 'Cubic.in', onComplete: () => bus.destroy() })
+    motor(6)
+    j.body.enable = true
+    for (const a of this.acompanantes) if (a.sigue) a.destino = null
+    cam.startFollow(j, true, 0.12, 0.12)
+    if (conGuia) this.guiaEnMarcha = false
+    this.enViaje = false
+    if (!conGuia) await decir('Monbus', frases(ida ? 'bus_llegada_madrid' : 'bus_llegada_pueblo'))
+  }
+
+  // ------------------------------------------------------------------------------------------ el probador
+  async abrirArmario() {
+    const i = await elegir('Alejandro', frases('int_armario'), en() ? ['Yes, let me see', 'No'] : ['Sí, a ver', 'No'])
+    if (i === 0) pedirRopa()
+  }
+
+  // Al cerrar el probador: si te has cambiado, se rehace la hoja del jugador con la ropa nueva
+  volverDelProbador(cambiada) {
+    if (cambiada) {
+      crearPersonaje(this, 'jugador', estado.personaje.rasgos)
+      crearAnimaciones(this, 'jugador')
+      this.jugador.setTexture('jugador', { abajo: 0, izquierda: 3, derecha: 6, arriba: 9 }[this.mirando || 'abajo'])
+      ;[523, 659, 784, 1047].forEach((f, i) => sonar(f, 0.1, 'triangle', 0.05, i * 0.07))
+      this.tinteActual = null // que se vuelva a teñir de noche
+    }
+    this.modo = 'juego'
   }
 
   // ------------------------------------------------------------------------------------------ empezar a jugar
@@ -765,8 +929,10 @@ export default class Mundo extends Phaser.Scene {
       this.physics.add.collider(this.jugador, this.solidos),
       this.physics.add.collider(this.jugador, this.npcs),
       // Alejandro, DANTE P.W., Jerry y los profes también son sólidos: no se les atraviesa
-      this.physics.add.collider(this.jugador, [this.guia, this.dantePW, this.jerry, ...this.gente]),
+      this.physics.add.collider(this.jugador, [this.guia, ...this.gente]),
+      this.physics.add.collider(this.jugador, [this.dantePW, this.jerry], null, (yo, o) => !this.acompanante(o)?.sigue),
     ]
+    this.enViaje = false
     if (!this.npcsChocan) { this.physics.add.collider(this.npcs, this.solidos); this.npcsChocan = true }
     this.jugador.setInteractive().on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y)).on('pointerout', () => etiqueta(null))
     this.cameras.main.startFollow(this.jugador, true, 0.12, 0.12)
@@ -805,6 +971,7 @@ export default class Mundo extends Phaser.Scene {
     const paso = RECORRIDO[this.paso]
     this.guia.setFrame(this.guia.x > this.jugador.x ? 3 : 6)
     await decir('Alejandro', frases(paso.historia))
+    if (paso.bus) await this.viajarBus(paso.bus, true)
     this.paso++
     if (this.paso >= RECORRIDO.length) { estado.recorridoHecho = true; guardar(); registrar('recorrido', 'completo', true) }
     this.contando = false
@@ -838,11 +1005,8 @@ export default class Mundo extends Phaser.Scene {
   async interactuar() {
     const j = this.jugador
     const cerca = (o, r = 22) => Phaser.Math.Distance.Between(j.x, j.y, o.x, o.y) < r
-    if (cerca(this.jerry, 24)) return decir('Jerry', frases('jerry'))
-    if (cerca(this.dantePW, 22)) {
-      this.dantePWsigue = !this.dantePWsigue
-      return decir('DANTE P.W.', frases(this.dantePWsigue ? 'dante_pw_hablar' : 'dante_pw_parar'))
-    }
+    if (cerca(this.jerry, 24)) return this.hablarAcompanante(this.acompanante(this.jerry), 'Jerry', 'jerry')
+    if (cerca(this.dantePW, 22)) return this.hablarAcompanante(this.acompanante(this.dantePW), 'DANTE P.W.', 'dante_pw_hablar')
     if (cerca(this.guia, 24) && !this.guiaEnMarcha) {
       if (this.paso < RECORRIDO.length) return this.contarPaso()
       return decir('Alejandro', frases('final').slice(1))
@@ -853,6 +1017,8 @@ export default class Mundo extends Phaser.Scene {
     if (cosa.interior) return this.entrar(cosa.interior)
     if (cosa.ir) return this.usarAscensor(cosa)
     if (cosa.nube) return this.subirNube()
+    if (cosa.bus) return this.preguntarBus(cosa.bus)
+    if (cosa.ropa) return this.abrirArmario()
     if (cosa.arcade) return abrirArcade(cosa.arcade)
     if (cosa.zona) return abrirPanel(cosa.zona)
     if (cosa.frase) return decir(cosa.nombre, cosa.frase())
@@ -874,7 +1040,8 @@ export default class Mundo extends Phaser.Scene {
     if (this.paseoGuia?.isPaused()) { this.paseoGuia.resume(); g.play(this.animGuia, true); return }
     if (this.paseoGuia || this.time.now < (this.esperaGuia || 0)) return
     // otro punto del camino principal, ni muy cerca ni muy lejos de donde está
-    const destino = Phaser.Math.Clamp(g.x / T + Phaser.Math.Between(-14, 14), CAMINO_INICIO + 2, ANCHO - 6) * T
+    const pueblo = g.x < AUTOVIA.x0 * T
+    const destino = Phaser.Math.Clamp(g.x / T + Phaser.Math.Between(-14, 14), pueblo ? CAMINO_INICIO + 2 : AUTOVIA.x1 + 3, pueblo ? AUTOVIA.x0 - 2 : ANCHO - 6) * T
     const y = (CAMINO + Phaser.Math.FloatBetween(0.3, 1.6)) * T
     const dx = destino - g.x, dy = y - g.y
     this.animGuia = `alejandro-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`
@@ -898,18 +1065,45 @@ export default class Mundo extends Phaser.Scene {
     }
     if (!m.destino) {
       if (ahora < m.espera) return
-      const a = Math.random() * Math.PI * 2, r = Math.random() * m.radio
-      m.destino = { x: m.casaX + Math.cos(a) * r, y: m.casaY + Math.sin(a) * r, hasta: ahora + 3500 }
+      // a veces va a charlar con alguien de su grupo que esté por allí; si no, un paseo
+      const amigo = m.grupo && Math.random() < 0.35 && this.npcs.find((o) => o !== n && o.getData('paseo').grupo === m.grupo && !o.getData('paseo').destino
+        && ahora > o.getData('paseo').espera - 200 && Phaser.Math.Distance.Between(o.x, o.y, n.x, n.y) < 90)
+      if (amigo) {
+        const lado = n.x < amigo.x ? -15 : 15
+        m.destino = { x: amigo.x + lado, y: amigo.y, hasta: ahora + 4000, amigo }
+        amigo.getData('paseo').espera = ahora + 4500 // que le espere
+      } else {
+        const a = Math.random() * Math.PI * 2, r = Math.random() * m.radio
+        m.destino = { x: m.casaX + Math.cos(a) * r, y: m.casaY + Math.sin(a) * r * 0.7, hasta: ahora + 3500 }
+      }
     }
     const dx = m.destino.x - n.x, dy = m.destino.y - n.y
     if (Math.hypot(dx, dy) < 2 || ahora > m.destino.hasta) {
-      n.setVelocity(0); n.anims.stop(); n.setFrame(Math.random() < 0.5 ? 0 : [3, 6, 9][Math.floor(Math.random() * 3)])
-      m.destino = null; m.espera = ahora + 1500 + Math.random() * 3500
+      n.setVelocity(0); n.anims.stop()
+      const amigo = m.destino.amigo
+      if (amigo && Phaser.Math.Distance.Between(amigo.x, amigo.y, n.x, n.y) < 30) this.charlar(n, amigo)
+      else n.setFrame(Math.random() < 0.5 ? 0 : [3, 6, 9][Math.floor(Math.random() * 3)])
+      m.destino = null; m.espera = ahora + (amigo ? 4200 : 1500 + Math.random() * 3500)
       return
     }
     const v = new Phaser.Math.Vector2(dx, dy).normalize().scale(26)
     n.setVelocity(v.x, v.y)
     n.play(`${m.clave}-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`, true)
+  }
+
+  // Dos amigos se miran y se dicen algo (un bocadillo cada uno, por turnos)
+  charlar(a, b) {
+    const ahora = this.time.now
+    a.setFrame(a.x < b.x ? 6 : 3); b.setFrame(a.x < b.x ? 3 : 6)
+    const mb = b.getData('paseo'); mb.destino = null; mb.espera = ahora + 4200; b.setVelocity(0); b.anims.stop()
+    const bocadillo = (s, retraso) => this.time.delayedCall(retraso, () => {
+      if (Phaser.Math.Distance.Between(a.x, a.y, b.x, b.y) > 34) return
+      const t = this.add.text(s.x, s.y - 33, BOCADILLOS[Phaser.Math.Between(0, BOCADILLOS.length - 1)], { fontFamily: '"Press Start 2P"', fontSize: '5px', color: '#1b1f27', backgroundColor: '#f4f4f0', padding: { x: 2, y: 2 }, resolution: 6 })
+        .setOrigin(0.5, 1).setDepth(9500)
+      this.tweens.add({ targets: t, y: t.y - 2, duration: 300, yoyo: true })
+      this.time.delayedCall(1300, () => t.destroy())
+    })
+    bocadillo(a, 100); bocadillo(b, 1500); if (Math.random() < 0.5) bocadillo(a, 2900)
   }
 
   update() {
@@ -924,10 +1118,11 @@ export default class Mundo extends Phaser.Scene {
     const j = this.jugador
     const k = this.teclas
     const tt = teclasTactiles
-    const pausado = hayPanel() || hayDialogo()
+    const probador = this.modo === 'ropa'
+    const pausado = hayPanel() || hayDialogo() || probador || this.enViaje
     const accion = Phaser.Input.Keyboard.JustDown(k.E) || Phaser.Input.Keyboard.JustDown(k.SPACE) || Phaser.Input.Keyboard.JustDown(k.ENTER) || tt.accion
     tt.accion = false
-    if (accion) { if (hayDialogo()) avanzarDialogo(); else if (!hayPanel()) this.interactuar() }
+    if (accion && !probador && !this.enViaje) { if (hayDialogo()) avanzarDialogo(); else if (!hayPanel()) this.interactuar() }
 
     let vx = 0, vy = 0
     const quieto = pausado || this.cambiandoSala
@@ -943,11 +1138,11 @@ export default class Mundo extends Phaser.Scene {
     const rapidez = VELOCIDAD * (turbo ? 1.8 : 1)
     const v = analogico ? new Phaser.Math.Vector2(tt.vx, tt.vy).scale(rapidez) : new Phaser.Math.Vector2(vx, vy).normalize().scale(rapidez)
     if (analogico) { vx = tt.vx; vy = tt.vy }
-    j.setVelocity(v.x, v.y)
+    if (!this.enViaje) j.setVelocity(v.x, v.y)
     if (this.nubeJugador) {
       this.nubeJugador.setVisible(turbo).setPosition(j.x, j.y - 1 + Math.sin(this.time.now / 150)).setDepth(j.y - 1)
     }
-    if (vx || vy) {
+    if (this.enViaje) { /* el autobús mueve al jugador */ } else if (vx || vy) {
       const dir = Math.abs(vx) > Math.abs(vy) ? (vx < 0 ? 'izquierda' : 'derecha') : (vy < 0 ? 'arriba' : 'abajo')
       j.play(`jugador-${dir}`, true)
       this.mirando = dir
@@ -958,20 +1153,9 @@ export default class Mundo extends Phaser.Scene {
     j.setDepth(j.y)
     this.guia.setDepth(this.guia.y)
     this.npcs.forEach((n) => { this.pasear(n, pausado); n.setDepth(n.y) })
-    this.pasearGuia(pausado)
-    this.jerry.setDepth(this.jerry.y)
-
-    // DANTE P.W. sigue al jugador si se lo pides
-    const d = this.dantePW
-    if (this.dantePWsigue) {
-      const dist = Phaser.Math.Distance.Between(d.x, d.y, j.x, j.y)
-      if (dist > 24) {
-        this.physics.moveToObject(d, j, VELOCIDAD * 0.9)
-        const dx = j.x - d.x, dy = j.y - d.y
-        d.play(`dante_pw-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`, true)
-      } else { d.setVelocity(0); d.anims.stop() }
-    }
-    d.setDepth(d.y)
+    if (!this.enViaje) this.pasearGuia(pausado)
+    // Jerry y DANTE P.W.: sueltos por su zona o detrás de ti
+    for (const a of this.acompanantes) { this.moverAcompanante(a, pausado); a.s.setDepth(a.s.y) }
 
     // «!» encima de Alejandro cuando te está esperando para contarte algo
     const esperando = this.paso < RECORRIDO.length && !this.guiaEnMarcha && !this.contando

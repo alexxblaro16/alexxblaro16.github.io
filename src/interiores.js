@@ -22,7 +22,7 @@ export const INTERIORES = {
       { clave: 'escritorio', x: 6.9, base: 4.6, vida: 'int_pc' },
       { clave: 'silla', x: 6.9, base: 5.6, pisable: true },
       { clave: 'estanteria_lego', x: 4.9, base: 9.9, vida: 'int_lego' },
-      { clave: 'armario', x: 1.5, base: 10.2, vida: 'int_armario' },
+      { clave: 'armario', x: 1.5, base: 10.2, ropa: true }, // el probador: te cambias de ropa
       { clave: 'poster_bloque', x: 5, base: 2.4, pared: true, vida: 'int_poster' },
       { clave: 'alfombra_cuarto', x: 4.6, base: 7.6, pisable: true },
       // el salón

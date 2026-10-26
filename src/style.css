@@ -53,6 +53,11 @@ a { color: var(--verde); }
 }
 #dialogo-nombre { font-family: var(--pixel); font-size: 10px; color: var(--verde); }
 #dialogo-texto { margin: 8px 0 0; font-size: 24px; line-height: 1.15; }
+.dialogo-opciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.dialogo-opciones button { font-family: var(--pixel); font-size: 9px; padding: 8px 12px; background: #1b1f27; color: #e6e9ef; border: 2px solid #343c4a; cursor: pointer; }
+.dialogo-opciones button.sel { border-color: var(--verde); color: var(--verde); }
+.dialogo-opciones button.sel::before { content: '▶ '; }
+#dialogo.con-opciones .seguir { display: none; }
 #dialogo .seguir { position: absolute; right: 14px; bottom: 6px; animation: bote .8s infinite; color: var(--verde); }
 @keyframes bote { 50% { transform: translateY(3px); } }
 
@@ -390,3 +395,12 @@ a { color: var(--verde); }
   .cl-nivel i::after { width: var(--v); transition: none; }
 }
 .cl-proyectos article.visto:hover, .cl-datos div.visto:hover { transition-delay: 0s; }
+
+/* El viaje en Monbus entre Villalpando y Madrid */
+#viaje { position: fixed; inset: 0; z-index: 60; background: #0b0d11; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity .3s; }
+#viaje.visible { opacity: 1; }
+#viaje canvas { width: min(100vw, 177.8vh); height: auto; image-rendering: pixelated; }
+#viaje p { position: absolute; left: 0; right: 0; margin: 0; text-align: center; font-family: var(--pixel); color: #fff; text-shadow: 0 3px 0 #000; }
+#viaje .viaje-ruta { top: 12%; font-size: clamp(12px, 2.6vw, 30px); }
+#viaje .viaje-km { top: calc(12% + clamp(22px, 4vw, 48px)); font-size: clamp(10px, 1.8vw, 20px); color: #f2c200; }
+#viaje .viaje-sub { bottom: 8%; font-size: clamp(8px, 1.2vw, 14px); color: #e6e9ef; }

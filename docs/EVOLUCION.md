@@ -214,6 +214,30 @@ Tras probar la versión 17, Alejandro pidió:
 - **Vídeo de 32 s**: suma tu casa, la entrada de la UDIT con los profes, la planta 3 (git push y git pull), Bit Drop,
   la nube y el deseo de las esferas.
 
+### 19. Seis amigos más, el Monbus a Madrid, un campo de verdad, compañeros que te siguen y el probador
+
+- **Seis personajes nuevos**. En la residencia, **Manu** (el pelo como Héctor, la cara como Iván y ropa de calle; con él
+  voy a conciertos y a eventos como la Scrap World) y **Rodrigo** (de Cuenca, más rubio, de ojos claros, con polo y más
+  grande). En la uni, **Gonzalo** (gafas, barba corta; vamos juntos a clase), **Lucía** (rizos castaños en moño, aros
+  dorados y chándal; compartimos alguna clase) y los gemelos **Tort**: **Jorge** (conmigo en Ingeniería del Software,
+  con PyKV) vestido de blanco y **Miguel** (compartimos alguna clase y nos llevamos genial) vestido al revés, de negro.
+  Peinado nuevo «moño» y aros en el dibujo de los personajes.
+- **Natalia** ya no tiene la frase genérica de la residencia: vivimos juntos y pasamos muchísimo tiempo juntos.
+- **Los NPC se mueven más** (unas tres casillas alrededor de su sitio) y **charlan entre ellos**: uno va hacia otro de su
+  grupo, se miran y salen bocadillos («...», «jaja», «!?»). Gabriel está dentro del campo, con su equipación.
+- **El Monbus**: entre Villalpando y Madrid hay ahora una autovía con coches en los dos sentidos que no se cruza andando.
+  En la parada del pueblo se coge el autobús (blanco con las franjas azul y amarilla de Monbus): llega, subes, se va, sale
+  una escena del viaje por la meseta con los kilómetros (unos 230) y te deja en la **Estación Sur (Méndez Álvaro)**, un
+  edificio nuevo junto a la residencia. Desde allí se vuelve al pueblo igual. En el recorrido guiado, Alejandro se sube
+  contigo después de contar lo de 2023.
+- **Campo de la uni**: fuera la grada (es un campo universitario). Más grande, con las líneas más claras, porterías con
+  red, valla con lona verde, banquillos dentro, un carro de balones, conos y el escudo de la UDIT colgado en la valla.
+- **Jerry y DANTE P.W.** andan sueltos por su zona y, al hablarles, eliges: **Hablar**, **Sígueme** (o **Quédate aquí**)
+  o **Adiós**. Si te siguen, entran contigo en los edificios y suben al autobús; si se quedan atrás, aparecen a tu lado.
+  Los diálogos ya admiten preguntas con varias respuestas (flechas o W/S y E, o con el ratón).
+- **Cambiarse de ropa** sin empezar otra partida: botón **ROPA** en la barra o el armario de su cuarto. Se abre el creador
+  solo con la ropa y los extras, y al ponértela se rehace el personaje en el sitio.
+
 ## Ideas para más adelante
 
 - Dominio propio.

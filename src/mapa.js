@@ -5,6 +5,8 @@ export const ANCHO = 172
 export const ALTO = 34
 export const CAMINO = 19 // fila del camino principal (ocupa 19 y 20)
 export const CAMINO_INICIO = 3 // el camino recorre el pueblo de punta a punta
+// La autovía separa Villalpando de Madrid: no se cruza andando, se va en el Monbus hasta la Estación Sur
+export const AUTOVIA = { x0: 58, x1: 59 }
 
 // Edificios: x es el centro, «base» es la fila donde apoya. «vida» = diálogo de la historia; «zona» = abre un panel
 export const EDIFICIOS = [
@@ -25,7 +27,7 @@ export const EDIFICIOS = [
   { clave: 'instituto', x: 36, base: 31.6, vida: 'instituto' },
   // Madrid
   { clave: 'edificio_madrid_2', x: 61, base: 13 }, { clave: 'edificio_madrid_2', x: 75, base: 13 }, { clave: 'edificio_madrid', x: 90.2, base: 13 },
-  { clave: 'edificio_madrid_2', x: 66, base: 31.4 }, { clave: 'edificio_madrid', x: 71, base: 31.4 }, { clave: 'edificio_madrid', x: 91, base: 31.4 }, { clave: 'edificio_madrid_2', x: 96, base: 30.6 },
+  { clave: 'edificio_madrid_2', x: 66, base: 31.4 }, { clave: 'edificio_madrid', x: 71, base: 31.4 }, { clave: 'edificio_madrid', x: 91, base: 31.4 }, { clave: 'edificio_madrid_2', x: 95, base: 30.6 },
   { clave: 'residencia', x: 67, base: 18, letrero: 'RESIDENCIA JOSÉ PÉREZ DE VARGAS', vida: 'residencia' },
   { clave: 'medac', x: 83, base: 18, letrero: 'MEDAC', interior: 'medac' },
   { clave: 'anexia', x: 93.5, base: 18, letrero: 'ANEXIA · ALQUILER SEGURO', vida: 'anexia' },
@@ -64,7 +66,8 @@ export const OBJETOS = [
   { clave: 'palmera', x: 11, base: 23.5 }, { clave: 'palmera', x: 2.6, base: 31.5 },
   { clave: 'quiosco', x: 89, base: 18.2 },
   // Madrid: estaciones de BiciMAD, coches y un parque
-  { clave: 'farola_moderna', x: 60.5, base: 18.2 }, { clave: 'farola_moderna', x: 77.2, base: 18.2 }, { clave: 'farola_moderna', x: 97, base: 18.2 },
+  { clave: 'estacion_sur', x: 62, base: 18, letrero: 'ESTACIÓN SUR · MÉNDEZ ÁLVARO', bus: 'pueblo' },
+  { clave: 'farola_moderna', x: 77.2, base: 18.2 }, { clave: 'farola_moderna', x: 97, base: 18.2 },
   { clave: 'bicimad', x: 73.6, base: 18.4, vida: 'bicimad' }, { clave: 'coche_azul', x: 63.8, base: 23.6 }, { clave: 'coche_rojo', x: 74.5, base: 23.6 }, { clave: 'coche_blanco', x: 93, base: 23.6 },
   { clave: 'fuente', x: 80, base: 28.4, solido: true }, { clave: 'banco', x: 77, base: 28.6 }, { clave: 'banco', x: 83, base: 28.6 },
   { clave: 'arbol_plaza', x: 74.6, base: 29.4 }, { clave: 'arbol_plaza', x: 85.4, base: 29.4 }, { clave: 'farola_moderna', x: 80, base: 31.4 },
@@ -73,10 +76,11 @@ export const OBJETOS = [
   { clave: 'farola_moderna', x: 130, base: 18.2 }, { clave: 'veleta', x: 138.6, base: 18.3, vida: 'murcielago' },
   { clave: 'macetero', x: 148.2, base: 18.3 }, { clave: 'macetero', x: 156, base: 18.3 }, { clave: 'banco', x: 147, base: 23.4 },
   { clave: 'telarana', x: 151.25, base: 16.5, encima: true },
-  { clave: 'parada', x: 57, base: 18.4, vida: 'parada', letrero: 'MADRID · 2023' },
+  { clave: 'parada', x: 57, base: 18.4, bus: 'madrid', letrero: 'MONBUS · MADRID' },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
-  { clave: 'estadio', x: 104, base: 29, arcade: 'futbol' }, { clave: 'grada', x: 104, base: 31.2 },
-  { clave: 'foco', x: 99.4, base: 23.6 }, { clave: 'foco', x: 108.6, base: 23.6 }, { clave: 'foco', x: 99.4, base: 29.6 }, { clave: 'foco', x: 108.6, base: 29.6 },
+  // campo de la uni: sin gradas, con su valla, lona verde, banquillos y cuatro focos en las esquinas
+  { clave: 'estadio', x: 104, base: 31.2, arcade: 'futbol' },
+  { clave: 'foco', x: 98, base: 24.8 }, { clave: 'foco', x: 110, base: 24.8 }, { clave: 'foco', x: 98, base: 31.6 }, { clave: 'foco', x: 110, base: 31.6 },
   // huerto del pueblo con una berenjena gigante
   { clave: 'huerto', x: 9.5, base: 13.6 }, { clave: 'berenjena', x: 12.9, base: 13.8, vida: 'berenjena' },
   { clave: 'avion', x: 118.5, base: 26.6, vida: 'tallin', letrero: 'TALLIN' },
@@ -97,9 +101,9 @@ export const OBJETOS = [
   { clave: 'taza_jefe', x: 25.6, base: 21.5, vida: 'taza' }, { clave: 'poste_scranton', x: 169, base: 17.6, vida: 'scranton' },
   // Guiños a Dragon Ball e Inazuma Eleven: la nube amarilla (súbete y vas más rápido), el neumático de entrenar paradas
   // y los banderines del rayo junto al campo
-  { clave: 'nube', x: 59.5, base: 27.4, nube: true, vida: 'nube' },
-  { clave: 'neumatico', x: 111.6, base: 27.6, vida: 'neumatico' },
-  { clave: 'banderin_rayo', x: 98.6, base: 31.4, vida: 'rayo' }, { clave: 'banderin_rayo', x: 109.4, base: 31.4, vida: 'rayo' },
+  { clave: 'nube', x: 62.2, base: 27.6, nube: true, vida: 'nube' },
+  { clave: 'neumatico', x: 113, base: 28.6, vida: 'neumatico' },
+  { clave: 'banderin_rayo', x: 97.7, base: 28.4, vida: 'rayo' }, { clave: 'banderin_rayo', x: 111.2, base: 28.4, vida: 'rayo' },
 ]
 
 // Las siete esferas: cinco por el mapa y dos dentro de edificios («dentro» = id del interior, x/y en casillas de la sala)
@@ -116,6 +120,7 @@ export const SUELOS = [
   { tipo: 'asfalto', x0: 62, x1: 96, y0: CAMINO, y1: CAMINO + 1 }, // Madrid
   { tipo: 'acera', x0: 60, x1: 98, y0: CAMINO - 1, y1: CAMINO - 1 }, { tipo: 'acera', x0: 60, x1: 98, y0: CAMINO + 2, y1: CAMINO + 2 },
   { tipo: 'arena', x0: 2, x1: 11, y0: 21, y1: 31 }, // rincón de la piña
+  { tipo: 'asfalto', x0: AUTOVIA.x0, x1: AUTOVIA.x1, y0: 0, y1: ALTO - 1 }, // la autovía
 ]
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [
@@ -124,8 +129,8 @@ export const SENDAS = [
 
 // Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
 // Rasgos sacados de sus fotos: pelo, piel, gafas, barba y la ropa que más llevan.
-const amigos = (lista, x0, y0, grupo) => lista.map(([nombre, pelo, ropa, { frases, ...extra } = {}], i) => ({
-  nombre, grupo, frases, x: x0 + (i % 4) * 2.2 + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
+const amigos = (lista, x0, y0, grupo, paso = 2.2) => lista.map(([nombre, pelo, ropa, { frases, ...extra } = {}], i) => ({
+  nombre, grupo, frases, x: x0 + (i % 4) * paso + (i > 3 ? 1 : 0), y: y0 + Math.floor(i / 4) * 2,
   rasgos: { pelo: 'corto', piel: '#f2c29b', colorPelo: pelo, ropa, ...extra },
 }))
 
@@ -135,11 +140,14 @@ export const PERSONAJES = [
   { nombre: 'Dante', x: 52.4, y: 19.3, rasgos: { pelo: 'flequillo', colorPelo: '#8a5a38', piel: '#f2cba8', ropa: '#4a3f3a', pantalon: '#d6cfbf', anchos: true, zapatillas: '#f4f4f4', estampado: '#e8e2d6', raya: '#9aa3ad' }, vida: 'dante' },
   ...amigos([
     ['Beatriz', '#6b4527', '#a98bd6', { pelo: 'largo', gafas: true, tipo: 'sudadera', pantalon: '#8fa3bf', anchos: true, chica: true , frases: { es: ['De la residencia a compartir piso con Alejandro. Canela, mi perra, también se apunta.'], en: ['From the halls of residence to sharing a flat with Alejandro. Canela, my dog, is in too.'] } }],
-    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera', chica: true, zapatillas: '#f4f4f4' }],
+    ['Natalia', '#c49a5a', '#eef1f4', { pelo: 'melena', tipo: 'sudadera', chica: true, zapatillas: '#f4f4f4', frases: { es: ['Nos conocimos en la resi y ahora vivimos juntos. Pasamos tanto tiempo juntos que ya nos lo sabemos todo el uno del otro.'], en: ['We met at the halls and now we live together. We spend so much time together that we know everything about each other.'] } }],
     ['Andrea', '#3b2418', '#2b2f38', { pelo: 'largo', chica: true, estampado: '#ff7fb0', zapatillas: '#f4f4f4' , frases: { es: ['Empezamos en la misma residencia y ahora compartimos piso. Y seguimos aguantándonos.'], en: ['We started out in the same halls and now we share a flat. And we still put up with each other.'] } }],
     ['Hugo', '#1d1a19', '#24324f', { pelo: 'rizado', piel: '#d9a07a', tipo: 'sudadera' , frases: { es: ['¿Vamos a jugar un pádel?'], en: ['Fancy a game of padel?'] } }],
     ['Jorge', '#141212', '#eef1f4', { pelo: 'rizado', zapatillas: '#f4f4f4', estampado: '#e05a5a', raya: '#9aa3ad' , frases: { es: ['Si vienes tú, ya somos cuatro para el pádel: Hugo, Alejandro, tú y yo. Esta noche, en el Margot.'], en: ['If you come, that makes four for padel: Hugo, Alejandro, you and me. Tonight, at the Margot.'] } }],
-  ], 62, 21.5, 'residencia'),
+    // Manu: el pelo como Héctor, la cara como Iván y ropa de calle
+    ['Manu', '#7a5a38', '#1f2124', { pelo: 'ondulado', piel: '#ecbf9c', estampado: '#f2f3f5', anchos: true, pantalon: '#5a6b45', zapatillas: '#f4f4f4', raya: '#e05a5a', cadena: true, frases: { es: ['Nos conocimos en la resi. Desde entonces, conciertos y eventos como la Scrap World: si hay plan, vamos juntos.'], en: ["We met at the halls. Since then it's been gigs and events like Scrap World: if there's a plan, we go together."] } }],
+    ['Rodrigo', '#c9a060', '#1f3c66', { tipo: 'polo', robusto: true, ojos: '#4f86b8', pantalon: '#cfc6b0', zapatillas: '#f4f4f4', frases: { es: ['Soy de Cuenca. Coincidí con Alejandro en la resi de Madrid y de ahí salió una amistad de las buenas.'], en: ["I'm from Cuenca. I met Alejandro at the halls in Madrid and we've been good friends ever since."] } }],
+  ], 66, 22.8, 'residencia', 1.9),
   ...amigos([
     ['Pablo', '#4e3221', '#1f2430', { pelo: 'ondulado', tipo: 'chaqueta', interior: '#9aa1aa', cadena: true, pantalon: '#3a3f48', anchos: true, frases: { es: ['Soy integrante, junto a Héctor, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final.'], en: ["Together with Héctor, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment."] } }],
     ['Héctor', '#7a5a38', '#22304d', { pelo: 'ondulado', piel: '#dca27c', tipo: 'polo', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy integrante, junto a Pablo, Cristian y Alejandro, de CHAP Games: un proyecto ambicioso que presentamos como trabajo final. Además, hice las prácticas con Alejandro.'], en: ["Together with Pablo, Cristian and Alejandro, I'm part of CHAP Games: an ambitious project we presented as our final assignment. I also did my internship with Alejandro."] } }],
@@ -154,8 +162,18 @@ export const PERSONAJES = [
     ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' , frases: { es: ['Soy el lead de VirtualpH, el proyecto con el CSIC. Las pull requests de Alejandro las reviso yo.'], en: ["I'm the lead on VirtualpH, our project with CSIC. I'm the one who reviews Alejandro's pull requests."] } }],
     ['Rodrigo', '#141212', '#eef1f4', { pelo: 'cortina', piel: '#f3d2ae', ojosFinos: true, zapatillas: '#f4f4f4', estampado: '#3a7bd5', raya: '#3a7bd5' }],
     ['Andrea', '#141212', '#e8c8c0', { pelo: 'melena', gafas: true, piel: '#d9a07a', chica: true, zapatillas: '#f4f4f4' , frases: { es: ['¡Hola! Soy Andrea y soy de México. Vamos juntos a la uni, a la UDIT.'], en: ["Hi! I'm Andrea and I'm from Mexico. We're at uni together, at UDIT."] } }],
-    ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' , frases: { es: ['PyKV, el equipo de fútbol de la uni… Alejandro y yo coincidimos en todo.'], en: ['PyKV, the uni football team… Alejandro and I end up together in everything.'] } }],
   ], 100, 21.4, 'uni'),
+  // Gabriel, con la equipación, dentro del campo de la uni
+  ...amigos([
+    ['Gabriel', '#3a2618', '#1f2a44', { pelo: 'despeinado', piel: '#ecb68f', rayasV: '#6fb6ff', corto: true, pantalon: '#15171c', calcetines: '#f4f4f4', zapatillas: '#f4f4f4' , frases: { es: ['PyKV, el equipo de fútbol de la uni… Alejandro y yo coincidimos en todo.'], en: ['PyKV, the uni football team… Alejandro and I end up together in everything.'] } }],
+  ], 102, 27.6, 'uni'),
+  ...amigos([
+    ['Gonzalo', '#3a2618', '#3a4a66', { gafas: true, barba: 'rala', tipo: 'sudadera', pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Vamos juntos a clase en la UDIT. Si hay que sacar una práctica adelante, nos ponemos y sale.'], en: ['We go to class together at UDIT. If an assignment needs doing, we sit down and get it done.'] } }],
+    ['Lucía', '#5e3c24', '#1f2124', { pelo: 'moño', chica: true, tipo: 'chaqueta', interior: '#ff7fb0', rayas: '#ff7fb0', pantalon: '#15171c', zapatillas: '#f4f4f4', aros: '#e8c45a', labios: '#c4505a', frases: { es: ['¡Hola! Soy Lucía. Con Alejandro comparto alguna clase en la UDIT.'], en: ["Hi! I'm Lucía. I share a few classes with Alejandro at UDIT."] } }],
+    // los Tort, gemelos y vestidos al revés: Jorge de blanco y Miguel de negro
+    ['Jorge', '#141212', '#f2f3f5', { pelo: 'rizado', estampado: '#1f2124', pantalon: '#1f2124', anchos: true, zapatillas: '#f4f4f4', cadena: true, frases: { es: ['Estoy con Alejandro en Ingeniería del Software: hacemos PyKV, una base de datos clave-valor en Python.'], en: ["I'm with Alejandro in Software Engineering: we're building PyKV, a key-value database in Python."] } }],
+    ['Miguel', '#141212', '#1f2124', { pelo: 'rizado', estampado: '#f2f3f5', pantalon: '#d9dde2', anchos: true, zapatillas: '#2a2d33', cadena: true, frases: { es: ['Soy Miguel, el gemelo de Jorge. Con Alejandro comparto alguna clase y nos llevamos genial.'], en: ["I'm Miguel, Jorge's twin. I share a few classes with Alejandro and we get on great."] } }],
+  ], 111, 21.8, 'uni', 2),
 ]
 
 // El recorrido guiado: adónde va Alejandro y qué cuenta (las frases están en historia.js)
@@ -166,7 +184,7 @@ export const RECORRIDO = [
   { x: 50.5, y: CAMINO + 1.3, historia: 'casa' },
   // al instituto se baja por el camino de la izquierda hasta la puerta
   { x: 36, y: 32.3, historia: 'instituto', via: [[31, CAMINO + 0.5], [31, 32.3]] },
-  { x: 57, y: CAMINO + 0.5, historia: 'parada', via: [[31, 32.3], [31, CAMINO + 0.5]] },
+  { x: 57, y: CAMINO + 0.5, historia: 'parada', bus: 'madrid', via: [[31, 32.3], [31, CAMINO + 0.5]] },
   { x: 67, y: CAMINO + 0.5, historia: 'residencia' },
   { x: 83, y: CAMINO + 0.5, historia: 'medac' },
   { x: 93, y: CAMINO + 0.5, historia: 'anexia' },

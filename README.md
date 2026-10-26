@@ -16,7 +16,8 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
 - **Intro de terminal**, menú (continuar, nueva partida, modo clásico, opciones y créditos) y **creador de personaje**
   (chico o chica, nombre, piel, doce peinados, color de pelo, barba, ocho prendas, dibujo en el pecho, colores, corte,
   zapatillas, gorra, gorro o cinta, gafas, cascos, mochila, cadena y sonrisa),
-  con vista previa animada que se puede girar y un botón de personaje aleatorio.
+  con vista previa animada que se puede girar y un botón de personaje aleatorio. La ropa se cambia jugando (botón «Ropa» o
+  el armario de su cuarto).
 - **Recorrido guiado**: Alejandro va delante y cuenta cada etapa (Villalpando, el instituto, la residencia en Madrid,
   MEDAC, las prácticas en Anexia, la UDIT, el Erasmus, los hackatones y DANTE P.W.). Se puede saltar en cualquier momento.
 - **Mapa de su vida en píxeles**, con sitios dibujados a partir de fotos reales: la Puerta de la Villa (que se cruza
@@ -24,11 +25,13 @@ stack. Para quien tenga prisa hay un **modo clásico**: una web profesional con 
 - **Edificios por dentro**: la casa de la familia (su cuarto y el salón), la tienda Reblán, el aula del MEDAC y la UDIT
   (la entrada con sus profes, los tornos y el ascensor a la planta 3, con sus clases).
 - **Día y noche**: un ciclo de 6 minutos con ventanas y farolas que se encienden (o un botón para cambiarlo al momento).
-- **Personajes que pasean por su zona**: familia y amigos, con su nombre de pila al pasar el ratón.
+- **Personajes que pasean por su zona** y charlan entre ellos: familia y amigos, con su nombre de pila al pasar el ratón.
+- **El Monbus**: una autovía separa Villalpando de Madrid; se coge el autobús en la parada del pueblo y, tras el viaje por
+  la meseta, te deja en la Estación Sur (Méndez Álvaro).
 - **Paneles** de trayectoria, proyectos (con repositorio y demo), trofeos, stack y contacto, y **logros** al visitarlos.
 - **Minijuegos**: cuatro recreativas (serpiente, nave, rompe-ladrillos y un laberinto propio), penaltis en el campo
   de fútbol (con tiro relámpago) y Bit Drop, un juego propio de bloques que caen, en la planta 3 de la UDIT.
-- **Secretos**: el robot Jerry, un bloque de Minecraft, DANTE P.W. (que te sigue si se lo pides), el código Konami
+- **Secretos**: el robot Jerry y DANTE P.W. (andan sueltos y te siguen si se lo pides), un bloque de Minecraft, el código Konami
   y guiños a la programación, a The Office, a Bob Esponja, a Batman, a Spider-Man, a Dragon Ball (siete esferas
   escondidas y una nube que te lleva volando), a Inazuma Eleven y a Mickey Mouse.
 - **Español e inglés**, siete estilos de música chiptune (apagada por defecto), pantalla completa y palanca táctil en el
@@ -75,7 +78,8 @@ src/personajes.js     personajes de 24 × 32 dibujados por partes
 src/edificios.js      edificios y objetos grandes (los reales, copiados de fotos)
 src/sprites.js        suelos, árboles, Jerry y decorado pequeño
 src/pixel.js          utilidades de dibujo: colores, contorno automático y una fuente de 3 × 5
-src/pantallas.js      intro, menú, opciones, créditos y creador de personaje
+src/pantallas.js      intro, menú, opciones, créditos, creador de personaje y probador
+src/viaje.js          la escena del viaje en Monbus entre Villalpando y Madrid
 src/ui.js             HUD, diálogos, paneles, logros, etiquetas y modo clásico
 src/content.js        textos de la web en español e inglés (proyectos, stack, trayectoria)
 src/historia.js       diálogos del recorrido en español e inglés

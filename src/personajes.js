@@ -89,6 +89,24 @@ const PELO = {
       p(16, 4, 3, 9, C.h)
     },
   },
+  // Rizado recogido en un moño alto, con algún rizo suelto en las sienes (Lucía)
+  moño: {
+    frente(p, C) {
+      mechones(p, C, [[9, 0, 6, 3], [8, 1, 1, 1], [15, 1, 1, 1]], true)
+      mechones(p, C, [[8, 3, 8, 1], [7, 4, 10, 1], [6, 5, 12, 3], [6, 8, 2, 1], [16, 8, 2, 1], [5, 8, 1, 4], [18, 8, 1, 4]])
+      p(9, 4, 3, 1, C.L); p(8, 5, 2, 1, C.L); p(15, 5, 2, 3, C.h); p(9, 3, 6, 1, C.h); p(5, 10, 1, 1, C.L); p(18, 10, 1, 1, C.L)
+    },
+    lado(p, C) {
+      mechones(p, C, [[13, 0, 6, 4], [12, 1, 1, 2]], true)
+      mechones(p, C, [[8, 3, 8, 1], [7, 4, 10, 1], [6, 5, 12, 3], [6, 8, 2, 1], [13, 8, 5, 4], [5, 8, 1, 3]])
+      p(8, 4, 3, 1, C.L); p(7, 5, 2, 1, C.L); p(15, 5, 3, 7, C.h)
+    },
+    espalda(p, C) {
+      mechones(p, C, [[9, 0, 6, 4], [8, 1, 1, 2], [15, 1, 1, 2]], true)
+      mechones(p, C, [[8, 4, 8, 1], [7, 5, 10, 1], [6, 6, 12, 6], [7, 12, 10, 1]])
+      p(8, 6, 2, 3, C.L); p(15, 6, 3, 6, C.h); p(11, 4, 2, 1, C.h)
+    },
+  },
   largo: {
     frente(p, C) {
       mechones(p, C, [[8, 2, 8, 1], [7, 3, 10, 1], [6, 4, 12, 4], [6, 8, 5, 1], [13, 8, 5, 1], [4, 8, 3, 13], [17, 8, 3, 13], [5, 21, 2, 1], [17, 21, 2, 1]])
@@ -495,6 +513,9 @@ function accesorios(p, C, dir, r) {
   const plata = r.ropa && parseInt(r.ropa.slice(1), 16) > 0xcccccc ? ['#8e98a3', '#5f6873'] : ['#d6dce3', '#aab3bd']
   if (r.cadena && dir === 'frente') { p(9, 17, 1, 1, plata[0]); p(14, 17, 1, 1, plata[0]); p(10, 18, 1, 1, plata[0]); p(13, 18, 1, 1, plata[0]); p(11, 19, 2, 1, plata[1]) }
   if (r.cadena && dir === 'lado') { p(8, 17, 1, 1, plata[0]); p(9, 18, 1, 1, plata[1]) }
+  // aros grandes en las orejas
+  if (r.aros && dir === 'frente') for (const [x, d] of [[5, -1], [18, 1]]) { p(x, 13, 1, 1, r.aros); p(x + d, 14, 1, 1, r.aros); p(x, 15, 1, 1, r.aros) }
+  if (r.aros && dir === 'lado') { p(12, 13, 1, 1, r.aros); p(13, 14, 1, 1, r.aros); p(12, 15, 1, 1, r.aros) }
   if (r.logo && dir === 'frente') p(13, 19, 2, 1, r.logo)
   // bolso cruzado: correa en diagonal y el bolso a la altura de la cadera
   if (r.bolso && dir === 'frente') { for (let i = 0; i < 6; i++) p(9 + i, 17 + i, 1, 1, '#3a2a20'); p(14, 22, 4, 3, r.bolso); p(14, 22, 4, 1, aclarar(r.bolso, 0.25)); p(16, 23, 1, 1, '#d6c070') }
