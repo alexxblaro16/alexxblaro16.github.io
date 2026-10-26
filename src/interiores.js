@@ -109,7 +109,7 @@ export const INTERIORES = {
     personas: [
       { nombre: 'Emma', x: 16.3, y: 11.4, vida: 'emma', rasgos: { pelo: 'largo', colorPelo: '#141212', piel: '#5e3a26', chica: true, ropa: '#eef1f4', tipo: 'camisa', pantalon: '#34466e', pitillo: true, zapatillas: '#f4f4f4', sonrisa: true } },
       { nombre: 'Claudia', x: 20.8, y: 8.1, vida: 'claudia', rasgos: { pelo: 'larga', colorPelo: '#141212', piel: '#f2c29b', chica: true, ropa: '#6a6f78', tipo: 'sudadera', pantalon: '#2b2f38', anchos: true, zapatillas: '#f4f4f4' } },
-      { nombre: 'Alba', x: 22.9, y: 8.1, vida: 'alba', rasgos: { pelo: 'melena', colorPelo: '#ece6d6', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, ropa: '#a970ff', pantalon: '#8fa9cc', zapatillas: '#f4f4f4' } },
+      { nombre: 'Alba', x: 22.9, y: 8.1, vida: 'alba', rasgos: { pelo: 'melena', colorPelo: '#e3c381', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, ropa: '#a970ff', pantalon: '#8fa9cc', zapatillas: '#f4f4f4' } },
       { nombre: 'Lucía', x: 25, y: 8.1, vida: 'lucia_m', rasgos: { pelo: 'largo', colorPelo: '#2e2622', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, sonrisa: true, ropa: '#f2b33d', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
     ],
   },

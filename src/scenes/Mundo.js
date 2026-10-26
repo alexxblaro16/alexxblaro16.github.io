@@ -1243,9 +1243,8 @@ export default class Mundo extends Phaser.Scene {
     if (cerca(this.dantePW, 22)) return this.hablarAcompanante(this.acompanante(this.dantePW), 'DANTE P.W.', 'dante_pw_hablar')
     if (cerca(this.guia, 24) && !this.guiaEnMarcha) {
       if (this.paso < RECORRIDO.length) return this.contarPaso()
-      // la primera vez que le ves de nuevo (en cada visita, hasta que le mandes algo) te pregunta qué te parece
-      if (!this.opinionPreguntada && !this.opinionMandada()) { this.opinionPreguntada = true; return this.pedirOpinion('alejandro') }
-      return decir('Alejandro', frases('final').slice(1))
+      // cada vez que le hablas después del recorrido te pregunta qué te parece su mundo (si ya le escribiste, si quieres contarle más)
+      return this.pedirOpinion('alejandro')
     }
     const cosa = this.interactivos.filter((o) => cerca(o, o.radio)).sort((a, b) => Phaser.Math.Distance.Between(j.x, j.y, a.x, a.y) - Phaser.Math.Distance.Between(j.x, j.y, b.x, b.y))[0] // lo más cercano, no lo primero de la lista
     if (!cosa) return
@@ -1273,8 +1272,9 @@ export default class Mundo extends Phaser.Scene {
   async pedirOpinion(donde) {
     if (hayDialogo()) return
     const quien = donde === 'buzon' ? (en() ? 'Feedback box' : 'Buzón') : 'Alejandro'
-    const i = await elegir(quien, frases(donde === 'buzon' ? 'opinion_buzon' : 'opinion_pregunta'), en() ? ['Yes', 'No'] : ['Sí', 'No'])
-    if (i !== 0) return donde === 'buzon' ? null : decir('Alejandro', frases('opinion_no'))
+    const pregunta = donde === 'buzon' ? 'opinion_buzon' : this.opinionMandada() ? 'opinion_otra' : 'opinion_pregunta'
+    const i = await elegir(quien, frases(pregunta), en() ? ['Yes', 'No'] : ['Sí', 'No'])
+    if (i !== 0) return donde === 'buzon' ? null : decir('Alejandro', frases(this.opinionMandada() ? 'final' : 'opinion_no').slice(this.opinionMandada() ? 1 : 0))
     const texto = await escribir(quien, frases('opinion_escribe'), en() ? { enviar: 'Send', cancelar: 'Cancel' } : { enviar: 'Enviar', cancelar: 'Cancelar' })
     if (!texto) return
     const ok = await mandarOpinion(texto, estado.personaje?.nombre, donde)
