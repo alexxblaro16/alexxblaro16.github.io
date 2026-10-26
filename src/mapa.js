@@ -35,7 +35,9 @@ export const EDIFICIOS = [
   // El instituto, con su camino hasta la puerta
   { clave: 'instituto', x: 36, base: 31.6, vida: 'instituto' },
   // Madrid
-  { clave: 'edificio_madrid_2', x: 61, base: 13 }, { clave: 'edificio_madrid_2', x: 75, base: 13 }, { clave: 'edificio_madrid', x: 90.2, base: 13 },
+  // la Estación Sur, retirada del camino con su explanada delante
+  { clave: 'estacion_sur', x: 64, base: 15, letrero: 'MÉNDEZ ÁLVARO' },
+  { clave: 'edificio_madrid_2', x: 75, base: 13 }, { clave: 'edificio_madrid', x: 90.2, base: 13 },
   { clave: 'edificio_madrid_2', x: 66, base: 31.4 }, { clave: 'edificio_madrid', x: 71, base: 31.4 }, { clave: 'edificio_madrid', x: 91, base: 31.4 }, { clave: 'edificio_madrid_2', x: 93.6, base: 30.6 },
   { clave: 'residencia', x: 72.5, base: 18, letrero: 'RESIDENCIA JOSÉ PÉREZ DE VARGAS', vida: 'residencia' },
   { clave: 'medac', x: 83, base: 18, letrero: 'MEDAC', interior: 'medac' },
@@ -82,7 +84,7 @@ export const OBJETOS = [
   { clave: 'palmera', x: 11, base: 23.5 }, { clave: 'palmera', x: 2.6, base: 31.5 },
   { clave: 'quiosco', x: 89, base: 18.2 },
   // Madrid: estaciones de BiciMAD, coches y un parque
-  { clave: 'estacion_sur', x: 63.8, base: 18, letrero: 'ESTACIÓN SUR · MÉNDEZ ÁLVARO', bus: 'pueblo' },
+  { clave: 'parada_sur', x: 63.6, base: 18.2, bus: 'pueblo' },
   { clave: 'farola_moderna', x: 79.1, base: 18.2 }, { clave: 'farola_moderna', x: 97, base: 18.2 },
   { clave: 'bicimad', x: 77.3, base: 18.4, vida: 'bicimad' }, { clave: 'coche_azul', x: 63.8, base: 23.6 }, { clave: 'coche_rojo', x: 74.5, base: 23.6 }, { clave: 'coche_blanco', x: 93, base: 23.6 },
   { clave: 'fuente', x: 80, base: 28.4, solido: true }, { clave: 'banco', x: 77, base: 28.6 }, { clave: 'banco', x: 83, base: 28.6 },
@@ -152,6 +154,7 @@ export const SUELOS = [
   { tipo: 'asfalto', x0: AUTOVIA.x0, x1: AUTOVIA.x1, y0: 0, y1: ALTO - 1 }, // la autovía
   { tipo: 'asfalto', x0: 20, x1: 31, y0: 7, y1: 8 }, // el aparcamiento del Lupa
   { tipo: 'camino', x0: 8, x1: 9, y0: 9, y1: 10 }, // a la cancela de la ciénaga
+  { tipo: 'baldosa', x0: 61, x1: 66, y0: 15, y1: 17 }, // la explanada de la Estación Sur
 ]
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [

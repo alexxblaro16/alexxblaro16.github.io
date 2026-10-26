@@ -281,19 +281,6 @@ export function crearDecorado(scene) {
     pq(20, 24, 12, 16, '#1b1f27'); pq(21, 25, 10, 15, '#7a5232'); pq(29, 32, 1, 2, '#d6c070')
     scene.textures.addCanvas('estacion_pueblo', ep)
 
-    // Estación Sur de autobuses (Méndez Álvaro): edificio bajo de hormigón y cristal con su marquesina
-    const [es, sx] = lienzo(64, 46)
-    const r = (x, y, w, h, col) => px(sx, x, y, col, w, h)
-    r(0, 6, 64, 40, '#1b1f27'); r(1, 7, 62, 38, '#c9ced5'); r(1, 7, 62, 2, '#e3e7ec'); r(60, 9, 3, 36, '#a9b0b9')
-    r(0, 0, 64, 9, '#1b1f27'); r(1, 1, 62, 7, '#c8302a'); r(1, 1, 62, 1, '#e8645c')
-    texto(sx, 'BUS', 26, 2, '#ffffff')
-    for (const x of [4, 18, 36, 50]) { r(x, 12, 10, 14, '#1b1f27'); r(x + 1, 13, 8, 12, '#6f9cc8'); r(x + 1, 13, 8, 3, '#a9cdee'); r(x + 5, 13, 1, 12, '#1b1f27') }
-    // puertas de cristal y marquesina
-    r(24, 30, 16, 16, '#1b1f27'); r(25, 31, 14, 15, '#4f7aa6'); r(25, 31, 14, 3, '#8fb8de'); r(31, 31, 2, 15, '#1b1f27')
-    r(-1, 27, 66, 3, '#1b1f27'); r(0, 27, 64, 2, '#8a919a')
-    r(4, 31, 16, 10, '#1b1f27'); r(5, 32, 14, 8, '#20262f'); texto(sx, 'MAD', 6, 33, '#f2c200')
-    r(44, 31, 16, 10, '#1b1f27'); r(45, 32, 14, 8, '#20262f'); texto(sx, 'ZAM', 46, 33, '#2fbf71')
-    scene.textures.addCanvas('estacion_sur', es)
 
     // El Monbus: autocar blanco con las franjas azul y amarilla, visto de lado como los coches
     const [b, bx] = lienzo(84, 34)

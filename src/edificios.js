@@ -1028,6 +1028,49 @@ function buzonOpiniones() {
   return c
 }
 
+// La Estación Sur de autobuses de Méndez Álvaro: edificio largo de dos alturas, la planta de arriba forrada de
+// paneles gris azulado con las letras grandes, una franja de ventanas y la marquesina blanca que vuela sobre
+// la planta baja, que es toda de cristal con los pilares de hormigón y las puertas en el centro
+function estacionSur() {
+  const W = 104, H = 72
+  const [c, ctx] = lienzo(W, H)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  // planta de arriba: paneles con sus juntas
+  p(0, 0, W, 31, NEGRO); p(1, 1, W - 2, 3, '#d9dde2'); p(1, 4, W - 2, 26, '#2f4a63')
+  for (let x = 7; x < W - 2; x += 8) p(x, 4, 1, 26, '#3a5775')
+  p(1, 4, W - 2, 1, '#46698a')
+  p(6, 6, W - 12, 13, '#24394d'); textoGrande(ctx, 'ESTACION SUR', W / 2, 8, '#ffffff')
+  textoCentrado(ctx, 'AUTOBUSES', W / 2, 21, '#9fc4e6')
+  for (let x = 4; x < W - 6; x += 10) { p(x, 27, 8, 3, '#7fb0d8'); p(x, 27, 8, 1, '#c3def2') }
+  // la marquesina blanca
+  p(-1, 30, W + 2, 5, NEGRO); p(0, 31, W, 3, '#eef1f4'); p(0, 34, W, 1, '#8a919a')
+  // planta baja de cristal, con reflejos en diagonal y pilares
+  p(2, 35, W - 4, 35, NEGRO); p(3, 35, W - 6, 34, '#5f8fb8')
+  for (let x = 3; x < W - 3; x += 8) p(x, 35, 1, 34, '#2a3b4d')
+  for (let k = 0; k < 6; k++) for (let d = 0; d < 10; d++) p(8 + k * 17 + d, 60 - d * 2, 1, 2, 'rgba(220,238,252,0.35)')
+  p(3, 36, W - 6, 2, '#8fb8de')
+  for (const x of [10, 30, 70, 90]) { p(x, 35, 4, 35, '#c9ced5'); p(x, 35, 1, 35, '#e3e7ec'); p(x + 3, 35, 1, 35, '#9aa1aa') }
+  // puertas de entrada
+  p(40, 46, 24, 24, NEGRO); p(41, 47, 22, 23, '#36597a'); p(41, 47, 22, 2, '#6f9cc8'); p(51, 47, 2, 23, NEGRO)
+  p(48, 58, 1, 4, '#d9dde2'); p(55, 58, 1, 4, '#d9dde2')
+  p(42, 40, 20, 5, NEGRO); p(43, 41, 18, 3, '#c8302a'); textoCentrado(ctx, 'BUS', 52, 40, '#ffffff')
+  // zócalo
+  p(0, 69, W, 3, '#8a919a'); p(0, 69, W, 1, '#b4bac2')
+  return c
+}
+
+// La parada del Monbus delante de la Estación Sur: marquesina con el techo azul, el cristal y su banco
+function paradaSur() {
+  const [c, ctx] = lienzo(34, 30)
+  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+  p(2, 6, 2, 24, '#5b6068'); p(30, 6, 2, 24, '#5b6068')
+  p(4, 8, 26, 16, 'rgba(160,200,230,0.45)'); p(4, 8, 26, 1, '#c3def2')
+  p(0, 2, 34, 5, NEGRO); p(1, 3, 32, 3, '#1f4fa0'); textoCentrado(ctx, 'BUS', 17, 1, '#ffffff')
+  p(7, 21, 20, 3, NEGRO); p(8, 21, 18, 2, '#a8854f'); p(9, 24, 2, 4, '#5b6068'); p(23, 24, 2, 4, '#5b6068')
+  p(22, 10, 7, 9, NEGRO); p(23, 11, 5, 7, '#f2c200'); p(24, 13, 3, 1, NEGRO); p(24, 15, 3, 1, NEGRO)
+  return c
+}
+
 // Chalet de una urbanización: casa baja con tejado, garaje y su jardín con seto
 function chalet(pared, tejado) {
   return () => {
@@ -1332,7 +1375,7 @@ export function crearEdificios(scene) {
     maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
     nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP, cienaga,
     boca_metro_residencia: bocaMetro('RESIDENCIA'), boca_metro_medac: bocaMetro('MEDAC'), boca_metro_udit: bocaMetro('UDIT'), boca_metro_arcade: bocaMetro('ARCADE'),
-    neon_arcade: neonArcade(0), neon_arcade_1: neonArcade(1), chalet: chalet('#f2ede2', '#b4553a'), chalet_2: chalet('#dfe3e6', '#4a525c'), bar_arte: barArte, buzon_opiniones: buzonOpiniones,
+    neon_arcade: neonArcade(0), neon_arcade_1: neonArcade(1), chalet: chalet('#f2ede2', '#b4553a'), chalet_2: chalet('#dfe3e6', '#4a525c'), bar_arte: barArte, buzon_opiniones: buzonOpiniones, estacion_sur: estacionSur, parada_sur: paradaSur,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando
