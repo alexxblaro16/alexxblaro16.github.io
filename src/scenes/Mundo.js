@@ -371,6 +371,9 @@ export default class Mundo extends Phaser.Scene {
         const img = this.add.image(x0 + m.x * T, y0 + m.base * T, m.clave).setOrigin(0.5, 1)
         img.setDepth(m.pared ? -880 : m.pisable ? -890 : m.colgado ? 9400 : y0 + m.base * T)
         if (m.clave === 'bola_disco') this.bolaDisco = img
+        const alto = Math.max(6, img.height - (img.height > 30 ? 10 : 3))
+        // lo que va pegado a la pared de abajo se usa desde arriba: la E va encima del mueble, no detrás
+        const contraPared = !m.pared && !m.pisable && !m.colgado && m.base > o.alto - 1.2
         if (m.colgado) {
           // cuelga del techo: no choca con nada
         } else if (m.tornos) {
@@ -379,12 +382,11 @@ export default class Mundo extends Phaser.Scene {
           this.tornos = { img, x: img.x, y: img.y - 4 }
         } else if (!m.pared && !m.pisable) {
           // el mueble entero es sólido (salvo una franja arriba para no chocar con lo que asoma por detrás)
-          const alto = Math.max(6, img.height - (img.height > 30 ? 10 : 3))
           this.solido(img.x - img.width / 2 + 1, img.y - alto, img.width - 2, alto)
           this.add.rectangle(img.x + 2, img.y - 1, img.width - 2, 4, 0x000000, 0.14).setOrigin(0.5, 0).setDepth(-885)
         }
         if (m.vida || m.zona || m.ir || m.arcade || m.ropa || m.entrar || m.musica) {
-          this.interactivos.push({ x: img.x, y: y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, resena: m.resena, entrar: m.entrar, musica: m.musica, nombre: 'Alejandro' })
+          this.interactivos.push({ x: img.x, y: contraPared ? img.y - alto + 2 : y0 + (m.pared ? 3.3 : m.base + 0.4) * T, radio: m.pared ? 26 : 20, vida: m.vida, zona: m.zona, ir: m.ir, arcade: m.arcade, ropa: m.ropa, resena: m.resena, entrar: m.entrar, musica: m.musica, nombre: 'Alejandro' })
         }
       }
       for (const [i, g] of (o.personas || []).entries()) {
