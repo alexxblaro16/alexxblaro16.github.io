@@ -1,6 +1,6 @@
 // Sonido chiptune generado al momento con Web Audio: sin ficheros de audio que descargar.
 // Hay siete estilos de música para elegir y la elección se recuerda. En la peña El Pilón suena aparte la música
-// de fiesta (reguetón, techno o charanga), que se cambia en su equipo de música y se quita al salir.
+// de fiesta (canciones inventadas de seis géneros), que se elige en su equipo de música y se quita al salir.
 import { estado, guardar } from './estado.js'
 
 let ctx = null
@@ -190,60 +190,105 @@ const ESTILOS = {
 }
 
 // ---------------------------------------------------------------------------------------------- música de la peña
-const FIESTA = {
-  // Reguetón: el ritmo dembow (bombo en cada tiempo y la caja a contratiempo) con bajo y una melodía en la menor
-  regueton: {
-    nombre: { es: 'Reguetón', en: 'Reggaeton' },
-    tocar() {
-      const paso = 0.158, raices = [45, 41, 48, 43] // la, fa, do, sol
-      const melodia = [69, null, 72, null, 76, null, 74, 72, null, 69, null, 72, 74, null, 72, null, 65, null, 69, null, 72, null, 71, 69, null, 67, null, 69, 71, null, 72, null]
-      for (let i = 0; i < 64; i++) {
-        const t = i * paso, s = i % 16
-        if (s % 4 === 0) bombo(t, 0.15)
-        if ([3, 6, 11, 14].includes(s)) ruido(t, 0.09, 0.06, 1800)
-        if (s % 2 === 0) ruido(t, 0.03, 0.015, 8000)
-        if (s % 4 === 0 || s === 6 || s === 14) nota(hz(raices[Math.floor(i / 16)]), t, paso * 1.6, 'triangle', 0.08)
-      }
-      ;[...melodia, ...melodia].forEach((n, i) => { if (n) nota(hz(n), i * paso, 0.14, 'square', 0.016) })
-      return 64 * paso
-    },
-  },
-  // Techno: bombo a negras, platillo abierto a contratiempo, palmas y un bajo que no para
-  techno: {
-    nombre: { es: 'Techno', en: 'Techno' },
-    tocar() {
-      const paso = 0.117, arpegio = [57, 60, 64, 69, 64, 60, 57, 64]
-      for (let i = 0; i < 64; i++) {
-        const t = i * paso, s = i % 16
-        if (s % 4 === 0) bombo(t, 0.17)
-        if (s % 4 === 2) ruido(t, 0.08, 0.03, 7000)
-        if (s === 4 || s === 12) ruido(t, 0.12, 0.05, 1200)
-        if (s % 4 !== 0) nota(hz(i >= 32 ? 41 : 45), t, paso * 0.7, 'sawtooth', 0.03)
-        if (i >= 16 && i % 2 === 0) nota(hz(arpegio[(i / 2) % 8] + 12), t, paso * 0.8, 'square', 0.012)
-      }
-      return 64 * paso
-    },
-  },
-  // Charanga de fiestas de pueblo: pasodoble con la tuba, el bombo y los platillos, y la trompeta por encima
-  charanga: {
-    nombre: { es: 'Charanga', en: 'Brass band' },
-    tocar() {
-      const paso = 0.25
-      const melodia = [74, 74, 76, 78, 79, null, 78, 76, 74, null, 71, 74, 76, null, null, null, 76, 76, 78, 79, 81, null, 79, 78, 76, 74, 73, 76, 74, null, null, null]
-      const tuba = [38, 45, 38, 45, 43, 50, 43, 50, 45, 52, 45, 52, 38, 45, 38, 45]
-      melodia.forEach((n, i) => { if (n) { nota(hz(n), i * paso, paso * 0.85, 'sawtooth', 0.022); nota(hz(n - 4), i * paso, paso * 0.85, 'square', 0.01) } })
-      for (let i = 0; i < 32; i++) {
-        const t = i * paso
-        if (i % 2 === 0) { bombo(t, 0.1); nota(hz(tuba[(i / 2) % 16]), t, paso * 0.8, 'triangle', 0.09) }
-        else { ruido(t, 0.16, 0.035, 5000); nota(hz(tuba[((i - 1) / 2) % 16] + 7), t, paso * 0.5, 'triangle', 0.05) }
-      }
-      return 32 * paso
-    },
-  },
+// La música de la peña: canciones inventadas al estilo de lo que suena de verdad, con artistas de broma
+// (Good Tunny, Nepedo, Rosalio…). Cada canción se describe con su tempo, su ritmo de batería, el bajo y los acordes
+// de cada compás y una melodía en semicorcheas; tema() la toca entera y devuelve lo que dura.
+const GENEROS = [
+  { id: 'regueton', nombre: { es: 'Reguetón', en: 'Reggaeton' } },
+  { id: 'urbano', nombre: { es: 'Urbano', en: 'Urban' } },
+  { id: 'electronica', nombre: { es: 'Electrónica', en: 'Electronic' } },
+  { id: 'pop', nombre: { es: 'Pop', en: 'Pop' } },
+  { id: 'rock', nombre: { es: 'Rock', en: 'Rock' } },
+  { id: 'fiestas', nombre: { es: 'Fiestas', en: 'Village fiesta' } },
+]
+
+// Melodía escrita como texto: notas MIDI separadas por espacios y «.» para los silencios
+const mel = (s) => s.trim().split(/\s+/).map((n) => (n === '.' ? null : +n))
+
+// Patrones de batería en 16 pasos: b = bombo, c = caja o palmas, h = charles
+const RITMOS = {
+  dembow: { b: [0, 4, 8, 12], c: [3, 6, 11, 14], h: [0, 2, 4, 6, 8, 10, 12, 14], bajo: [0, 6, 8, 14] },
+  trap: { b: [0, 7, 10], c: [8], h: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], bajo: [0, 7, 10], largo: true },
+  cuatro: { b: [0, 4, 8, 12], c: [4, 12], h: [2, 6, 10, 14], bajo: [2, 6, 10, 14] },
+  pop: { b: [0, 6, 8], c: [4, 12], h: [0, 2, 4, 6, 8, 10, 12, 14], bajo: [0, 3, 6, 8, 11, 14] },
+  rumba: { b: [0, 8], c: [3, 6, 10, 12, 14], h: [], bajo: [0, 3, 8, 11], rasgueo: [0, 3, 6, 8, 11, 14] },
+  rock: { b: [0, 8, 10], c: [4, 12], h: [0, 2, 4, 6, 8, 10, 12, 14], bajo: [0, 2, 4, 6, 8, 10, 12, 14] },
+  pasodoble: { b: [0, 8], c: [4, 12], h: [], bajo: [0, 8], contra: [4, 12] },
+  pachanga: { b: [0, 4, 8, 12], c: [2, 6, 10, 14], h: [], bajo: [0, 8], contra: [2, 6, 10, 14] },
 }
+
+function tema(c) {
+  const paso = 60 / c.bpm / 4, r = RITMOS[c.ritmo], compases = c.acordes.length
+  for (let i = 0; i < compases * 16; i++) {
+    const t = i * paso, s = i % 16, acorde = c.acordes[Math.floor(i / 16)]
+    if (r.b.includes(s)) bombo(t, c.bombo || 0.15)
+    if (r.c.includes(s)) ruido(t, 0.1, c.ritmo === 'rumba' ? 0.05 : 0.06, c.ritmo === 'rumba' ? 2500 : 1600)
+    if (r.h.includes(s)) ruido(t, c.ritmo === 'trap' && s % 4 === 3 ? 0.02 : 0.03, 0.014, 8000)
+    if (r.bajo.includes(s)) nota(hz(acorde[0] - 12), t, paso * (r.largo ? 5 : 1.7), c.ritmo === 'trap' ? 'sine' : 'triangle', r.largo ? 0.12 : 0.08)
+    // rasgueo de guitarra (rumba), o el «chunda» de la charanga a contratiempo
+    if (r.rasgueo?.includes(s)) acorde.forEach((n, k) => nota(hz(n + 12), t + k * 0.012, paso * 1.4, 'sawtooth', 0.01))
+    if (r.contra?.includes(s)) acorde.forEach((n) => nota(hz(n + 12), t, paso * 1.2, 'square', 0.009))
+    // acordes de fondo, largos, al empezar cada compás
+    if (s === 0 && c.pad) acorde.forEach((n) => nota(hz(n + 12), t, paso * 15, c.pad, 0.012))
+    // power chords en el rock
+    if (c.ritmo === 'rock' && s % 2 === 0) [0, 7, 12].forEach((k) => nota(hz(acorde[0] + k), t, paso * 0.9, 'sawtooth', 0.012))
+  }
+  const m = c.melodia, total = compases * 16
+  for (let i = 0; i < total; i++) {
+    const n = m[i % m.length]
+    if (n) nota(hz(n), i * paso, paso * (c.legato || 0.9), c.lead || 'square', c.vol || 0.02)
+  }
+  return total * paso
+}
+
+const CANCIONES = [
+  // Reguetón
+  { id: 'pueblo_bonito', genero: 'regueton', artista: 'Good Tunny', titulo: 'Pueblo bonito',
+    tocar: () => tema({ bpm: 92, ritmo: 'dembow', acordes: [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]], pad: 'triangle', lead: 'square',
+      melodia: mel('76 . 76 74 . 72 . 74 76 . . 72 . 69 . . 72 . 72 74 . 72 . 69 67 . . 69 . . . . 76 . 76 77 . 76 . 74 72 . . 74 . 76 . . 81 . 79 . 77 76 . 74 . 72 . 69 . . . .') }) },
+  { id: 'gasolinera', genero: 'regueton', artista: 'Daddy Yonki', titulo: 'Gasolinera',
+    tocar: () => tema({ bpm: 96, ritmo: 'dembow', acordes: [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]], lead: 'sawtooth', vol: 0.016,
+      melodia: mel('74 74 . 74 77 . 74 . 72 72 . 72 74 . . . 74 74 . 74 77 . 79 . 77 . 74 . 72 . . . 69 69 . 69 72 . 69 . 67 . 69 . 72 . . . 74 . 72 . 70 . 69 . 67 . . . . . . .') }) },
+  // Urbano
+  { id: 'colombina', genero: 'urbano', artista: 'Nepedo', titulo: 'Colombina',
+    tocar: () => tema({ bpm: 98, ritmo: 'dembow', acordes: [[52, 55, 59], [48, 52, 55], [55, 59, 62], [50, 54, 57]], pad: 'sine', lead: 'triangle', vol: 0.04, legato: 1.6,
+      melodia: mel('71 . . 71 . 69 . 67 . . 67 . 69 . 71 . 74 . . 71 . 69 . 67 . . 64 . . . . . 71 . . 71 . 69 . 67 . . 67 . 69 . 71 . 72 . . 71 . 69 . 71 . . 67 . . . . .') }) },
+  { id: 'dejaste_quedar', genero: 'urbano', artista: 'C. Mandarina', titulo: 'Tú me dejaste de quedar',
+    tocar: () => tema({ bpm: 140, ritmo: 'trap', acordes: [[45, 48, 52], [41, 45, 48], [43, 47, 50], [40, 44, 47]], pad: 'sine', lead: 'square', vol: 0.016,
+      melodia: mel('76 . . . 72 . . . 74 . 72 . 69 . . . 76 . . . 77 . . . 76 . 74 . 72 . . . 72 . . . 71 . . . 69 . 71 . 72 . . . 68 . . . 69 . . . . . . . . . . .') }) },
+  // Electrónica
+  { id: 'arenisca', genero: 'electronica', artista: 'Daruda', titulo: 'Arenisca',
+    tocar: () => tema({ bpm: 136, ritmo: 'cuatro', acordes: [[57, 60, 64], [57, 60, 64], [53, 57, 60], [55, 59, 62]], lead: 'sawtooth', vol: 0.018, legato: 0.7,
+      melodia: mel('69 69 69 69 69 . 69 69 69 69 69 69 69 . 74 74 74 74 74 74 74 . 72 72 72 72 72 72 72 . 67 67 69 69 69 69 69 . 69 69 69 69 69 69 69 . 74 74 74 74 74 74 74 . 76 76 76 76 76 . . . . .') }) },
+  { id: 'titanito', genero: 'electronica', artista: 'David Ghetto', titulo: 'Titanito',
+    tocar: () => tema({ bpm: 126, ritmo: 'cuatro', acordes: [[48, 52, 55], [55, 59, 62], [57, 60, 64], [53, 57, 60]], pad: 'square', lead: 'triangle', vol: 0.04, legato: 1.3,
+      melodia: mel('72 . . 74 . . 76 . . 79 . . 76 . 74 . 74 . . 76 . . 79 . . 81 . . 79 . 76 . 76 . . 79 . . 81 . . 84 . . 81 . 79 . 77 . . 76 . . 74 . . 72 . . . . . .') }) },
+  // Pop
+  { id: 'bailandito', genero: 'pop', artista: 'Enrique Iglesitas', titulo: 'Bailandito',
+    tocar: () => tema({ bpm: 96, ritmo: 'pop', acordes: [[50, 53, 57], [46, 50, 53], [48, 52, 55], [45, 49, 52]], pad: 'triangle', lead: 'square', vol: 0.02,
+      melodia: mel('74 . 74 . 72 . 74 . 77 . . 76 . 74 . . . 72 . 72 . 70 . 72 . 76 . . 74 . 72 . . . 70 . 70 . 69 . 70 . 74 . . 72 . 70 . . . 69 . 70 . 72 . 73 . 74 . . . .') }) },
+  { id: 'motopapi', genero: 'pop', artista: 'Rosalio', titulo: 'Motopapi',
+    tocar: () => tema({ bpm: 110, ritmo: 'rumba', acordes: [[52, 56, 59], [53, 57, 60], [52, 56, 59], [50, 53, 57]], lead: 'triangle', vol: 0.045, legato: 1.1,
+      melodia: mel('76 . 77 76 . 74 . 72 . 71 . 72 74 . 72 71 . . 69 . 71 . 72 . 71 . 69 . 68 . . . 76 . 77 76 . 74 . 72 . 71 . 72 74 . 76 77 . . 76 . 74 . 72 . 71 . 69 . 68 . . .') }) },
+  // Rock
+  { id: 'como_calamar', genero: 'rock', artista: 'Estapo', titulo: 'Como calamar',
+    tocar: () => tema({ bpm: 118, ritmo: 'rumba', acordes: [[45, 48, 52], [43, 47, 50], [41, 45, 48], [40, 44, 47]], lead: 'sawtooth', vol: 0.016,
+      melodia: mel('69 . 69 . 72 . 71 . 69 . 67 . 69 . . . 67 . 67 . 71 . 69 . 67 . 65 . 67 . . . 65 . 65 . 69 . 67 . 65 . 64 . 65 . . . 64 . 65 . 67 . 68 . 69 . . . . . . .') }) },
+  { id: 'so_pallaso', genero: 'rock', artista: 'Extremoblando', titulo: 'So pallaso',
+    tocar: () => tema({ bpm: 140, ritmo: 'rock', acordes: [[40, 44, 47], [40, 44, 47], [43, 47, 50], [45, 48, 52]], lead: 'square', vol: 0.016,
+      melodia: mel('64 . 67 . 69 . 67 . 64 . 62 . 64 . . . 64 . 67 . 69 . 71 . 72 . 71 . 69 . . . 67 . 69 . 71 . 69 . 67 . 64 . 62 . . . 64 . 64 . 62 . 64 . 67 . . . . . . .') }) },
+  // Fiestas
+  { id: 'san_roque', genero: 'fiestas', artista: 'Charanga El Pilón', titulo: 'Pasodoble de San Roque',
+    tocar: () => tema({ bpm: 116, ritmo: 'pasodoble', acordes: [[50, 54, 57], [50, 54, 57], [45, 49, 52], [50, 54, 57]], lead: 'sawtooth', vol: 0.022, bombo: 0.11,
+      melodia: mel('74 . 74 76 78 . 79 . 78 . 76 . 74 . . . 71 . 74 76 78 . 76 . 74 . 73 . 76 . . . 76 . 76 78 79 . 81 . 79 . 78 . 76 . . . 74 . 73 . 76 . 73 . 74 . . . . . . .') }) },
+  { id: 'verbena', genero: 'fiestas', artista: 'Orquesta Tierra de Campos', titulo: 'Verbena en la plaza',
+    tocar: () => tema({ bpm: 128, ritmo: 'pachanga', acordes: [[48, 52, 55], [55, 59, 62], [55, 59, 62], [48, 52, 55]], lead: 'square', vol: 0.02,
+      melodia: mel('72 74 76 . 76 . 76 . 77 76 74 . 74 . 74 . 71 72 74 . 74 . 74 . 76 74 72 . 72 . . . 72 74 76 . 76 . 79 . 77 76 74 . 74 . 71 . 72 . 76 . 74 . 71 . 72 . . . . . . .') }) },
+]
+
 let fiesta = null
-export const ESTILOS_FIESTA = Object.keys(FIESTA)
-export const nombreFiesta = (clave) => FIESTA[clave].nombre[estado.idioma]
+export { GENEROS, CANCIONES }
+export const cancion = (id) => CANCIONES.find((c) => c.id === id)
 
 // Pone la música de la peña (si el sonido está apagado, lo enciende: has elegido tú poner música) o, con null,
 // vuelve a la música de siempre. Devuelve si ha cambiado el sonido, para repintar el botón de la barra.
@@ -263,7 +308,7 @@ function tocarMusica() {
   clearTimeout(musica)
   const a = audio()
   if (!canal) { canal = a.createGain(); canal.connect(a.destination) }
-  const estilo = (fiesta && FIESTA[fiesta]) || ESTILOS[estado.musica] || ESTILOS.aventura
+  const estilo = (fiesta && cancion(fiesta)) || ESTILOS[estado.musica] || ESTILOS.aventura
   destino = canal
   const dura = estilo.tocar()
   destino = null

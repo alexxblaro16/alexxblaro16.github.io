@@ -73,7 +73,7 @@ export function animarViaje(imgBus, ida) {
 // ---------------------------------------------------------------------------------------------- el metro
 // Viaje en metro entre dos paradas de la línea: el tren por el túnel, las luces que pasan, cada estación de azulejo
 // blanco que se cruza (con su nombre) y abajo el plano de la línea con el punto que avanza de parada en parada
-const POR_TRAMO = 2300 // milisegundos entre dos paradas seguidas
+const POR_TRAMO = 1900 // milisegundos entre dos paradas seguidas
 
 export function animarMetro(paradas, desde, hasta) {
   return new Promise((resolver) => {

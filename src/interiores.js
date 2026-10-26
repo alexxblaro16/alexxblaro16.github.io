@@ -84,7 +84,7 @@ export const INTERIORES = {
       { nombre: 'Siam', x: 14.6, y: 9.7, vida: 'profe_siam', rasgos: { pelo: 'rapado', colorPelo: '#1d1a19', piel: '#d9a07a', barba: 'completa', ropa: '#1f2430', tipo: 'sudadera', pantalon: '#3a3f48', zapatillas: '#2a2d33', sonrisa: true } },
       // compañeros, junto al sofá amarillo
       { nombre: 'Diego', x: 7.3, y: 5.7, vida: 'diego', rasgos: { pelo: 'larga', colorPelo: '#3b2a20', piel: '#f2c29b', gafas: true, barba: 'completa', robusto: true, ropa: '#c8302a', tipo: 'cuadros', pantalon: '#34466e', zapatillas: '#6b4527' } },
-      { nombre: 'Arseny', x: 12.7, y: 5.7, vida: 'arseny', rasgos: { pelo: 'media', colorPelo: '#6b4a30', piel: '#f6d3bb', ropa: '#2b2f38', dibujo: 'codigo', pantalon: '#3a3f48', zapatillas: '#f4f4f4' } },
+      { nombre: 'Arseny', x: 12.7, y: 5.7, vida: 'arseny', rasgos: { pelo: 'medio', colorPelo: '#141212', piel: '#f6d3bb', gafas: '#9aa3ad', ropa: '#2b2f38', dibujo: 'codigo', pantalon: '#3a3f48', zapatillas: '#f4f4f4' } },
     ],
   },
   // UDIT, planta 3: el pasillo con la recreativa y mis dos clases, iguales pero al revés
@@ -107,9 +107,9 @@ export const INTERIORES = {
     ],
     // compañeras de clase, delante de la pizarra de la clase B
     personas: [
-      { nombre: 'Emma', x: 16.3, y: 11.4, vida: 'emma', rasgos: { pelo: 'largo', colorPelo: '#141212', piel: '#c98a5e', chica: true, ropa: '#eef1f4', tipo: 'camisa', pantalon: '#34466e', pitillo: true, zapatillas: '#f4f4f4', sonrisa: true } },
+      { nombre: 'Emma', x: 16.3, y: 11.4, vida: 'emma', rasgos: { pelo: 'largo', colorPelo: '#141212', piel: '#5e3a26', chica: true, ropa: '#eef1f4', tipo: 'camisa', pantalon: '#34466e', pitillo: true, zapatillas: '#f4f4f4', sonrisa: true } },
       { nombre: 'Claudia', x: 20.8, y: 8.1, vida: 'claudia', rasgos: { pelo: 'larga', colorPelo: '#141212', piel: '#f2c29b', chica: true, ropa: '#6a6f78', tipo: 'sudadera', pantalon: '#2b2f38', anchos: true, zapatillas: '#f4f4f4' } },
-      { nombre: 'Alba', x: 22.9, y: 8.1, vida: 'alba', rasgos: { pelo: 'melena', colorPelo: '#5e3c24', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, ropa: '#a970ff', pantalon: '#8fa9cc', zapatillas: '#f4f4f4' } },
+      { nombre: 'Alba', x: 22.9, y: 8.1, vida: 'alba', rasgos: { pelo: 'melena', colorPelo: '#ece6d6', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, ropa: '#a970ff', pantalon: '#8fa9cc', zapatillas: '#f4f4f4' } },
       { nombre: 'Lucía', x: 25, y: 8.1, vida: 'lucia_m', rasgos: { pelo: 'largo', colorPelo: '#2e2622', piel: '#f6d3bb', ojos: '#3d7be0', chica: true, sonrisa: true, ropa: '#f2b33d', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
     ],
   },
@@ -148,6 +148,34 @@ export const INTERIORES = {
       { nombre: 'Iker', x: 3.2, y: 7.4, vida: 'iker', rasgos: { pelo: 'rapado', colorPelo: '#3a2618', piel: '#f2c29b', ojos: '#1d1820', ropa: '#15171c', tipo: 'pena', letras: '#f2c200', pantalon: '#34466e', zapatillas: '#f4f4f4' } },
     ],
   },
+  // Los recreativos por dentro: moqueta de feria, neones, las cuatro máquinas al fondo, la de peluches, el air
+  // hockey en el centro y el mostrador de premios
+  arcade: {
+    titulo: { es: 'RECREATIVOS', en: 'ARCADE' }, ancho: 18, alto: 11, suelo: 'arcade', pared: '#2a2045', neon: true, ventanas: [], puerta: 9,
+    muebles: [
+      { clave: 'cartel_neon_arcade', x: 9, base: 2.4, pared: true },
+      { clave: 'maquina_serpiente', x: 2.2, base: 5, arcade: 'serpiente' }, { clave: 'maquina_nave', x: 4.2, base: 5, arcade: 'nave' },
+      { clave: 'maquina_ladrillos', x: 13.8, base: 5, arcade: 'ladrillos' }, { clave: 'maquina_laberinto', x: 15.8, base: 5, arcade: 'laberinto' },
+      { clave: 'grua', x: 6.8, base: 5.1, vida: 'arcade_grua' },
+      { clave: 'cambio', x: 11.2, base: 4.9, vida: 'arcade_cambio' },
+      { clave: 'air_hockey', x: 9, base: 7.6, vida: 'arcade_hockey' },
+      { clave: 'premios', x: 15, base: 9.7, vida: 'arcade_premios' },
+      { clave: 'puf', x: 2.4, base: 9.4, pisable: true }, { clave: 'puf', x: 4, base: 9.8, pisable: true },
+    ],
+  },
+  // El Bar El Arte por dentro: la barra, la tele grande con el partido del Madrid, las bufandas y las mesas
+  arte: {
+    titulo: { es: 'BAR EL ARTE', en: 'BAR EL ARTE' }, ancho: 16, alto: 10, suelo: 'madera', pared: '#c9c4bb', ventanas: [2.2], puerta: 8,
+    muebles: [
+      { clave: 'tele_futbol', x: 11, base: 2.5, pared: true, vida: 'arte_tele' },
+      { clave: 'bufandas', x: 6.4, base: 2.2, pared: true, vida: 'arte_bufandas' },
+      { clave: 'barra', x: 4.6, base: 5, vida: 'arte_barra' },
+      { clave: 'tragaperras', x: 14.7, base: 4.7, vida: 'arte_tragaperras' },
+      { clave: 'mesa_redonda', x: 9.6, base: 7.2, vida: 'arte_mesa' }, { clave: 'mesa_redonda', x: 12.8, base: 7.2, vida: 'arte_mesa' },
+      { clave: 'mesa_redonda', x: 4.2, base: 8.6, vida: 'arte_mesa' },
+      { clave: 'planta', x: 15, base: 9.2 },
+    ],
+  },
 }
 
 // ---------------------------------------------------------------------------------------------- la sala
@@ -162,6 +190,14 @@ function sala(o) {
       p(x, y, T, T, '#b8834e')
       for (let k = 0; k < 4; k++) { p(x, y + k * 4, T, 1, '#9c6c3c'); p(x + ((k * 7 + y) % 16), y + k * 4, 1, 4, '#9c6c3c') }
       p(x + 3, y + 2, 4, 1, '#c99460'); p(x + 10, y + 10, 3, 1, '#c99460')
+    } else if (o.suelo === 'arcade') {
+      // moqueta de recreativos: oscura con garabatos de neón
+      p(x, y, T, T, '#1b1636')
+      const k = (x * 7 + y * 13) % 5
+      if (k === 0) { p(x + 3, y + 4, 4, 1, '#ff3d7f'); p(x + 6, y + 5, 1, 2, '#ff3d7f') }
+      if (k === 1) { p(x + 9, y + 9, 3, 3, '#3dd9ff'); p(x + 10, y + 10, 1, 1, '#1b1636') }
+      if (k === 2) { p(x + 2, y + 11, 1, 1, '#f2c200'); p(x + 3, y + 10, 1, 1, '#f2c200'); p(x + 4, y + 11, 1, 1, '#f2c200'); p(x + 5, y + 10, 1, 1, '#f2c200') }
+      if (k === 3) { p(x + 11, y + 2, 2, 2, '#a970ff') }
     } else if (o.suelo === 'cemento') {
       p(x, y, T, T, '#8f8a84'); p(x, y, T, 1, '#7c7771'); p(x, y, 1, T, '#7c7771')
       if ((x * 7 + y * 3) % 5 === 0) p(x + 5, y + 7, 3, 1, '#a39e98'); if ((x + y * 5) % 7 === 0) p(x + 10, y + 3, 1, 1, '#76716b')
@@ -181,6 +217,8 @@ function sala(o) {
   p(0, 0, W, fondo, o.pared)
   for (let x = 8; x < W; x += 16) p(x, 8, 1, fondo - 26, oscurecer(o.pared, 0.95))
   p(0, 6, W, 2, aclarar(o.pared, 0.4)); p(0, 8, W, 1, oscurecer(o.pared, 0.85))
+  // tiras de neón rosa y azul a lo largo de la pared (los recreativos)
+  if (o.neon) { p(0, 12, W, 2, '#ff3d7f'); p(0, 11, W, 1, 'rgba(255,61,127,0.4)'); p(0, fondo - 18, W, 2, '#3dd9ff'); p(0, fondo - 16, W, 1, 'rgba(61,217,255,0.4)') }
   // pared de ladrillo visto (la peña)
   if (o.ladrillo) for (let y = 10; y < fondo - 16; y += 5) { p(0, y, W, 1, oscurecer(o.pared, 0.78)); for (let x = (y / 5) % 2 ? 4 : 10; x < W; x += 12) p(x, y + 1, 1, 4, oscurecer(o.pared, 0.78)) }
   p(0, fondo - 16, W, 10, oscurecer(o.pared, 0.9)); p(0, fondo - 16, W, 1, aclarar(o.pared, 0.3))
@@ -549,6 +587,89 @@ const M = {
     const [c, x] = lienzo(16, 30); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
     p(0, 0, 16, 30, NEGRO); p(1, 1, 14, 28, '#2b2f38'); p(4, 4, 8, 8, '#15171c'); p(6, 6, 4, 4, '#5b6068'); p(3, 15, 10, 10, '#15171c'); p(5, 17, 6, 6, '#3a3f48'); p(7, 19, 2, 2, '#8a919a')
     return c
+  },
+  // ---- los recreativos
+  cartel_neon_arcade: () => {
+    const [c, x] = lienzo(84, 20); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 84, 20, '#100c1f'); p(1, 1, 82, 18, 'rgba(255,61,127,0.18)')
+    p(2, 2, 80, 1, '#ff3d7f'); p(2, 17, 80, 1, '#ff3d7f'); p(2, 2, 1, 16, '#ff3d7f'); p(81, 2, 1, 16, '#ff3d7f')
+    textoCentrado(x, 'INSERT COIN', 42, 5, '#3dd9ff'); textoCentrado(x, 'ARCADE', 42, 11, '#f2c200'); return c
+  },
+  // máquina de peluches con la urna de cristal y la pinza
+  grua: () => {
+    const [c, x] = lienzo(26, 40); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(1, 38, 24, 2, 'rgba(0,0,0,0.3)')
+    p(1, 0, 24, 39, NEGRO); p(2, 1, 22, 4, '#ff3d7f'); textoCentrado(x, 'TOY', 13, 1, '#ffffff')
+    p(2, 5, 22, 20, '#9fd3ff'); p(2, 5, 22, 20, 'rgba(255,255,255,0.15)'); p(3, 6, 1, 18, '#ffffff')
+    p(12, 5, 1, 7, '#c9ced5'); p(10, 12, 5, 2, '#c9ced5'); p(10, 14, 1, 2, '#c9ced5'); p(14, 14, 1, 2, '#c9ced5')
+    for (const [a, b, col] of [[4, 19, '#f2c200'], [9, 20, '#ff7fb0'], [15, 19, '#2fbf71'], [19, 20, '#a970ff'], [6, 22, '#e05a5a'], [13, 22, '#3dd9ff'], [18, 23, '#f28c28']]) { p(a, b, 4, 3, col); p(a + 1, b - 1, 2, 1, col) }
+    p(2, 25, 22, 13, '#5b2a8a'); p(6, 28, 6, 4, '#2b2f38'); p(8, 27, 2, 2, '#e05a5a'); p(16, 29, 5, 4, NEGRO); p(17, 30, 3, 2, '#f2c200')
+    return c
+  },
+  cambio: () => {
+    const [c, x] = lienzo(20, 34); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 20, 34, NEGRO); p(1, 1, 18, 32, '#c9ced5'); p(1, 1, 18, 2, '#ffffff'); p(4, 5, 12, 6, '#2b2f38'); textoCentrado(x, '1E', 10, 6, '#2fbf71')
+    p(6, 14, 8, 3, NEGRO); p(5, 22, 10, 6, '#8a919a'); p(6, 23, 8, 4, '#f2c200'); return c
+  },
+  // mesa de air hockey vista desde arriba, con las dos porterías, el disco y los mazos
+  air_hockey: () => {
+    const [c, x] = lienzo(64, 36); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 4, 64, 28, NEGRO); p(2, 6, 60, 24, '#2b2f38'); p(4, 8, 56, 20, '#eef4f8')
+    for (let a = 6; a < 60; a += 4) for (let b = 10; b < 28; b += 4) p(a, b, 1, 1, '#c9d3dc')
+    p(31, 8, 2, 20, '#e05a5a'); p(4, 14, 2, 8, '#3d7be0'); p(58, 14, 2, 8, '#3d7be0')
+    p(28, 15, 8, 6, '#e05a5a'); p(29, 16, 6, 4, '#ff7a7a'); p(30, 17, 4, 2, '#e05a5a') // el círculo del centro
+    p(18, 16, 4, 4, NEGRO); p(12, 15, 5, 5, '#3d7be0'); p(46, 15, 5, 5, '#e05a5a') // disco y mazos
+    p(4, 32, 4, 4, NEGRO); p(56, 32, 4, 4, NEGRO); return c
+  },
+  // mostrador de premios con peluches y tiras de tickets
+  premios: () => {
+    const [c, x] = lienzo(44, 40); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    for (const [a, b, col] of [[3, 0, '#ff7fb0'], [11, 2, '#f2c200'], [19, 0, '#3dd9ff'], [27, 2, '#2fbf71'], [35, 0, '#a970ff']]) { p(a, b + 4, 6, 6, col); p(a + 1, b + 2, 2, 2, col); p(a + 3, b + 2, 2, 2, col); p(a + 2, b + 6, 1, 1, NEGRO); p(a + 4, b + 6, 1, 1, NEGRO) }
+    p(0, 14, 44, 2, '#5a3c22')
+    p(0, 18, 44, 20, NEGRO); p(1, 19, 42, 5, '#a970ff'); p(1, 24, 42, 13, '#5b2a8a'); textoCentrado(x, 'PREMIOS', 22, 27, '#f2c200')
+    for (let a = 4; a < 40; a += 6) p(a, 16, 3, 3, '#f28c28')
+    p(1, 37, 42, 2, 'rgba(0,0,0,0.3)'); return c
+  },
+  puf: () => {
+    const [c, x] = lienzo(18, 14); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(1, 3, 16, 10, NEGRO); p(2, 4, 14, 8, '#ff3d7f'); p(3, 4, 8, 2, '#ff7fb0'); return c
+  },
+  // ---- el Bar El Arte
+  tele_futbol: () => {
+    const [c, x] = lienzo(64, 38); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 64, 38, NEGRO); p(2, 2, 60, 32, '#2f8a3f')
+    for (let a = 2; a < 62; a += 10) p(a, 2, 5, 32, '#36994a')
+    p(2, 17, 60, 1, '#e8f0e8'); p(31, 2, 1, 32, '#e8f0e8'); p(26, 13, 11, 9, '#e8f0e8'); p(27, 14, 9, 7, '#36994a'); p(2, 12, 6, 12, '#e8f0e8'); p(3, 13, 4, 10, '#2f8a3f')
+    // los jugadores: de blanco el Madrid y de rojo el rival, y el balón
+    for (const [a, b] of [[14, 10], [20, 22], [40, 14], [46, 24], [34, 8]]) { p(a, b, 3, 4, '#ffffff'); p(a, b - 2, 3, 2, '#e8b896') }
+    for (const [a, b] of [[10, 20], [24, 6], [52, 12]]) { p(a, b, 3, 4, '#c8302a'); p(a, b - 2, 3, 2, '#e8b896') }
+    p(43, 19, 2, 2, '#ffffff')
+    p(3, 3, 30, 8, '#15171c'); textoCentrado(x, 'RMA 3-0', 18, 5, '#ffffff')
+    p(28, 34, 8, 4, '#3a3f48'); return c
+  },
+  // dos bufandas colgadas: blancas con los bordes morados
+  bufandas: () => {
+    const [c, x] = lienzo(62, 26); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 1, 62, 2, '#6b4a2b')
+    for (const [a, txt] of [[1, 'HALA'], [32, 'MADRID']]) {
+      p(a, 3, 29, 9, '#ffffff'); p(a, 3, 29, 1, '#5b2a8a'); p(a, 11, 29, 1, '#5b2a8a'); textoCentrado(x, txt, a + 14.5, 5, '#5b2a8a')
+      for (let k = 0; k < 3; k++) { p(a + 3 + k * 10, 12, 3, 8, '#ffffff'); p(a + 3 + k * 10, 18, 3, 1, '#5b2a8a'); p(a + 3 + k * 10, 20, 1, 3, '#f2c200'); p(a + 5 + k * 10, 20, 1, 3, '#f2c200') }
+    }
+    return c
+  },
+  // máquina tragaperras de bar
+  tragaperras: () => {
+    const [c, x] = lienzo(22, 38); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(0, 0, 22, 38, NEGRO); p(1, 1, 20, 36, '#c8302a'); p(1, 1, 20, 3, '#f2c200'); p(3, 6, 16, 10, '#15171c')
+    for (const [a, col] of [[4, '#e05a5a'], [9, '#f2c200'], [14, '#2fbf71']]) { p(a, 8, 4, 6, '#ffffff'); p(a + 1, 10, 2, 2, col) }
+    p(3, 19, 16, 4, '#3dd9ff'); p(5, 26, 4, 3, '#f2c200'); p(12, 26, 5, 3, '#ffffff'); p(4, 32, 14, 3, '#5b2a1a'); return c
+  },
+  // mesa redonda alta con dos taburetes y un par de cañas
+  mesa_redonda: () => {
+    const [c, x] = lienzo(36, 24); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)
+    p(1, 12, 8, 6, NEGRO); p(2, 13, 6, 4, '#8a6040'); p(27, 12, 8, 6, NEGRO); p(28, 13, 6, 4, '#8a6040') // taburetes
+    p(9, 2, 18, 12, NEGRO); p(10, 3, 16, 10, '#b07a44'); p(10, 3, 16, 2, '#c99460'); p(17, 14, 2, 8, NEGRO); p(13, 21, 10, 2, NEGRO)
+    p(12, 5, 3, 4, '#f2b33d'); p(12, 5, 3, 1, '#ffffff'); p(20, 6, 3, 4, '#f2b33d'); p(20, 6, 3, 1, '#ffffff'); return c
   },
   maquina_bits: () => {
     const [c, x] = lienzo(26, 38); const p = (a, b, w, h, col) => px(x, a, b, col, w, h)

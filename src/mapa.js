@@ -21,6 +21,11 @@ export const EDIFICIOS = [
   { clave: 'bar_garibalde', x: 45.5, base: 13.5, vida: 'bar_garibalde' }, { clave: 'casa_plaza_2', x: 50.5, base: 13.5 },
   { clave: 'soportal_lado', x: 22.8, base: 18.3 }, { clave: 'soportal_lado_2', x: 45.6, base: 18.3 },
   { clave: 'soportal_sur', x: 27.9, base: 26.4 }, { clave: 'bar_burgos', x: 36, base: 26.4, vida: 'bar_burgos' }, { clave: 'soportal_sur_2', x: 44.4, base: 26.4 },
+  // El Bar El Arte, arriba a la derecha del pueblo: fachada gris y letras granates (se puede entrar)
+  { clave: 'bar_arte', x: 48, base: 8.6, letrero: 'BAR EL ARTE', interior: 'arte' },
+  // Chalets entre los árboles, encima de Madrid
+  { clave: 'chalet', x: 63.6, base: 8.6 }, { clave: 'chalet_2', x: 71, base: 6.6 }, { clave: 'chalet', x: 79, base: 9.2 },
+  { clave: 'chalet_2', x: 86.4, base: 6.8 }, { clave: 'chalet', x: 94.4, base: 8.8 },
   // El Lupa del pueblo, encima de la plaza, con su aparcamiento delante (allí trabajó un verano)
   { clave: 'lupa', x: 25.4, base: 7.2, letrero: 'SUPERMERCADO LUPA', vida: 'lupa' },
   { clave: 'reblan', x: 10.4, base: 18, letrero: 'REBLÁN ELECTRODOMÉSTICOS', interior: 'reblan' },
@@ -43,6 +48,8 @@ export const EDIFICIOS = [
   { clave: 'trofeos', x: 144, base: 18, letrero: 'SALA DE TROFEOS', zona: 'trofeos' },
   { clave: 'terminal', x: 152, base: 18, letrero: 'TERMINAL', zona: 'stack' },
   { clave: 'correos', x: 160, base: 18, letrero: 'CORREOS', zona: 'contacto' },
+  // Recreativos arriba del todo: las cuatro máquinas están dentro
+  { clave: 'recreativos', x: 162.5, base: 11.2, letrero: 'RECREATIVOS', interior: 'arcade' },
   { clave: 'casa_pueblo', x: 131, base: 13 }, { clave: 'casa_pueblo_2', x: 146, base: 13 },
   { clave: 'casa_pueblo_2', x: 124, base: 30.6 }, { clave: 'casa_pueblo', x: 128.5, base: 30.6 },
   { clave: 'casa_pueblo_2', x: 136, base: 30.6 }, { clave: 'casa_pueblo', x: 141.5, base: 30.6 }, { clave: 'casa_pueblo', x: 156, base: 30.6 },
@@ -65,6 +72,8 @@ export const OBJETOS = [
   // El aparcamiento del Lupa: coches aparcados, los carros y la señal
   { clave: 'coche_azul', x: 21.9, base: 9 }, { clave: 'coche_blanco', x: 28.9, base: 9 },
   { clave: 'carritos', x: 30.6, base: 7.3, vida: 'carrito' }, { clave: 'senal_p', x: 20.2, base: 7.4 },
+  // la terraza del Bar El Arte
+  { clave: 'mesa_bar', x: 45.3, base: 10.4 }, { clave: 'mesa_bar', x: 50.7, base: 10.4 },
   // La casa de la familia, con las banderas de España y Colombia
   { clave: 'banderas', x: 53.2, base: 18.3, vida: 'banderas' },
   // Guiño a Bob Esponja junto al agua
@@ -85,9 +94,12 @@ export const OBJETOS = [
   { clave: 'telarana', x: 151.25, base: 16.5, encima: true },
   { clave: 'estacion_pueblo', x: 56.2, base: 18.4, bus: 'madrid', letrero: 'AUTOBUSES' },
   // Metro: una línea con tres paradas (residencia, MEDAC y UDIT); en cada boca eliges adónde vas
-  { clave: 'boca_metro', x: 67.7, base: 18.3, metro: 'residencia', letrero: 'METRO' },
-  { clave: 'boca_metro', x: 82.6, base: 23.6, metro: 'medac', letrero: 'METRO' },
-  { clave: 'boca_metro', x: 99.2, base: 23.7, metro: 'udit', letrero: 'METRO' },
+  { clave: 'boca_metro_residencia', x: 67.4, base: 18.3, metro: 'residencia' },
+  { clave: 'boca_metro_medac', x: 82.6, base: 23.6, metro: 'medac' },
+  { clave: 'boca_metro_udit', x: 99, base: 23.6, metro: 'udit' },
+  { clave: 'boca_metro_arcade', x: 164.4, base: 23.6, metro: 'arcade' },
+  // neón en la esquina de Scranton, con la flecha hacia los recreativos
+  { clave: 'neon_arcade', x: 166.8, base: 15.4 },
   { clave: 'cartel', x: 88, base: 23, zona: 'hola', letrero: 'HELLO, WORLD!' },
   // campo de la uni: sin gradas, con su valla, lona verde, banquillos y cuatro focos en las esquinas
   { clave: 'estadio', x: 104, base: 32.4, arcade: 'futbol' },
@@ -101,10 +113,6 @@ export const OBJETOS = [
   { clave: 'cartel', x: 21.6, base: 31.6, vida: 'inicio', letrero: 'START' },
   // Señales de carretera: entrada y salida de Villalpando y entrada a Madrid
   { clave: 'senal_villalpando', x: 15.8, base: 29.8 }, { clave: 'senal_fin_villalpando', x: 54.2, base: 22.9 }, { clave: 'senal_madrid', x: 60.6, base: 23 },
-  // Recreativos arriba del todo, con cuatro máquinas que se pueden jugar
-  { clave: 'recreativos', x: 162.5, base: 11.2, letrero: 'RECREATIVOS' },
-  { clave: 'maquina_serpiente', x: 158.4, base: 13, arcade: 'serpiente' }, { clave: 'maquina_nave', x: 160.6, base: 13, arcade: 'nave' },
-  { clave: 'maquina_ladrillos', x: 164.4, base: 13, arcade: 'ladrillos' }, { clave: 'maquina_laberinto', x: 166.6, base: 13, arcade: 'laberinto' },
   // Guiños de programación
   { clave: 'pato', x: 5, base: 27.7, vida: 'pato' }, { clave: 'cartel404', x: 2.5, base: 19.9, vida: 'error404' },
   { clave: 'taza_java', x: 154.6, base: 18.5, vida: 'java' }, { clave: 'bicho', x: 131.6, base: 22, vida: 'bug' },
@@ -123,6 +131,7 @@ export const METRO = [
   { id: 'residencia', nombre: 'Residencia' },
   { id: 'medac', nombre: 'MEDAC' },
   { id: 'udit', nombre: 'UDIT' },
+  { id: 'arcade', nombre: 'Recreativos' },
 ]
 
 // Las siete esferas: cinco por el mapa y dos dentro de edificios («dentro» = id del interior, x/y en casillas de la sala)
@@ -146,7 +155,8 @@ export const SUELOS = [
 // Caminos verticales hacia los edificios de abajo
 export const SENDAS = [
   { x: 23, y0: 9, y1: 12 }, // de la plaza al aparcamiento del Lupa, entre las casas
-  { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 31, y0: 21, y1: 32 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 }, { x: 165, y0: 13, y1: 18 },
+  { x: 42, y0: 9, y1: 12 }, // de la plaza al Bar El Arte
+  { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 31, y0: 21, y1: 32 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 }, { x: 162, y0: 12, y1: 18 },
 ]
 
 // Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
@@ -177,7 +187,7 @@ export const PERSONAJES = [
     ['Jorge', '#141212', '#15171c', { pelo: 'canario', ajustada: true, pitillo: true, pantalon: '#2b2f38', zapatillas: '#f4f4f4', frases: { es: ['Soy Jorge. Con Alejandro, desde el instituto. Han pasado los años y seguimos siendo amigos.'], en: ["I'm Jorge. Alejandro and I go back to high school. Years have gone by and we're still friends."] } }],
   ], 40.6, 32.6, 'instituto'),
   // Jandro, en la plaza: te ofrece cerezas (Mundo.js, «especial»)
-  { nombre: 'Jandro', x: 39.4, y: 21.6, grupo: 'pueblo', especial: 'cerezas', rasgos: { pelo: 'medio', colorPelo: '#141212', piel: '#f2c29b', ojos: '#5a3a22', ropa: '#2b2f38', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#15171c', pitillo: true, zapatillas: '#f4f4f4' } },
+  { nombre: 'Jandro', x: 39.4, y: 21.6, grupo: 'pueblo', especial: 'cerezas', rasgos: { pelo: 'corto', colorPelo: '#141212', piel: '#f2c29b', ojos: '#5a3a22', ropa: '#2b2f38', tipo: 'chaqueta', interior: '#eef1f4', pantalon: '#15171c', pitillo: true, zapatillas: '#f4f4f4' } },
   // Salva, detrás del Lupa: los dos llevan la peña El Pilón
   ...amigos([
     ['Salva', '#6b4527', '#2f5a94', { pelo: 'ondulado', gafas: '#3d7be0', tipo: 'sudadera', pantalon: '#2b2f38', pitillo: true, zapatillas: '#f4f4f4', frases: { es: ['Soy Salva. Soy amigo de Alejandro desde hace años: hacemos la peña juntos, El Pilón.'], en: ["I'm Salva. Alejandro and I have been friends for years: we run our club together, El Pilón."] } }],

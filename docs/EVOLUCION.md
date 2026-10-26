@@ -330,6 +330,23 @@ Tras probar la versión 17, Alejandro pidió:
   viaje: el tren por el túnel, las estaciones de azulejo blanco con su nombre y el plano de la línea abajo.
 - Los letreros pintados con la fuente de píxel ya llevan Ñ y tildes.
 
+### 25. Recreativos por dentro, cuarta parada de metro, chalets, el Bar El Arte y la música de la peña con artistas de broma
+
+- **Música de la peña:** doce canciones inventadas en seis géneros (reguetón, urbano, electrónica, pop, rock y fiestas),
+  de artistas de broma: Good Tunny, Daddy Yonki, Nepedo, C. Mandarina, Daruda, David Ghetto, Enrique Iglesitas, Rosalio,
+  Estapo, Extremoblando, la Charanga El Pilón y la Orquesta Tierra de Campos. Las melodías son nuestras, no copias. Se
+  elige género y canción en el equipo, y un cartel dice qué suena.
+- **Recreativos por dentro:** las cuatro máquinas pasan dentro, con moqueta de neón, el cartel «INSERT COIN», máquina de
+  peluches, máquina de cambio, air hockey, mostrador de premios, pufs y luces de colores.
+- **Metro:** bocas más reales (granito, escalera que baja, barandilla de acero, placa azul con el nombre y el rombo de
+  METRO) y una cuarta parada en los recreativos. Un neón en la esquina de Scranton señala el camino.
+- **Bar El Arte**, arriba a la derecha del pueblo: fachada gris, letras granates y terraza. Por dentro, la barra, la tele
+  con el partido del Madrid, las bufandas «HALA MADRID», la tragaperras y las mesas. Al entrar, Alejandro cuenta que allí
+  pasa los fines de semana y ha visto muchas victorias del Madrid.
+- **Chalets** entre los árboles, encima de Madrid.
+- Retoques: Arseny con gafas grises y media melena negra, Alba rubia platino, Emma con la piel más oscura y Jandro con
+  el pelo corto.
+
 ## Ideas para más adelante
 
 - Dominio propio.

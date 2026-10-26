@@ -957,22 +957,114 @@ function cienaga() {
   return c
 }
 
-// Boca de metro de Madrid vista desde arriba: la escalera que baja entre barandillas rojas y el poste con el rombo
-function bocaMetro() {
-  const [c, ctx] = lienzo(44, 40)
+// Boca de metro de Madrid vista desde arriba: el suelo de granito, la escalera que baja con su pared a cada lado,
+// el pretil con la barandilla de acero, la placa azul con el nombre de la parada y el poste con el rombo rojo y la
+// franja azul de «METRO»
+function bocaMetro(nombre) {
+  return () => {
+    const W = 64, H = 50
+    const [c, ctx] = lienzo(W, H)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    // granito alrededor, con sus juntas
+    p(0, 14, W, H - 14, '#b3afa7')
+    for (let y = 14; y < H; y += 8) p(0, y, W, 1, '#9b978f')
+    for (let x = 0; x < W; x += 12) p(x, 14, 1, H - 14, '#9b978f')
+    // hueco de la escalera: los escalones se oscurecen según bajan (hacia el fondo)
+    p(9, 17, 34, H - 17, NEGRO)
+    for (let k = 0; k < 11; k++) {
+      const y = H - 3 - k * 3, v = 196 - k * 14
+      p(12, y, 28, 3, `rgb(${v}, ${v + 2}, ${v + 6})`); p(12, y, 28, 1, `rgb(${v + 22}, ${v + 24}, ${v + 28})`)
+    }
+    p(12, 17, 28, 3, '#1b1f27')
+    // paredes de la escalera
+    p(10, 17, 2, H - 17, '#7d7a73'); p(40, 17, 2, H - 17, '#6b6862')
+    // pretil de granito con la barandilla de acero encima (a los lados y al fondo)
+    p(6, 14, 4, H - 14, '#8f8b83'); p(42, 14, 4, H - 14, '#8f8b83'); p(6, 14, 40, 3, '#8f8b83')
+    p(7, 12, 2, H - 12, '#d9dee4'); p(43, 12, 2, H - 12, '#d9dee4'); p(7, 12, 38, 2, '#d9dee4'); p(7, 12, 38, 1, '#ffffff')
+    for (let y = 18; y < H; y += 7) { p(7, y, 2, 1, '#8a919a'); p(43, y, 2, 1, '#8a919a') }
+    // placa azul con el nombre de la parada, en el pretil del fondo
+    p(3, 1, 44, 10, NEGRO); p(4, 2, 42, 8, '#1f4e9b'); p(4, 2, 42, 1, '#4f7fc8'); textoCentrado(ctx, nombre, 25, 4, '#ffffff')
+    p(10, 11, 1, 2, '#5b6068'); p(40, 11, 1, 2, '#5b6068')
+    // el poste con el rombo: rojo por fuera, blanco dentro y la franja azul con METRO cruzándolo
+    const cx = 54, cy = 13 // el rombo va más bajo que la placa para no taparla
+    p(cx - 1, cy + 9, 2, H - cy - 11, '#5b6068'); p(cx - 1, cy + 9, 1, H - cy - 11, '#8a919a'); p(cx - 3, H - 3, 6, 2, '#3a3f48')
+    for (let k = 0; k <= 8; k++) { const w = k * 2 + 1; p(cx - k, cy - 8 + k, w, 1, '#c8302a'); p(cx - k, cy + 9 - k, w, 1, '#c8302a') }
+    for (let k = 3; k <= 8; k++) { const w = (k - 2) * 2 + 1; p(cx - k + 2, cy - 8 + k, w, 1, '#ffffff'); p(cx - k + 2, cy + 9 - k, w, 1, '#ffffff') }
+    p(42, cy - 2, 22, 7, '#1f4e9b'); p(42, cy - 2, 22, 1, '#4f7fc8'); textoCentrado(ctx, 'METRO', 53, cy - 1, '#ffffff')
+    return c
+  }
+}
+
+// Neón de la esquina de Scranton: un cartel oscuro sobre dos patas con «ARCADE» en rosa y una flecha azul que
+// señala arriba a la izquierda, hacia los recreativos. Dos fotogramas: la flecha se enciende por tramos
+function neonArcade(f) {
+  return () => {
+    const [c, ctx] = lienzo(46, 34)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    p(8, 20, 2, 14, '#3a3f48'); p(36, 20, 2, 14, '#3a3f48')
+    p(0, 0, 46, 22, NEGRO); p(1, 1, 44, 20, '#100c1f')
+    p(2, 2, 42, 1, '#ff3d7f'); p(2, 19, 42, 1, '#ff3d7f'); p(2, 2, 1, 18, '#ff3d7f'); p(43, 2, 1, 18, '#ff3d7f')
+    textoCentrado(ctx, 'ARCADE', 28, 13, f ? '#ff7fb0' : '#ff3d7f')
+    // flecha en diagonal hacia arriba a la izquierda
+    const azul = '#3dd9ff', apagado = '#1d4a5a'
+    for (let k = 0; k < 7; k++) p(17 - k, 11 - k, 2, 1, f || k > 3 ? azul : apagado)
+    p(5, 4, 5, 1, azul); p(5, 4, 1, 5, azul)
+    p(4, 22, 38, 1, 'rgba(255,61,127,0.35)')
+    return c
+  }
+}
+
+// Chalet de una urbanización: casa baja con tejado, garaje y su jardín con seto
+function chalet(pared, tejado) {
+  return () => {
+    const W = 64, H = 58
+    const [c, ctx] = lienzo(W, H)
+    const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
+    // jardín con el césped y el seto alrededor (abierto delante, en la entrada)
+    p(0, 34, W, 24, '#4f9a45'); for (let k = 0; k < 40; k++) p((k * 23) % W, 36 + (k * 7) % 20, 2, 1, '#5cad50')
+    p(0, 32, 4, 26, '#2f6b30'); p(W - 4, 32, 4, 26, '#2f6b30'); p(0, H - 4, 26, 4, '#2f6b30'); p(38, H - 4, 26, 4, '#2f6b30')
+    p(0, 32, 4, 1, '#3f8a3a'); p(0, H - 4, 26, 1, '#3f8a3a'); p(38, H - 4, 26, 1, '#3f8a3a')
+    p(26, 34, 12, 24, '#c9c3b5'); for (let y = 36; y < H; y += 4) p(26, y, 12, 1, '#b5ae9f') // caminito de baldosas
+    // la casa
+    const [cc, cctx] = lienzo(56, 40)
+    casa(cctx, 56, 40, { pared, tejado, cruz: true, macetas: true })
+    ctx.drawImage(cc, 4, 0)
+    // garaje a la derecha
+    p(42, 20, 16, 16, NEGRO); p(43, 21, 14, 15, '#d9dee4'); for (let y = 23; y < 36; y += 3) p(43, y, 14, 1, '#b8bfc7')
+    // farolillo y un árbol pequeño en el jardín
+    p(8, 40, 6, 6, '#2f6b30'); p(9, 39, 4, 2, '#3f8a3a'); p(10, 46, 2, 4, '#6b4a2b')
+    return c
+  }
+}
+
+// El Bar El Arte: fachada gris de dos plantas, el nombre en letras granates, la cristalera del bar con luz dentro,
+// una bufanda del Madrid en la ventana y la puerta de madera
+function barArte() {
+  const W = 104, H = 72
+  const [c, ctx] = lienzo(W, H)
   const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
-  // el hueco y los escalones, cada vez más oscuros hacia abajo
-  p(6, 14, 30, 24, NEGRO)
-  for (let k = 0; k < 11; k++) { const y = 15 + k * 2; p(7, y, 28, 2, `rgb(${170 - k * 13}, ${172 - k * 13}, ${176 - k * 12})`); p(7, y, 28, 1, `rgb(${196 - k * 13}, ${198 - k * 13}, ${202 - k * 12})`) }
-  p(7, 15, 2, 22, '#d9dee4'); p(33, 15, 2, 22, '#9aa3ad')
-  // barandillas rojas a los lados y detrás
-  p(4, 12, 2, 26, '#8a1f2a'); p(36, 12, 2, 26, '#8a1f2a'); p(4, 12, 34, 2, '#c8302a'); p(4, 12, 34, 1, '#e05a5a')
-  for (const x of [4, 36]) for (let y = 16; y < 38; y += 6) p(x, y, 2, 1, '#e05a5a')
-  // el poste con el rombo rojo y la franja azul
-  p(40, 8, 2, 30, '#5b6068'); p(40, 8, 1, 30, '#8a919a')
-  p(37, 0, 8, 1, NEGRO); p(36, 1, 10, 1, NEGRO); p(35, 2, 12, 5, NEGRO); p(36, 7, 10, 1, NEGRO); p(37, 8, 8, 1, NEGRO)
-  p(38, 1, 6, 1, '#c8302a'); p(37, 2, 8, 1, '#c8302a'); p(36, 3, 10, 3, '#1f4e9b'); p(37, 6, 8, 1, '#c8302a'); p(38, 7, 6, 1, '#c8302a')
-  p(38, 4, 6, 1, '#ffffff')
+  const gris = '#9ea2a8', grisL = '#b9bcc1', grisO = '#80848a', granate = '#7a1f2a'
+  // tejado
+  for (let y = 0; y < 10; y++) { p(2 - Math.min(2, y), y, W - 4 + Math.min(2, y) * 2, 1, y % 3 === 2 ? '#7a3a28' : '#9b4a35') }
+  p(0, 9, W, 2, NEGRO)
+  // fachada
+  p(0, 11, W, H - 11, NEGRO); p(1, 11, W - 2, H - 12, gris); p(1, 11, 3, H - 12, grisL); p(W - 4, 11, 3, H - 12, grisO)
+  for (let y = 14; y < H - 4; y += 6) p(1, y, W - 2, 1, '#969aa0')
+  // planta de arriba: tres ventanas con balcón
+  for (const vx of [12, 46, 80]) {
+    p(vx, 15, 12, 13, NEGRO); p(vx + 1, 16, 10, 11, '#9fd3ff'); p(vx + 1, 21, 10, 6, '#7fb2d8'); p(vx + 6, 16, 1, 11, '#f4f1ea')
+    p(vx - 2, 28, 16, 2, '#3a3f48'); for (let k = vx - 2; k < vx + 14; k += 3) p(k, 26, 1, 2, '#3a3f48')
+  }
+  // el nombre en letras granates sobre la fachada
+  p(6, 31, W - 12, 13, grisL); textoGrande(ctx, 'EL ARTE', W / 2, 33, granate, 2); p(6, 31, W - 12, 1, grisO); p(6, 43, W - 12, 1, grisO)
+  // planta baja: cristaleras con luz cálida, una bufanda blanca y morada, y la puerta de madera en el centro
+  for (const vx of [6, 66]) {
+    p(vx, 47, 32, 20, NEGRO); p(vx + 1, 48, 30, 18, '#f3d590'); p(vx + 1, 48, 30, 4, '#f8e6b4'); p(vx + 15, 48, 2, 18, NEGRO)
+    p(vx + 3, 58, 4, 7, '#5b4a3a'); p(vx + 20, 57, 4, 8, '#5b4a3a') // gente dentro
+  }
+  p(10, 49, 20, 3, '#ffffff'); p(10, 49, 2, 3, '#5b2a8a'); p(28, 49, 2, 3, '#5b2a8a') // la bufanda en la cristalera
+  p(42, 46, 20, 25, NEGRO); p(43, 47, 18, 24, '#6b4a2b'); p(43, 47, 18, 2, '#8a6040'); p(51, 47, 2, 24, '#5a3c22'); p(48, 58, 2, 2, '#d6c070'); p(54, 58, 2, 2, '#d6c070')
+  p(40, H - 2, 24, 2, '#8a8f96')
   return c
 }
 
@@ -1224,7 +1316,9 @@ export function crearEdificios(scene) {
     maquina_nave: maquina('#1f3c9a', 'SHOOT', (p) => { p(5, 6, 2, 2, '#3dd9ff'); p(4, 7, 4, 1, '#3dd9ff'); p(2, 1, 2, 2, '#e05a5a'); p(8, 2, 2, 2, '#e05a5a'); p(6, 3, 1, 2, '#7ee2a8') }),
     maquina_ladrillos: maquina('#a83a2a', 'BRICK', (p) => { for (let x = 0; x < 12; x += 3) { p(x, 0, 2, 1, '#f2b33d'); p(x + 1, 2, 2, 1, '#2fbf71') } p(5, 7, 3, 1, '#ffffff'); p(6, 5, 1, 1, '#f2c200') }),
     maquina_laberinto: maquina('#5a3ab0', 'MAZE', (p) => { p(0, 0, 12, 1, '#2f5fb0'); p(0, 8, 12, 1, '#2f5fb0'); p(5, 2, 1, 5, '#2f5fb0'); for (let x = 1; x < 11; x += 2) p(x, 4, 1, 1, '#2fbf71'); p(2, 6, 2, 2, '#f2c200'); p(8, 2, 2, 2, '#e05a5a') }), veleta, telarana, mochila_arana: mochilaArana,
-    nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP, cienaga, boca_metro: bocaMetro,
+    nube, neumatico, banderin_rayo: banderinRayo, lupa, carritos, senal_p: senalP, cienaga,
+    boca_metro_residencia: bocaMetro('RESIDENCIA'), boca_metro_medac: bocaMetro('MEDAC'), boca_metro_udit: bocaMetro('UDIT'), boca_metro_arcade: bocaMetro('ARCADE'),
+    neon_arcade: neonArcade(0), neon_arcade_1: neonArcade(1), chalet: chalet('#f2ede2', '#b4553a'), chalet_2: chalet('#dfe3e6', '#4a525c'), bar_arte: barArte,
   }
   for (const [nombre, dibujar] of Object.entries(especiales)) scene.textures.addCanvas(nombre, dibujar())
   // las palomas tienen dos fotogramas: con la cabeza arriba y picoteando

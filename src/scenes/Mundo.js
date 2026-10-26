@@ -7,7 +7,7 @@ import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
 import { registrar } from '../registro.js'
 import { decir, elegir, pedirRopa, hayDialogo, avanzarDialogo, abrirPanel, hayPanel, etiqueta, teclasTactiles, mostrarHUD, pintarHUD, logro } from '../ui.js'
-import { sfx, sonar, musicaFiesta, hayFiesta, ESTILOS_FIESTA, nombreFiesta } from '../sonido.js'
+import { sfx, sonar, musicaFiesta, hayFiesta, GENEROS, CANCIONES, cancion } from '../sonido.js'
 import { abrirArcade } from '../arcade.js'
 import { animarViaje, animarMetro } from '../viaje.js'
 import { ENLACES } from '../content.js'
@@ -298,6 +298,10 @@ export default class Mundo extends Phaser.Scene {
         this.solido(o.x * T - img.width / 2 + 1, o.base * T - img.height + 4, img.width - 2, img.height - 6)
       } else if (o.clave === 'laguna') {
         this.laguna(img, o)
+      } else if (o.clave === 'neon_arcade') {
+        let f = 0
+        this.time.addEvent({ delay: 450, loop: true, callback: () => { f = 1 - f; img.setTexture(f ? 'neon_arcade_1' : 'neon_arcade') } })
+        this.solido(o.x * T - 18, o.base * T - 4, 4, 4); this.solido(o.x * T + 8, o.base * T - 4, 4, 4)
       } else if (o.clave === 'banderas') {
         let f = 0
         this.time.addEvent({ delay: 400, loop: true, callback: () => { f = 1 - f; img.setTexture(f ? 'banderas_1' : 'banderas') } })
@@ -401,7 +405,7 @@ export default class Mundo extends Phaser.Scene {
   irASala(id, x = null, y = null) {
     const sala = this.salas[id], cam = this.cameras.main
     this.cambiandoSala = true
-    if (id !== 'pena' && hayFiesta()) musicaFiesta(null)
+    if (id !== 'pena' && hayFiesta()) { musicaFiesta(null); this.mostrarSonando(null) }
     sfx.puerta()
     registrar('zona', `interior-${id}`, true)
     cam.fadeOut(180, 0, 0, 0)
@@ -427,6 +431,7 @@ export default class Mundo extends Phaser.Scene {
     this.vuelta = { x: edificio.x * T, y: edificio.base * T + 12 }
     this.irASala(id)
     // la primera vez que entras en Reblán, Pedro te pide una reseña (de la tienda de verdad)
+    if (id === 'arte' && !this.arteContado) { this.arteContado = true; this.time.delayedCall(600, () => decir('Alejandro', frases('arte'))) }
     if (id === 'reblan' && !this.resenaPedida) { this.resenaPedida = true; this.time.delayedCall(700, () => this.pedirResena()) }
   }
 
@@ -463,7 +468,7 @@ export default class Mundo extends Phaser.Scene {
   salir() {
     const cam = this.cameras.main
     this.cambiandoSala = true
-    if (hayFiesta()) musicaFiesta(null)
+    if (hayFiesta()) { musicaFiesta(null); this.mostrarSonando(null) }
     sfx.puerta()
     cam.fadeOut(180, 0, 0, 0)
     cam.once('camerafadeoutcomplete', () => {
@@ -518,9 +523,9 @@ export default class Mundo extends Phaser.Scene {
 
   // Luces de colores que barren el suelo de la peña mientras suena la música, y la bola que destella
   lucesDisco() {
-    const encender = this.dentro === 'pena' && !!hayFiesta()
+    const encender = (this.dentro === 'pena' && !!hayFiesta()) || this.dentro === 'arcade'
     if (!this.focosDisco && !encender) return
-    const sala = this.salas.pena
+    const sala = this.salas[this.dentro] || this.salas.pena
     if (!this.focosDisco) {
       const colores = [0xff3d7f, 0x3dd9ff, 0xf2c200, 0xa970ff, 0x2fbf71]
       this.focosDisco = colores.map((c) => this.add.ellipse(0, 0, 34, 18, c, 0.28).setBlendMode(Phaser.BlendModes.ADD).setDepth(-870))
@@ -534,14 +539,28 @@ export default class Mundo extends Phaser.Scene {
     if (this.bolaDisco) this.bolaDisco.setTint(encender && Math.floor(t * 8) % 2 ? 0xfff0a8 : 0xffffff)
   }
 
-  // El equipo de música de la peña: reguetón, techno o charanga, y se puede cambiar o apagar cuando quieras
+  // El equipo de música de la peña: eliges género y canción (inventadas, con artistas de broma), y se puede cambiar
+  // o apagar cuando quieras
   async equipoMusica() {
-    const opciones = [...ESTILOS_FIESTA.map((k) => nombreFiesta(k) + (hayFiesta() === k ? ' ♪' : '')), frases('equipo_apagar')]
-    const i = await elegir(en() ? 'Sound system' : 'Equipo de música', frases('equipo'), opciones)
-    if (i < ESTILOS_FIESTA.length) {
-      if (musicaFiesta(ESTILOS_FIESTA[i])) pintarHUD()
-      registrar('zona', `pena-${ESTILOS_FIESTA[i]}`, true)
-    } else musicaFiesta(null)
+    const nombreGenero = (g) => g.nombre[estado.idioma]
+    const ahora = hayFiesta() && cancion(hayFiesta())
+    const pregunta = ahora ? `${frases('equipo')} (♪ ${ahora.artista}: ${ahora.titulo})` : frases('equipo')
+    const i = await elegir(en() ? 'Sound system' : 'Equipo de música', pregunta, [...GENEROS.map(nombreGenero), frases('equipo_apagar')])
+    if (i >= GENEROS.length) { musicaFiesta(null); this.mostrarSonando(null); return }
+    const lista = CANCIONES.filter((c) => c.genero === GENEROS[i].id)
+    const k = await elegir(nombreGenero(GENEROS[i]), frases('equipo_cancion'), [...lista.map((c) => `${c.artista}: ${c.titulo}`), frases('equipo_volver')])
+    if (k >= lista.length) return this.equipoMusica()
+    if (musicaFiesta(lista[k].id)) pintarHUD()
+    this.mostrarSonando(lista[k])
+    registrar('zona', `pena-${lista[k].id}`, true)
+  }
+
+  // Cartelito abajo con lo que suena en la peña (artista y canción)
+  mostrarSonando(c) {
+    let el = document.getElementById('sonando')
+    if (!c) { el?.remove(); return }
+    if (!el) { el = document.createElement('div'); el.id = 'sonando'; document.body.append(el) }
+    el.innerHTML = `<span>♪ ${en() ? 'Now playing' : 'Sonando'}</span><b>${c.artista}</b><i>${c.titulo}</i>`
   }
 
   // Jandro te ofrece cerezas de los cerezos del pueblo de su madre
@@ -1075,7 +1094,7 @@ export default class Mundo extends Phaser.Scene {
     await animarMetro(METRO, indice(de), indice(a))
     const boca = OBJETOS.find((o) => o.metro === a)
     // sales delante de la boca: hacia el camino (las de arriba del camino, abajo; las de abajo, arriba)
-    const y = boca.base < CAMINO ? boca.base * T + 14 : (boca.base - 3.3) * T
+    const y = boca.base < CAMINO ? boca.base * T + 14 : (boca.base - 3.4) * T
     j.setPosition(boca.x * T, y)
     this.mirando = boca.base < CAMINO ? 'abajo' : 'arriba'
     this.traerAcompanantes(j.x, j.y)
@@ -1111,7 +1130,7 @@ export default class Mundo extends Phaser.Scene {
   pausarParaMenu() {
     const cam = this.cameras.main
     if (this.dentro) { this.dentro = null; this.physics.world.setBounds(0, 0, ANCHO * T, ALTO * T); this.ajustarZoom() }
-    if (hayFiesta()) musicaFiesta(null)
+    if (hayFiesta()) { musicaFiesta(null); this.mostrarSonando(null) }
     cam.setBounds(0, 0, ANCHO * T, ALTO * T) // en la portada la cámara recorre el mapa entero
     this.jugador?.setVelocity(0)
     cam.stopFollow()

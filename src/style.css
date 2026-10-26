@@ -410,3 +410,10 @@ a { color: var(--verde); }
 #viaje .viaje-ruta { top: 12%; font-size: clamp(12px, 2.6vw, 30px); }
 #viaje .viaje-km { top: calc(12% + clamp(22px, 4vw, 48px)); font-size: clamp(10px, 1.8vw, 20px); color: #f2c200; }
 #viaje .viaje-sub { bottom: 8%; font-size: clamp(8px, 1.2vw, 14px); color: #e6e9ef; }
+
+/* Lo que suena en la peña */
+#sonando { position: fixed; left: 16px; top: 64px; z-index: 30; display: flex; flex-direction: column; gap: 3px; padding: 10px 14px; background: #15171cee; border: 3px solid #f2c200; color: #f4f1ea; font-family: var(--pixel); font-size: 9px; animation: sonando 1.2s ease-in-out infinite alternate; }
+#sonando span { color: #f2c200; }
+#sonando b { font-size: 11px; }
+#sonando i { font-style: normal; color: #9aa3ad; }
+@keyframes sonando { from { box-shadow: 0 0 0 #f2c20000; } to { box-shadow: 0 0 14px #f2c20088; } }
