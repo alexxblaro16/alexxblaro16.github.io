@@ -192,7 +192,9 @@ export const RECORRIDO = [
   { x: 50.5, y: CAMINO + 1.3, historia: 'casa' },
   // al instituto se baja por el camino de la izquierda hasta la puerta
   { x: 36, y: 32.3, historia: 'instituto', via: [[31, CAMINO + 0.5], [31, 32.3]] },
-  { x: 56.2, y: CAMINO + 0.5, historia: 'parada', bus: 'madrid', via: [[31, 32.3], [31, CAMINO + 0.5]] },
+  // del instituto al Lupa: sube por la plaza, pasa por delante del Bar Silvia y entra al aparcamiento entre las casas
+  { x: 24.8, y: 9.4, historia: 'lupa_paso', via: [[31, 32.3], [31, CAMINO + 0.5], [29.5, 14.2], [23.7, 14.2], [23.7, 9.8]] },
+  { x: 56.2, y: CAMINO + 0.5, historia: 'parada', bus: 'madrid', via: [[23.7, 9.8], [23.7, 14.2], [29.5, 14.2], [31, CAMINO + 0.5]] },
   { x: 72.5, y: CAMINO + 0.5, historia: 'residencia' },
   { x: 83, y: CAMINO + 0.5, historia: 'medac' },
   { x: 93, y: CAMINO + 0.5, historia: 'anexia' },

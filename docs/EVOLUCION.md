@@ -286,6 +286,22 @@ Tras probar la versión 17, Alejandro pidió:
 - De noche se encienden sus cristales, como los de los demás edificios.
 - Alejandro pidió no volver a grabar el vídeo: el de 45 s se queda como está.
 
+### 23. Cada uno en su sitio, Alejandro de corrillo en corrillo, el Lupa en el recorrido y la nube que se queda donde la dejas
+
+- **Los personajes ya no se van lejos.** Antes, al ir a charlar con otro, se alejaban de su sitio y se encadenaba (uno
+  seguía al otro hasta acabar lejísimos). Ahora:
+  - Su zona es más pequeña: 36 px los amigos y 22 la familia.
+  - Solo charlan con alguien que esté dentro de su zona.
+  - Si se han alejado (por ejemplo, porque los han empujado), vuelven a su sitio.
+  - Medido durante 90 s: el que más se alejó lo hizo 42 px, unas dos casillas y media.
+- **Alejandro, el guía, va de corrillo en corrillo** al acabar el recorrido. Elige a alguien de su lado de la autovía
+  (entre los seis más cercanos), sube al camino, lo recorre y baja hasta él. El amigo le espera y charlan con bocadillos.
+  Si te acercas, se para y te mira, como antes.
+- **El Lupa entra en el recorrido.** Después del instituto, Alejandro te lleva al Lupa: sube por la plaza y pasa por
+  delante del Bar Silvia. Allí te cuenta el verano que trabajó en él y luego te lleva a la estación de autobuses.
+- **La nube:** al cogerla desaparece del suelo y va bajo tus pies durante 10 segundos. Cuando se acaba se queda flotando
+  donde estés, con su animación, hasta que la vuelvas a coger. La historia de la nube solo sale la primera vez.
+
 ## Ideas para más adelante
 
 - Dominio propio.

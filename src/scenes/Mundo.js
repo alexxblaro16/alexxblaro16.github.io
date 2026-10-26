@@ -290,9 +290,8 @@ export default class Mundo extends Phaser.Scene {
         // objetos pequeños: sin colisión
       } else if (o.nube) {
         // la nube flota y no choca: es para subirse
-        img.setDepth(o.base * T + 2)
-        this.tweens.add({ targets: img, y: img.y - 3, duration: 1100, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
         this.nubeImg = img
+        this.posarNube(img.x, img.y)
       } else if (o.clave.startsWith('senal_') || o.clave === 'marcador_raimon' || o.clave === 'foco' || o.clave === 'poste_scranton' || o.clave === 'banderin_rayo') {
         this.solido(o.x * T - 3, o.base * T - 4, 6, 4)
       } else if (o.clave === 'huerto' || o.clave === 'remolachas') {
@@ -318,7 +317,10 @@ export default class Mundo extends Phaser.Scene {
       }
       if (o.letrero) this.letrero(o.letrero, o.x * T, o.base * T - img.height - 1, o.zona ? '#2fbf71' : '#ffffff')
       const grande = o.clave === 'campo' || o.clave === 'estadio'
-      if (o.zona || o.vida || o.arcade || o.bus) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : 4), radio: grande ? 68 : o.bus ? 32 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, nombre: 'Alejandro' })
+      if (o.nube) {
+        const nube = this.nubeImg
+        this.interactivos.push({ get x() { return nube.visible ? nube.x : -9999 }, get y() { return nube.y + 4 }, radio: 20, nube: true, nombre: 'Alejandro', fija: true })
+      } else if (o.zona || o.vida || o.arcade || o.bus) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : 4), radio: grande ? 68 : o.bus ? 32 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, nombre: 'Alejandro' })
     }
   }
 
@@ -547,10 +549,23 @@ export default class Mundo extends Phaser.Scene {
     registrar('zona', 'deseo', true)
   }
 
-  // La nube amarilla: te subes y durante 20 segundos vas mucho más rápido
+  // La nube amarilla flota en el suelo. Al cogerla desaparece de allí y va 10 segundos bajo tus pies (vas mucho más
+  // rápido); cuando se acaba se queda flotando donde estés, hasta que la vuelvas a coger
+  posarNube(x, y) {
+    const n = this.nubeImg
+    this.tweens.killTweensOf(n)
+    n.setPosition(x, y).setDepth(y + 2).setVisible(true).setAlpha(0)
+    this.tweens.add({ targets: n, alpha: 1, duration: 250 })
+    this.tweens.add({ targets: n, y: y - 3, duration: 1100, yoyo: true, repeat: -1, ease: 'Sine.inOut' })
+  }
+
   async subirNube() {
-    await decir('Alejandro', frases('nube'))
-    this.turbo = this.time.now + 20000
+    // la historia solo la primera vez; después te subes sin más
+    if (!this.nubeContada) { this.nubeContada = true; await decir('Alejandro', frases('nube')) }
+    this.tweens.killTweensOf(this.nubeImg)
+    this.nubeImg.setVisible(false)
+    this.nubeEnUso = true
+    this.turbo = this.time.now + 10000
     if (!this.nubeJugador) this.nubeJugador = this.add.image(0, 0, 'nube').setOrigin(0.5, 0.5)
     this.nubeJugador.setVisible(true)
     ;[523, 784, 1047].forEach((f, i) => sonar(f, 0.1, 'triangle', 0.05, i * 0.06))
@@ -739,7 +754,7 @@ export default class Mundo extends Phaser.Scene {
       crearAnimaciones(this, clave)
       const s = this.physics.add.sprite(p.x * T, p.y * T, clave, 0).setOrigin(0.5, 1).setImmovable(true)
       s.body.setSize(10, 6).setOffset(7, 25)
-      s.setData('paseo', { clave, grupo: p.grupo, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 34 : 54, destino: null, espera: 1000 + (i * 977) % 3000 })
+      s.setData('paseo', { clave, grupo: p.grupo, casaX: p.x * T, casaY: p.y * T, radio: p.vida ? 22 : 36, destino: null, espera: 1000 + (i * 977) % 3000 })
       s.setInteractive({ useHandCursor: true })
       s.on('pointerover', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
       s.on('pointermove', (ptr) => etiqueta(p.nombre, ptr.x, ptr.y))
@@ -958,6 +973,7 @@ export default class Mundo extends Phaser.Scene {
       this.jugador.destroy()
       this.tweens.killTweensOf(this.guia)
       this.paseoGuia = null
+      this.rutaGuia = null
       this.turbo = 0
     }
     const p = estado.personaje
@@ -1025,6 +1041,7 @@ export default class Mundo extends Phaser.Scene {
   saltarRecorrido() {
     this.tweens.killTweensOf(this.guia)
     this.paseoGuia = null
+    this.rutaGuia = null
     if (this.paso < RECORRIDO.length) registrar('recorrido', `saltado en el paso ${this.paso + 1}`, true)
     this.paso = RECORRIDO.length
     estado.recorridoHecho = true
@@ -1043,7 +1060,7 @@ export default class Mundo extends Phaser.Scene {
     const cosa = this.interactivos.filter((o) => cerca(o, o.radio)).sort((a, b) => Phaser.Math.Distance.Between(j.x, j.y, a.x, a.y) - Phaser.Math.Distance.Between(j.x, j.y, b.x, b.y))[0] // lo más cercano, no lo primero de la lista
     if (!cosa) return null
     // los NPC tienen getters (se mueven); los edificios y objetos, un punto fijo junto a la puerta
-    return { x: cosa.x, y: cosa.y - (Object.getOwnPropertyDescriptor(cosa, 'x')?.get ? 34 : 26) }
+    return { x: cosa.x, y: cosa.y - (cosa.fija ? 18 : Object.getOwnPropertyDescriptor(cosa, 'x')?.get ? 34 : 26) }
   }
 
   async interactuar() {
@@ -1084,17 +1101,38 @@ export default class Mundo extends Phaser.Scene {
     }
     if (this.paseoGuia?.isPaused()) { this.paseoGuia.resume(); g.play(this.animGuia, true); return }
     if (this.paseoGuia || this.time.now < (this.esperaGuia || 0)) return
-    // otro punto del camino principal, ni muy cerca ni muy lejos de donde está
-    const pueblo = g.x < AUTOVIA.x0 * T
-    const destino = Phaser.Math.Clamp(g.x / T + Phaser.Math.Between(-14, 14), pueblo ? CAMINO_INICIO + 2 : AUTOVIA.x1 + 3, pueblo ? AUTOVIA.x0 - 2 : ANCHO - 6) * T
-    const y = (CAMINO + Phaser.Math.FloatBetween(0.3, 1.6)) * T
-    const dx = destino - g.x, dy = y - g.y
+    // va a visitar a alguien de su lado de la autovía: sube al camino, lo recorre hasta su altura y baja hasta él
+    if (!this.rutaGuia?.length) {
+      const pueblo = g.x < AUTOVIA.x0 * T
+      const enCampo = (n) => n.y > 24 * T && n.x > 97 * T && n.x < 111 * T // a Gabriel, dentro de la valla, no
+      const candidatos = this.npcs.filter((n) => (n.x < AUTOVIA.x0 * T) === pueblo && n !== this.visitaGuia && !enCampo(n))
+      // uno de los seis que tiene más cerca, así va de corrillo en corrillo y no se pasa el rato cruzando el mapa
+      candidatos.sort((a, b) => Math.abs(a.x - g.x) - Math.abs(b.x - g.x))
+      const n = candidatos[Phaser.Math.Between(0, Math.min(5, candidatos.length - 1))]
+      if (!n) return
+      const yc = (CAMINO + 1) * T
+      this.visitaGuia = n
+      this.rutaGuia = [[g.x, yc], [n.x, yc], 'amigo']
+    }
+    let paso = this.rutaGuia.shift()
+    const n = this.visitaGuia
+    if (paso === 'amigo') {
+      // el último tramo apunta a donde está ahora, y el amigo le espera quieto
+      const m = n.getData('paseo'); m.destino = null; m.espera = this.time.now + 8000; n.setVelocity(0); n.anims.stop()
+      paso = [n.x + (g.x < n.x ? -15 : 15), n.y]
+    }
+    const [x, y] = paso
+    const dx = x - g.x, dy = y - g.y
+    const llega = () => {
+      g.anims.stop(); this.paseoGuia = null
+      if (this.rutaGuia.length) return
+      this.charlar(g, n)
+      this.esperaGuia = this.time.now + Phaser.Math.Between(4500, 6500)
+    }
+    if (Math.hypot(dx, dy) < 2) return llega()
     this.animGuia = `alejandro-${Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'derecha' : 'izquierda') : (dy > 0 ? 'abajo' : 'arriba')}`
     g.play(this.animGuia, true)
-    this.paseoGuia = this.tweens.add({
-      targets: g, x: destino, y, duration: (Math.hypot(dx, dy) / 45) * 1000,
-      onComplete: () => { g.anims.stop(); g.setFrame([0, 3, 6][Phaser.Math.Between(0, 2)]); this.esperaGuia = this.time.now + Phaser.Math.Between(2000, 5000); this.paseoGuia = null },
-    })
+    this.paseoGuia = this.tweens.add({ targets: g, x, y, duration: (Math.hypot(dx, dy) / 50) * 1000, onComplete: llega })
   }
 
   // Cada NPC da paseos cortos alrededor de su sitio; si el jugador se acerca, se para y le mira
@@ -1110,10 +1148,14 @@ export default class Mundo extends Phaser.Scene {
     }
     if (!m.destino) {
       if (ahora < m.espera) return
-      // a veces va a charlar con alguien de su grupo que esté por allí; si no, un paseo
-      const amigo = m.grupo && Math.random() < 0.35 && this.npcs.find((o) => o !== n && o.getData('paseo').grupo === m.grupo && !o.getData('paseo').destino
-        && ahora > o.getData('paseo').espera - 200 && Phaser.Math.Distance.Between(o.x, o.y, n.x, n.y) < 90)
-      if (amigo) {
+      // si se ha alejado de su sitio (le han empujado, venía de charlar…), vuelve a él
+      const lejos = Phaser.Math.Distance.Between(n.x, n.y, m.casaX, m.casaY) > m.radio * 1.3
+      // a veces va a charlar con alguien de su grupo que esté cerca, pero sin salir de su zona; si no, un paseo
+      const amigo = !lejos && m.grupo && Math.random() < 0.35 && this.npcs.find((o) => o !== n && o.getData('paseo').grupo === m.grupo && !o.getData('paseo').destino
+        && ahora > o.getData('paseo').espera - 200 && Phaser.Math.Distance.Between(o.x, o.y, n.x, n.y) < 70
+        && Phaser.Math.Distance.Between(o.x, o.y, m.casaX, m.casaY) < m.radio + 24)
+      if (lejos) m.destino = { x: m.casaX, y: m.casaY, hasta: ahora + 5000 }
+      else if (amigo) {
         const lado = n.x < amigo.x ? -15 : 15
         m.destino = { x: amigo.x + lado, y: amigo.y, hasta: ahora + 4000, amigo }
         amigo.getData('paseo').espera = ahora + 4500 // que le espere
@@ -1186,6 +1228,12 @@ export default class Mundo extends Phaser.Scene {
     if (!this.enViaje) j.setVelocity(v.x, v.y)
     if (this.nubeJugador) {
       this.nubeJugador.setVisible(turbo).setPosition(j.x, j.y - 1 + Math.sin(this.time.now / 150)).setDepth(j.y - 1)
+    }
+    // se acabaron los 10 segundos: la nube se queda flotando donde estás
+    if (this.nubeEnUso && !turbo && !this.enViaje && !this.cambiandoSala) {
+      this.nubeEnUso = false
+      this.posarNube(j.x, j.y + 2)
+      ;[1047, 784, 523].forEach((f, i) => sonar(f, 0.08, 'triangle', 0.04, i * 0.06))
     }
     if (this.enViaje) { /* el autobús mueve al jugador */ } else if (vx || vy) {
       const dir = Math.abs(vx) > Math.abs(vy) ? (vx < 0 ? 'izquierda' : 'derecha') : (vy < 0 ? 'arriba' : 'abajo')

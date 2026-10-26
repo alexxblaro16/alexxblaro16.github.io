@@ -23,8 +23,8 @@ El juego empieza al sur del pueblo: se cruza la **Puerta de la Villa de San Andr
   Opciones: «Abrir las reseñas de Google» (se abren en otra pestaña) o «Ahora no».
 - **Su casa** (un bloque de pisos, sin dirección). **Martha**, su madre, y **Dante**, su hermano.
   > Aquí vive mi familia. Mi hermano Dante tiene 15 años… y luego te presento a alguien que se parece mucho a él.
-- **Supermercado Lupa**, encima de la plaza, con su aparcamiento delante:
-  > El Lupa de Villalpando. Aquí trabajé un verano. Reponer estanterías, echar una mano en la caja, ayudar a la gente mayor a llevar la compra al coche…
+- **Supermercado Lupa**, encima de la plaza, con su aparcamiento delante. Es parada del recorrido, después del instituto:
+  > Este es el Lupa del pueblo. Un verano trabajé aquí. Reponía estanterías, echaba una mano en la caja y ayudaba a la gente mayor a llevar la compra al coche. […] Venga, que nos vamos a la estación.
 - **IES Tierra de Campos**:
   > En el instituto hice mis primeras cosas con Scratch y un Arduino, en 3.º de la ESO, y me encantó.
   > Desde pequeño soy fan de Minecraft: me pasaba horas pensando cómo estaría hecho por dentro. Ahí empezó todo.

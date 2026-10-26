@@ -45,6 +45,13 @@ al azar dentro de ese círculo, anda hasta él con su animación y espera. Si el
 para que se pueda hablar con él. El punto de interacción de los NPC con diálogo se calcula con *getters*, así sigue
 al personaje allá donde vaya.
 
+**Zona:** 36 px los amigos y 22 la familia. Si un NPC se ha alejado más de 1,3 veces su radio, su siguiente paseo
+es volver a su sitio, y solo charla con alguien que esté dentro de su zona. Así no se encadenan y se alejan.
+
+**El guía de paseo:** al acabar el recorrido, `pasearGuia()` monta una ruta: subir al camino, recorrerlo y bajar hasta
+alguien de su lado de la autovía, elegido entre los seis más cercanos y sin contar a Gabriel, que está dentro del campo.
+El último tramo apunta a donde está ese amigo en ese momento, el amigo le espera y al llegar charlan con `charlar()`.
+
 **Charlas:** a veces, en vez de pasear, un NPC va hacia otro de su mismo grupo (residencia, MEDAC, uni) que esté
 cerca y libre. Al llegar, `charlar()` los pone mirándose y les saca bocadillos por turnos («...», «jaja», «!?»,
 «xD»…). Los bocadillos valen para los dos idiomas.
@@ -150,7 +157,8 @@ también tiene su propia luz.
 
 `ESFERAS` (en `mapa.js`) dice dónde está cada una de las siete, fuera o dentro de una sala. Las encontradas se guardan en
 `estado.esferas`; con las siete, `pedirDeseo()` oscurece el cielo y hace girar las esferas alrededor del jugador. La nube amarilla
-activa un turbo de 20 s. Los penaltis son el quinto juego de `arcade.js` y se abren desde el campo de fútbol.
+va bajo tus pies 10 s, con turbo (`subirNube()`), y desaparece del suelo. Al acabarse, `posarNube()` la deja
+flotando donde estés, y el punto para cogerla la sigue (con *getters*). Los penaltis son el quinto juego de `arcade.js` y se abren desde el campo de fútbol.
 Si cargas el tiro en la franja naranja sale el **tornado de fuego**, que no para el portero.
 
 El campo mide 208 × 128. Sus medidas (valla, puertas y banquillos) están en `ESTADIO` (`sprites.js`) y sirven tanto
