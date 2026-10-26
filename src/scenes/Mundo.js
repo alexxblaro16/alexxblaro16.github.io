@@ -2,6 +2,7 @@
 import Phaser from 'phaser'
 import { T, ESTADIO, crearPersonaje, crearAnimaciones, crearJerry, crearSuelos, crearEdificios, crearDecorado } from '../sprites.js'
 import { ANCHO, ALTO, CAMINO, CAMINO_INICIO, AUTOVIA, EDIFICIOS, OBJETOS, SUELOS, SENDAS, PERSONAJES, RECORRIDO, ESFERAS, METRO } from '../mapa.js'
+import { AVION } from '../edificios.js'
 import { INTERIORES, crearInteriores } from '../interiores.js'
 import { HISTORIA } from '../historia.js'
 import { estado, guardar } from '../estado.js'
@@ -310,6 +311,12 @@ export default class Mundo extends Phaser.Scene {
         img.setDepth(-480) // se anda por encima
       } else if (o.encima) {
         img.setDepth(o.base * T + 40) // pegado a la pared de un edificio
+      } else if (o.clave === 'avion') {
+        // sólido entero (fuselaje, alas y timones) para que nadie se quede escondido debajo, y se dibuja a la
+        // altura del eje: quien pasa por arriba queda detrás y quien pasa por abajo, delante
+        const x0 = o.x * T - AVION.ancho / 2, y0 = o.base * T - AVION.alto, e = y0 + AVION.eje
+        this.solido(x0 + 8, e - 8, 114, 16); this.solido(x0 + 44, y0 + 6, 42, 68); this.solido(x0 + 6, e - 18, 20, 36)
+        img.setDepth(e)
       } else if (o.clave === 'arbusto' || o.clave === 'flores') {
         // se puede pisar
       } else if (['farola', 'farola_moderna', 'veleta', 'papelera', 'palmera', 'arbol_plaza', 'mesa_bar'].includes(o.clave)) {
@@ -324,7 +331,7 @@ export default class Mundo extends Phaser.Scene {
       if (o.nube) {
         const nube = this.nubeImg
         this.interactivos.push({ get x() { return nube.visible ? nube.x : -9999 }, get y() { return nube.y + 4 }, radio: 20, nube: true, nombre: 'Alejandro', fija: true })
-      } else if (o.zona || o.vida || o.arcade || o.bus || o.metro || o.opinion) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande ? -img.height / 2 : o.opinion ? 14 : 4), radio: grande ? 68 : o.bus || o.metro ? 26 : o.opinion ? 24 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, metro: o.metro, opinion: o.opinion, nombre: 'Alejandro' })
+      } else if (o.zona || o.vida || o.arcade || o.bus || o.metro || o.opinion) this.interactivos.push({ x: o.x * T, y: o.base * T + (grande || o.clave === 'avion' ? -img.height / 2 : o.opinion ? 14 : 4), radio: grande ? 68 : o.clave === 'avion' ? 54 : o.bus || o.metro ? 26 : o.opinion ? 24 : 20, zona: o.zona, vida: o.vida, arcade: o.arcade, nube: o.nube, bus: o.bus, metro: o.metro, opinion: o.opinion, nombre: 'Alejandro' })
     }
   }
 

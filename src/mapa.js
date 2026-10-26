@@ -110,7 +110,7 @@ export const OBJETOS = [
   { clave: 'marcador_raimon', x: 113, base: 27.6, vida: 'marcador' },
   // huerto del pueblo con una berenjena gigante
   { clave: 'huerto', x: 9.5, base: 13.6 }, { clave: 'berenjena', x: 12.9, base: 13.8, vida: 'berenjena' },
-  { clave: 'avion', x: 118.5, base: 26.6, vida: 'tallin', letrero: 'TALLIN' },
+  { clave: 'avion', x: 119.4, base: 29, vida: 'tallin', letrero: 'TALLIN' },
   { clave: 'bloque', x: 51, base: 31, vida: 'minecraft', secreto: true },
   { clave: 'cartel', x: 166, base: 18.4, vida: 'fin', letrero: 'FIN… POR AHORA' },
   { clave: 'cartel', x: 21.6, base: 31.6, vida: 'inicio', letrero: 'START' },
@@ -160,7 +160,7 @@ export const SUELOS = [
 export const SENDAS = [
   { x: 23, y0: 9, y1: 12 }, // de la plaza al aparcamiento del Lupa, entre las casas
   { x: 42, y0: 9, y1: 12 }, // de la plaza al Bar El Arte
-  { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 31, y0: 21, y1: 32 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 25 }, { x: 51, y0: 21, y1: 31 }, { x: 162, y0: 12, y1: 18 },
+  { x: 18, y0: 21, y1: 32 }, { x: 19, y0: 21, y1: 32 }, { x: 31, y0: 21, y1: 32 }, { x: 88, y0: 21, y1: 23 }, { x: 104, y0: 21, y1: 24 }, { x: 118, y0: 21, y1: 24 }, { x: 51, y0: 21, y1: 31 }, { x: 162, y0: 12, y1: 18 },
 ]
 
 // Personajes: la familia y los amigos (solo el nombre de pila, que se ve al pasar el ratón).
@@ -207,8 +207,8 @@ export const PERSONAJES = [
   ], 80, 21.5, 'medac'), 77, 89, 21.4, 27),
   ...enZona(amigos([
     ['Manuel', '#5a4030', '#1f2430', { tipo: 'polo', pantalon: '#cfc6b0', gafas: '#9a8560' , frases: { es: ['Hicimos MedScan juntos y seguimos en el mismo equipo para los hackatones.'], en: ["We built MedScan together and we're still on the same hackathon team."] } }],
-    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' , frases: { es: ['En el equipo de los hackatones yo hago de Product Owner. Alejandro, del front.'], en: ["On our hackathon team I'm the Product Owner. Alejandro takes the front end."] } }],
-    ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' , frases: { es: ['MedScan empezó como un hackatón y acabamos saliendo en la tele.'], en: ['MedScan started as a hackathon and we ended up on TV.'] } }],
+    ['Carlos', '#1d1a19', '#2b2f38', { piel: '#e5a97f', estampado: '#f2b33d', zapatillas: '#2a2d33' , frases: { es: ['En el equipo de los hackatones yo hago de Product Owner. Alejandro, del front.', 'Fuimos juntos al Erasmus BIP de Tallin y allí presentamos MedScan a un inversor de Estonia.'], en: ["On our hackathon team I'm the Product Owner. Alejandro takes the front end.", 'We went to the Erasmus BIP in Tallinn together and pitched MedScan to an Estonian investor there.'] } }],
+    ['Gonzalo', '#2a1d16', '#3d7be0', { pelo: 'ondulado', piel: '#e0a984', barba: true, tipo: 'sudadera' , frases: { es: ['MedScan empezó como un hackatón y acabamos saliendo en la tele.', 'Con Alejandro me fui a Tallin, al Erasmus BIP de empleabilidad e IA. ¡Hasta se lo presentamos a un inversor!'], en: ['MedScan started as a hackathon and we ended up on TV.', 'I went to Tallinn with Alejandro for the Erasmus BIP on employability and AI. We even pitched it to an investor!'] } }],
     ['Hugo', '#2a1d16', '#eef1f4', { pelo: 'rizado', gafas: true, barba: 'perilla' , frases: { es: ['Yo me encargo del back y Alejandro del front. Así nos entendemos.'], en: ["I handle the back end and Alejandro the front end. That's how we get along."] } }],
     ['Iván', '#7a5a3e', '#1f2124', { pelo: 'degradado', piel: '#ecbf9c', franja: '#8a9099', pantalon: '#3a3f48', zapatillas: '#f4f4f4' , frases: { es: ['Soy de Lanzarote. En Front End II hicimos juntos toda la parte de cuentas.'], en: ["I'm from Lanzarote. In Front End II we built the whole accounts module together."] } }],
     ['Pablo', '#141212', '#2b2f38', { pelo: 'larga', barba: 'rala', piel: '#e8b896' , frases: { es: ['Soy el lead de VirtualpH, el proyecto con el CSIC. Las pull requests de Alejandro las reviso yo.'], en: ["I'm the lead on VirtualpH, our project with CSIC. I'm the one who reviews Alejandro's pull requests."] } }],
@@ -225,9 +225,9 @@ export const PERSONAJES = [
     // los Tort, gemelos y vestidos al revés: Jorge de blanco y Miguel de negro
     ['Jorge', '#141212', '#f2f3f5', { pelo: 'rizado', estampado: '#1f2124', pantalon: '#1f2124', anchos: true, zapatillas: '#f4f4f4', cadena: true, frases: { es: ['Estoy con Alejandro en Ingeniería del Software: hacemos PyKV, una base de datos clave-valor en Python.'], en: ["I'm with Alejandro in Software Engineering: we're building PyKV, a key-value database in Python."] } }],
     ['Miguel', '#141212', '#1f2124', { pelo: 'rizado', estampado: '#f2f3f5', pantalon: '#d9dde2', anchos: true, zapatillas: '#2a2d33', cadena: true, frases: { es: ['Soy Miguel, el gemelo de Jorge. Con Alejandro comparto alguna clase y nos llevamos genial.'], en: ["I'm Miguel, Jorge's twin. I share a few classes with Alejandro and we get on great."] } }],
-    ['Lucas', '#141212', '#f2c200', { pelo: 'pincho', piel: '#d9a07a', gafas: '#15171c', sonrisa: true, estampado: '#2fbf71', pantalon: '#1f3c66', zapatillas: '#f4f4f4', frases: { es: ['¡Olá! Soy Lucas, de Brasil. Alejandro y yo nos fuimos juntos a Estonia y desde entonces somos amigos.'], en: ["Olá! I'm Lucas, from Brazil. Alejandro and I went to Estonia together and we've been friends ever since."] } }],
+    ['Lucas', '#141212', '#f2c200', { pelo: 'pincho', piel: '#d9a07a', gafas: '#15171c', sonrisa: true, estampado: '#2fbf71', pantalon: '#1f3c66', zapatillas: '#f4f4f4', frases: { es: ['¡Olá! Soy Lucas, de Brasil. Alejandro y yo nos fuimos juntos a Tallin, al Erasmus BIP, y desde entonces somos amigos.'], en: ["Olá! I'm Lucas, from Brazil. Alejandro and I went to the Erasmus BIP in Tallinn together and we've been friends ever since."] } }],
     ['Marcos', '#a07a48', '#eef1f4', { pelo: 'ondulado', barba: 'perilla', tipo: 'polo', pantalon: '#34466e', zapatillas: '#2a2d33', frases: { es: ['Soy Marcos. Con Alejandro coincido en alguna clase de la UDIT.'], en: ["I'm Marcos. Alejandro and I share a few classes at UDIT."] } }],
-  ], 111, 21.8, 'uni', 2), 110.5, 123, 21.8, 26),
+  ], 111, 20.8, 'uni', 2), 110.5, 123, 20.6, 23),
 ]
 
 // El recorrido guiado: adónde va Alejandro y qué cuenta (las frases están en historia.js)
@@ -246,7 +246,7 @@ export const RECORRIDO = [
   { x: 93, y: CAMINO + 0.5, historia: 'anexia' },
   { x: 109, y: CAMINO + 0.5, historia: 'udit' },
   { x: 104, y: 22.9, historia: 'futbol' },
-  { x: 118, y: 23.5, historia: 'tallin', via: [[104, CAMINO + 0.5], [118, CAMINO + 0.5]] },
+  { x: 117.6, y: 23.3, historia: 'tallin', via: [[104, CAMINO + 0.5], [118, CAMINO + 0.5]] },
   { x: 125, y: CAMINO + 0.5, historia: 'hackaton' },
   { x: 140, y: CAMINO + 1.5, historia: 'dante_pw' },
   { x: 148, y: CAMINO + 0.5, historia: 'final' },

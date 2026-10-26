@@ -701,37 +701,83 @@ function banderas(fotograma) {
   }
 }
 
-// Avión del Erasmus a Tallin visto desde arriba: fuselaje con ventanillas, alas en flecha con motores,
-// cola con los colores de la bandera de Estonia y la escalerilla puesta
+// Avión del Erasmus a Tallin visto desde arriba, aparcado: se dibuja por capas sobre una rejilla (alas, timones,
+// motores, fuselaje) y cada capa lleva su contorno, así quedan separadas. Aletas azules, la bandera de Estonia
+// junto a la cola, la sombra desplazada y la escalerilla bajada en la puerta. El morro mira a la derecha.
+export const AVION = { ancho: 128, alto: 84, eje: 40 }
 function avion() {
-  const [c, ctx] = lienzo(96, 64)
-  const p = (x, y, w, h, col) => px(ctx, x, y, col, w, h)
-  ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.beginPath(); ctx.ellipse(50, 58, 40, 5, 0, 0, Math.PI * 2); ctx.fill()
-  // alas en flecha
-  const ala = (y0, sentido) => {
-    // ala en flecha: cada fila algo más atrás y más estrecha, con borde oscuro y el canto de ataque claro
-    for (let i = 0; i < 20; i++) {
-      const y = y0 + i * sentido, x = 42 - Math.round(i * 0.9), w = 18 - Math.round(i * 0.45)
-      p(x - 1, y, w + 2, 1, '#1b1f27'); p(x, y, w, 1, '#d3d9e0'); p(x + w - 2, y, 2, 1, '#f4f6f8')
+  const { ancho: W, alto: H, eje: cy } = AVION
+  const [c, ctx] = lienzo(W, H)
+  const rej = Array.from({ length: H }, () => Array(W).fill(null))
+  const dentro = (x, y) => x >= 0 && y >= 0 && x < W && y < H
+  // pinta una capa: primero su contorno (lo que la rodea) y después ella, con el color que diga pinta(x, y)
+  const capa = (forma, pinta) => {
+    const m = new Set()
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (forma(x, y)) m.add(y * W + x)
+    for (const k of m) {
+      const x = k % W, y = (k - x) / W
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) if (dentro(x + dx, y + dy) && !m.has((y + dy) * W + x + dx)) rej[y + dy][x + dx] = '#1b1f27'
     }
-    p(42 - 18, y0 + 20 * sentido, 10, 1, '#1b1f27')
-    p(34, y0 + 9 * sentido - 2, 10, 5, '#1b1f27'); p(35, y0 + 9 * sentido - 1, 8, 3, '#6a717c'); p(42, y0 + 9 * sentido - 1, 1, 3, '#2b2f38') // motor
+    for (const k of m) { const x = k % W, y = (k - x) / W; rej[y][x] = pinta(x, y) }
   }
-  ala(24, -1); ala(39, 1)
-  // fuselaje
-  p(10, 25, 76, 14, '#1b1f27'); p(11, 26, 74, 12, '#f4f6f8'); p(11, 26, 74, 3, '#ffffff'); p(11, 35, 74, 3, '#d9dee4')
-  p(85, 27, 4, 10, '#1b1f27'); p(85, 28, 5, 8, '#f4f6f8'); p(89, 29, 3, 6, '#1b1f27'); p(89, 30, 2, 4, '#e9ecef') // morro
-  p(86, 29, 3, 3, '#33476b') // cabina
-  p(11, 32, 74, 1, '#2f5fb0') // franja azul
-  for (let x = 20; x < 82; x += 5) p(x, 29, 2, 2, '#4a6a9a')
-  p(64, 27, 3, 8, '#9aa3ad') // puerta
-  // cola con la bandera de Estonia (azul, negro y blanco)
-  p(4, 18, 12, 28, '#1b1f27'); p(5, 19, 10, 26, '#f4f6f8')
-  p(5, 19, 10, 3, '#0072ce'); p(5, 22, 10, 3, '#15171c'); p(5, 25, 10, 2, '#ffffff')
-  p(5, 37, 10, 3, '#0072ce'); p(5, 40, 10, 3, '#15171c')
-  p(2, 30, 14, 4, '#1b1f27'); p(3, 31, 12, 2, '#d9dee4')
-  // escalerilla
-  p(63, 39, 5, 14, '#1b1f27'); p(64, 40, 3, 12, '#f2c200'); for (let y = 42; y < 52; y += 2) p(64, y, 3, 1, '#8a6d00')
+  // media altura del fuselaje: cola afilada, cuerpo recto y morro redondo
+  const media = (x) => x < 8 || x > 121 ? 0 : x < 24 ? 2 + (6 * (x - 8)) / 16 : x <= 104 ? 8 : 8 * Math.sqrt(Math.max(0, 1 - ((x - 104) / 18) ** 2))
+  const fuselaje = (x, y) => Math.abs(y + 0.5 - cy) < media(x)
+  // ala en flecha: cada fila hacia la punta va más atrás y es más estrecha
+  const ala = (x, y) => {
+    const t = Math.abs(y + 0.5 - cy) - 8
+    if (t < 0 || t > 26) return false
+    const borde = 84 - t, cuerda = 22 - t * 0.55
+    return x <= borde && x >= borde - cuerda
+  }
+  const timon = (x, y) => {
+    const t = Math.abs(y + 0.5 - cy) - 5
+    if (t < 0 || t > 13) return false
+    const borde = 25 - t * 0.7, cuerda = 12 - t * 0.45
+    return x <= borde && x >= borde - cuerda
+  }
+  const motor = (x, y) => [cy - 18, cy + 17].some((my) => {
+    const dx = (x + 0.5 - 69) / 9, dy = (y + 0.5 - my - 0.5) / 3.6
+    return dx * dx * (dx > 0 ? 0.6 : 1) + dy * dy <= 1
+  })
+  // sombra: la silueta entera corrida hacia abajo y a la derecha
+  const silueta = (x, y) => fuselaje(x, y) || ala(x, y) || timon(x, y)
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (silueta(x - 5, y - 8)) px(ctx, x, y, 'rgba(0,0,0,0.2)')
+  capa(ala, (x, y) => {
+    const t = Math.abs(y + 0.5 - cy) - 8, borde = 84 - t
+    if (t >= 24) return '#0072ce' // aleta azul en la punta
+    if (x >= borde - 1) return '#f4f6f8' // borde de ataque
+    if (x <= borde - (22 - t * 0.55) + 2) return '#aab3bd' // flaps
+    return t > 4 && (x + y) % 9 === 0 ? '#c3cbd4' : '#d3d9e0'
+  })
+  capa(timon, (x, y) => (Math.abs(y + 0.5 - cy) - 5 >= 11 ? '#0072ce' : x >= 25 - (Math.abs(y + 0.5 - cy) - 5) * 0.7 - 1 ? '#f4f6f8' : '#d3d9e0'))
+  capa(motor, (x, y) => {
+    const my = y < cy ? cy - 18 : cy + 17
+    if (x >= 77) return '#2b2f38' // toma de aire
+    if (x >= 75) return '#eef1f4'
+    return y < my ? '#b9c0c8' : y > my + 1 ? '#6a717c' : '#8a929c'
+  })
+  capa(fuselaje, (x, y) => {
+    const dy = y - cy
+    if (x >= 114 && x <= 117 && Math.abs(dy + 0.5) < 5 && dy !== -1 && dy !== 0) return x === 114 ? '#6fa0d8' : '#33476b' // parabrisas de la cabina
+    if (dy <= -6) return '#ffffff'
+    if (dy >= 5) return '#cfd6de'
+    if (dy === 2) return '#0072ce' // franja azul
+    if (dy === 3) return '#15171c'
+    return '#f4f6f8'
+  })
+  // ventanillas a los dos lados, la bandera de Estonia (azul, negro y blanco) y la puerta
+  const r = (x, y, w, h, col) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) if (dentro(x + i, y + j)) rej[y + j][x + i] = col }
+  for (let x = 30; x < 102; x += 4) { r(x, cy - 5, 2, 2, '#4a6a9a'); r(x, cy + 4, 2, 1, '#4a6a9a') }
+  r(30, cy - 5, 9, 2, '#0072ce'); r(30, cy - 3, 9, 2, '#15171c'); r(30, cy - 1, 9, 2, '#ffffff'); r(29, cy - 6, 11, 1, '#1b1f27'); r(29, cy + 1, 11, 1, '#1b1f27'); r(29, cy - 6, 1, 8, '#1b1f27'); r(39, cy - 6, 1, 8, '#1b1f27')
+  r(98, cy + 4, 5, 4, '#9aa3ad'); r(98, cy + 7, 5, 1, '#1b1f27')
+  // deriva vista desde arriba: una línea fina sobre la cola
+  r(6, cy - 1, 18, 2, '#1b1f27'); r(7, cy - 1, 16, 1, '#0072ce')
+  // escalerilla amarilla bajando de la puerta
+  r(97, cy + 8, 7, 15, '#1b1f27'); r(98, cy + 8, 5, 14, '#f2c200')
+  for (let y = cy + 10; y < cy + 22; y += 2) r(98, y, 5, 1, '#8a6d00')
+  r(96, cy + 21, 9, 2, '#1b1f27')
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (rej[y][x]) px(ctx, x, y, rej[y][x])
   return c
 }
 
