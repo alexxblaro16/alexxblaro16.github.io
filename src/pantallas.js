@@ -232,8 +232,13 @@ function creador(soloRopa = false) {
       sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar()
     })
     caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar() })
-    $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover(); vista() }
-    $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover(); vista() }
+    // girar como en una peana: con «>» mira a la derecha de la pantalla, luego de espaldas, luego a la izquierda y
+    // vuelve de frente; con «<», al revés. Las filas de la hoja van abajo, izquierda, derecha, arriba, por eso
+    // no basta con sumar 1 (saltaba de un lado al otro sin ponerse de espaldas)
+    const GIRO = [0, 2, 3, 1]
+    const girar = (paso) => { direccion = GIRO[(GIRO.indexOf(direccion) + paso + 4) % 4]; sfx.mover(); vista() }
+    $('#girar-izq').onclick = () => girar(-1)
+    $('#girar-der').onclick = () => girar(1)
     $('#aleatorio').onclick = () => {
       if (soloRopa) {
         // en el probador, al azar solo la ropa: el cuerpo se queda como está
