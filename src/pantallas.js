@@ -232,8 +232,8 @@ function creador(soloRopa = false) {
       sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar()
     })
     caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar() })
-    $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover() }
-    $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover() }
+    $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover(); vista() }
+    $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover(); vista() }
     $('#aleatorio').onclick = () => {
       if (soloRopa) {
         // en el probador, al azar solo la ropa: el cuerpo se queda como está
@@ -262,6 +262,10 @@ function creador(soloRopa = false) {
     $('#jugar').onclick = () => confirmar()
     crearPersonaje(escena, 'vista-previa', p)
     vista()
+    // el muñeco anda solo: la pantalla del nombre para el reloj, así que se vuelve a poner al pintar el creador
+    // (antes no se ponía y el muñeco se quedaba quieto y las flechas no hacían nada hasta tocar otra opción)
+    clearInterval(creador.reloj)
+    creador.reloj = setInterval(() => { marco++; vista() }, 200)
   }
   // Vista previa: anda en la dirección elegida sobre un trozo de hierba
   let marco = 0
