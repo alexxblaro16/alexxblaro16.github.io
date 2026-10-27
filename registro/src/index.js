@@ -174,11 +174,14 @@ async function verAccesos(request, env) {
     env.DB.prepare('SELECT hora, nombre, donde, pais, texto FROM opiniones ORDER BY hora DESC LIMIT 100'),
   ])
   const ids = visitas.results.map((v) => v.id)
+  // D1 admite como mucho 100 parámetros por consulta: los ids van en trozos de 90
   let eventos = []
-  if (ids.length) {
-    const huecos = ids.map(() => '?').join(',')
-    eventos = (await env.DB.prepare(`SELECT visita, hora, tipo, dato FROM eventos WHERE visita IN (${huecos}) ORDER BY hora`).bind(...ids).all()).results
+  const trozos = []
+  for (let i = 0; i < ids.length; i += 90) {
+    const parte = ids.slice(i, i + 90)
+    trozos.push(env.DB.prepare(`SELECT visita, hora, tipo, dato FROM eventos WHERE visita IN (${parte.map(() => '?').join(',')}) ORDER BY hora`).bind(...parte))
   }
+  if (trozos.length) eventos = (await env.DB.batch(trozos)).flatMap((r) => r.results)
   const porVisita = {}
   for (const e of eventos) (porVisita[e.visita] ||= []).push(e)
   return json(request, {
