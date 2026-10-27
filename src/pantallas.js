@@ -5,7 +5,7 @@ import { estado, t, cambiarIdioma, guardar } from './estado.js'
 import { registrar } from './registro.js'
 import { sfx, alternarSonido, cambiarMusica, nombreMusica, musicaDeJuego } from './sonido.js'
 import { abrirClasico, pintarHUD, pantallaCompleta, esTactil, alVolverAlMenu, alCambiarRopa, mostrarHUD, hayDialogo } from './ui.js'
-import { PALETAS, crearPersonaje } from './sprites.js'
+import { PALETAS, crearPersonaje, retrato } from './sprites.js'
 
 const $ = (s) => document.querySelector(s)
 const caja = () => $('#pantalla')
@@ -23,7 +23,7 @@ const TXT = {
     cortes: { pitillo: 'PITILLO', recto: 'RECTO', ancho: 'ANCHO' },
     dibujo: 'DIBUJO', dibujos: { '': 'NINGUNO', rayo: 'RAYO', estrella: 'ESTRELLA', corazon: 'CORAZON', codigo: '</>', pixel: 'PIXEL', calavera: 'CALAVERA', flor: 'FLOR', balon: 'BALON', nota: 'NOTA' },
     sombrero: 'CABEZA', sombreros: { '': 'NADA', gorra: 'GORRA', gorro: 'GORRO', boina: 'BOINA', pescador: 'PESCADOR', cinta: 'CINTA' }, colorExtra: 'COLOR', auriculares: 'CASCOS', mochila: 'MOCHILA',
-    bufanda: 'BUFANDA', reloj: 'RELOJ', aros: 'PENDIENTES',
+    bufanda: 'BUFANDA', reloj: 'RELOJ', aros: 'PENDIENTES', complementos: 'COMPLEMENTOS',
     pideNombre: 'ESCRIBE TU NOMBRE', ayudaNombre: 'Hace falta para empezar: es como te llamará Alejandro en el juego.', faltaNombre: 'Escribe un nombre para seguir.', siguiente: 'SIGUIENTE',
     barbas: { '': 'NO', rala: 'POCA', perilla: 'PERILLA', completa: 'COMPLETA' }, visitante: 'Visitante',
     pulsa: 'PULSA ENTER O TOCA PARA EMPEZAR', subtitulo: 'Desarrollador Full Stack Junior · mi vida en píxeles',
@@ -45,7 +45,7 @@ const TXT = {
     cortes: { pitillo: 'SKINNY', recto: 'STRAIGHT', ancho: 'BAGGY' },
     dibujo: 'PRINT', dibujos: { '': 'NONE', rayo: 'BOLT', estrella: 'STAR', corazon: 'HEART', codigo: '</>', pixel: 'PIXEL', calavera: 'SKULL', flor: 'FLOWER', balon: 'BALL', nota: 'NOTE' },
     sombrero: 'HEAD', sombreros: { '': 'NONE', gorra: 'CAP', gorro: 'BEANIE', boina: 'BERET', pescador: 'BUCKET', cinta: 'BAND' }, colorExtra: 'COLOUR', auriculares: 'HEADPHONES', mochila: 'BACKPACK',
-    bufanda: 'SCARF', reloj: 'WATCH', aros: 'EARRINGS',
+    bufanda: 'SCARF', reloj: 'WATCH', aros: 'EARRINGS', complementos: 'ACCESSORIES',
     pideNombre: 'TYPE YOUR NAME', ayudaNombre: 'You need one to start: it is what Alejandro will call you in the game.', faltaNombre: 'Type a name to continue.', siguiente: 'NEXT',
     barbas: { '': 'NO', rala: 'LIGHT', perilla: 'GOATEE', completa: 'FULL' }, visitante: 'Visitor',
     pulsa: 'PRESS ENTER OR TAP TO START', subtitulo: 'Junior Full Stack Developer · my life in pixels',
@@ -169,19 +169,49 @@ function creador(soloRopa = false) {
   let conNombre = soloRopa
   let pestana = soloRopa ? 'ropa' : 'cuerpo'
   let direccion = 0 // 0 abajo, 1 izquierda, 2 derecha, 3 arriba
+  let pestanaPintada = null // para saber si al repintar hay que conservar el scroll
   caja().className = 'pantalla portada'
-  const fila = (clave, contenido) => `<div class="fila-creador"><span>${x()[clave]}</span><div>${contenido}</div></div>`
+  // cada fila: su nombre (con lo elegido al lado si es una lista) y sus opciones
+  const fila = (clave, contenido, elegido = '') => `<div class="fila-creador"><span>${x()[clave]}${elegido ? `<em>${elegido}</em>` : ''}</span><div>${contenido}</div></div>`
+  // Miniaturas: cada opción se enseña puesta en tu muñeco, recortando la parte que cambia (cabeza, torso o piernas)
+  const ZONAS = { cabeza: [3, 0, 18, 17], torso: [2, 11, 20, 14], piernas: [3, 18, 18, 14] }
+  const ZONA_DE = { pelo: 'cabeza', barba: 'cabeza', sombrero: 'cabeza', tipo: 'torso', dibujo: 'torso', abajo: 'piernas', corte: 'piernas',
+    gafas: 'cabeza', auriculares: 'cabeza', aros: 'cabeza', sonrisa: 'cabeza', bufanda: 'torso', cadena: 'torso', reloj: 'torso', mochila: 'torso' }
+  const cacheMinis = new Map()
+  const conValor = (clave, v) => {
+    const q = { ...p }
+    if (clave === 'corte') { q.anchos = v === 'ancho'; q.pitillo = v === 'pitillo' } else q[clave] = BOOLEANOS.includes(clave) ? !!v : clave === 'barba' ? (v || false) : v
+    // el corte se ve en el pantalón, aunque lleve falda
+    if (clave === 'corte' && q.abajo === 'falda') q.abajo = 'pantalon'
+    return q
+  }
+  const mini = (clave, v) => {
+    const q = conValor(clave, v), llave = clave + '|' + JSON.stringify(q)
+    if (!cacheMinis.has(llave)) {
+      const [zx, zy, zw, zh] = ZONAS[ZONA_DE[clave]]
+      const c = document.createElement('canvas'); c.width = zw; c.height = zh
+      c.getContext('2d').drawImage(retrato(q), zx, zy, zw, zh, 0, 0, zw, zh)
+      cacheMinis.set(llave, c.toDataURL())
+    }
+    return cacheMinis.get(llave)
+  }
+  const actualDe = (clave) => (clave === 'corte' ? corteDe(p) : BOOLEANOS.includes(clave) ? (p[clave] ? '1' : '') : String(p[clave] || ''))
+  // fichas con miniatura (peinados, prendas, dibujos, gorros...)
+  const fichas = (clave, lista, textos) => lista.map((v) =>
+    `<button class="ficha ${actualDe(clave) === String(v) ? 'sel' : ''}" data-k="${clave}" data-v="${v}" title="${textos[v]}"><img src="${mini(clave, v)}" alt=""><span>${textos[v]}</span></button>`).join('')
+  // complementos: se ponen y se quitan con un toque, cada uno con su miniatura y una marca si lo llevas
+  const complementos = (lista) => lista.map((k) =>
+    `<button class="ficha interruptor ${p[k] ? 'sel' : ''}" data-k="${k}" data-v="${p[k] ? '' : 1}" aria-pressed="${!!p[k]}"><img src="${mini(k, 1)}" alt=""><span>${x()[k]}</span></button>`).join('')
   // el color vacío de los ojos es el de siempre: se pinta marrón oscuro
   const colores = (clave, lista) => lista.map((c) => `<button class="color ${(p[clave] || '') === c ? 'sel' : ''}" style="background:${c || '#4a3326'}" data-k="${clave}" data-v="${c}" aria-label="${c || 'normal'}"></button>`).join('')
   const opciones = (clave, lista, textos) => lista.map((v) => {
     const actual = clave === 'corte' ? corteDe(p) : BOOLEANOS.includes(clave) ? (p[clave] ? '1' : '') : (p[clave] || '')
     return `<button class="opcion ${actual === String(v) ? 'sel' : ''}" data-k="${clave}" data-v="${v}">${textos[v]}</button>`
   }).join('')
-  const siNo = { 1: x().si, '': x().no }
   const contenido = () => ({
-    cuerpo: fila('soy', opciones('chica', ['', 1], x().generos)) + fila('piel', colores('piel', PALETAS.piel)) + fila('ojos', colores('ojos', PALETAS.ojos)) + fila('pelo', opciones('pelo', ESTILOS, x().estilos)) + fila('colorPelo', colores('colorPelo', PALETAS.pelo)) + fila('barba', opciones('barba', BARBAS, x().barbas)),
-    ropa: fila('tipo', opciones('tipo', TIPOS, x().tipos)) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('dibujo', opciones('dibujo', DIBUJOS, x().dibujos)) + fila('abajo', opciones('abajo', ABAJOS, x().abajos)) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('corte', opciones('corte', CORTES, x().cortes)) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
-    extras: fila('sombrero', opciones('sombrero', SOMBREROS, x().sombreros)) + fila('colorExtra', colores('colorExtra', PALETAS.ropa)) + fila('gafas', opciones('gafas', [1, ''], siNo)) + fila('auriculares', opciones('auriculares', [1, ''], siNo)) + fila('mochila', opciones('mochila', [1, ''], siNo)) + fila('bufanda', opciones('bufanda', [1, ''], siNo)) + fila('cadena', opciones('cadena', [1, ''], siNo)) + fila('reloj', opciones('reloj', [1, ''], siNo)) + fila('aros', opciones('aros', [1, ''], siNo)) + fila('sonrisa', opciones('sonrisa', [1, ''], siNo)),
+    cuerpo: fila('soy', opciones('chica', ['', 1], x().generos)) + fila('piel', colores('piel', PALETAS.piel)) + fila('ojos', colores('ojos', PALETAS.ojos)) + fila('pelo', fichas('pelo', ESTILOS, x().estilos), x().estilos[p.pelo]) + fila('colorPelo', colores('colorPelo', PALETAS.pelo)) + (p.chica ? '' : fila('barba', fichas('barba', BARBAS, x().barbas), x().barbas[p.barba || ''])),
+    ropa: fila('tipo', fichas('tipo', TIPOS, x().tipos), x().tipos[p.tipo]) + fila('ropa', colores('ropa', PALETAS.ropa)) + fila('dibujo', fichas('dibujo', DIBUJOS, x().dibujos), x().dibujos[p.dibujo || '']) + fila('abajo', fichas('abajo', ABAJOS, x().abajos), x().abajos[p.abajo]) + fila('pantalon', colores('pantalon', PALETAS.pantalon)) + fila('corte', fichas('corte', CORTES, x().cortes), x().cortes[corteDe(p)]) + fila('zapatillas', colores('zapatillas', PALETAS.zapatillas)),
+    extras: fila('sombrero', fichas('sombrero', SOMBREROS, x().sombreros), x().sombreros[p.sombrero || '']) + fila('colorExtra', colores('colorExtra', PALETAS.ropa)) + fila('complementos', complementos(['gafas', 'auriculares', 'aros', 'sonrisa', 'bufanda', 'cadena', 'reloj', 'mochila'])),
   })[pestana]
   const pintarNombre = (error = false) => {
     clearInterval(creador.reloj)
@@ -206,12 +236,16 @@ function creador(soloRopa = false) {
     if (!conNombre) return pintarNombre()
     const titulo = soloRopa ? (estado.idioma === 'en' ? 'Change outfit' : 'Cambia de ropa') : x().crea
     const pestanas = Object.entries(x().pestanas).filter(([k]) => !soloRopa || k !== 'cuerpo')
+    // se guarda dónde estaba el scroll de las opciones: al elegir algo se repinta todo y si no volvía arriba
+    const scroll = [$('.creador-opciones')?.scrollTop || 0, $('.creador')?.scrollTop || 0, [...document.querySelectorAll('.fila-creador > div')].map((d) => d.scrollLeft)]
+    const mismaPestana = pestanaPintada === pestana && !!$('.creador-opciones')
+    pestanaPintada = pestana
     caja().innerHTML = `<div class="cuadro creador"><h2>${titulo}</h2>
       <div class="creador-cuerpo">
         <div class="creador-vista">
-          <canvas id="vista" width="144" height="192"></canvas>
+          <div class="escenario"><canvas id="vista" width="144" height="192"></canvas>${nombre && !soloRopa ? `<span class="placa">${nombre.replace(/[<>&"]/g, '')}</span>` : ''}</div>
           <div class="botones-vista"><button class="opcion" id="girar-izq" aria-label="${x().girar}">&lt;</button><span>${x().girar}</span><button class="opcion" id="girar-der" aria-label="${x().girar}">&gt;</button></div>
-          <button class="opcion" id="aleatorio">${x().aleatorio}</button>
+          <button class="opcion" id="aleatorio"><svg class="icono" viewBox="0 0 9 9" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M1 0h7v1h1v7H8v1H1V8H0V1h1zM2 2v1h1V2zM6 2v1h1V2zM4 4v1h1V4zM2 6v1h1V6zM6 6v1h1V6z"/></svg> ${x().aleatorio}</button>
         </div>
         <div class="creador-opciones">
           ${soloRopa ? '' : fila('nombre', `<input id="nombre" maxlength="12" value="${nombre.replace(/"/g, '')}" placeholder="${x().visitante}">`)}
@@ -230,7 +264,14 @@ function creador(soloRopa = false) {
       if (k === 'chica' && p.chica) p.barba = false
       if (k === 'chica' && !p.chica && p.abajo === 'falda') p.abajo = 'pantalon'
       sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar()
+      // el muñeco da un saltito al cambiar algo
+      const v2 = $('#vista'); v2?.classList.remove('salto'); void v2?.offsetWidth; v2?.classList.add('salto')
     })
+    if (mismaPestana) {
+      if ($('.creador-opciones')) $('.creador-opciones').scrollTop = scroll[0]
+      if ($('.creador')) $('.creador').scrollTop = scroll[1]
+      document.querySelectorAll('.fila-creador > div').forEach((d, i) => { d.scrollLeft = scroll[2][i] || 0 })
+    }
     caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar() })
     // girar como en una peana: con «>» mira a la derecha de la pantalla, luego de espaldas, luego a la izquierda y
     // vuelve de frente; con «<», al revés. Las filas de la hoja van abajo, izquierda, derecha, arriba, por eso

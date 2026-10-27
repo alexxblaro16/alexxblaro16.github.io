@@ -752,11 +752,23 @@ function dibujar(ctx, dir, paso, r, C) {
 }
 
 // Hoja de 3 columnas (quieto, paso 1, paso 2) × 4 filas (abajo, izquierda, derecha, arriba)
+// Rasgos tal como los guarda el creador → los que entiende el dibujo
+const preparar = (rasgos) => ({ ...rasgos, barba: rasgos.barba === true ? 'completa' : rasgos.barba, robot: rasgos.robot || rasgos.antena,
+  falda: rasgos.falda || rasgos.abajo === 'falda' || rasgos.tipo === 'vestido', corto: rasgos.corto || rasgos.abajo === 'corto' })
+
+// Un solo dibujo de frente y quieto (las miniaturas del creador): un lienzo de ANCHO_PJ × ALTO_PJ
+export function retrato(rasgos) {
+  const r = preparar(rasgos)
+  const [c, ctx] = lienzo(ANCHO_PJ, ALTO_PJ)
+  dibujar(ctx, 'frente', 0, r, colores(r))
+  contorno(ctx, ANCHO_PJ, ALTO_PJ)
+  return c
+}
+
 export function crearPersonaje(scene, clave, rasgos) {
   if (scene.textures.exists(clave)) scene.textures.remove(clave)
   const W = ANCHO_PJ, A = ALTO_PJ
-  const r = { ...rasgos, barba: rasgos.barba === true ? 'completa' : rasgos.barba, robot: rasgos.robot || rasgos.antena,
-    falda: rasgos.falda || rasgos.abajo === 'falda' || rasgos.tipo === 'vestido', corto: rasgos.corto || rasgos.abajo === 'corto' }
+  const r = preparar(rasgos)
   const C = colores(r)
   const [hoja, hctx] = lienzo(W * 3, A * 4)
   const filas = [['frente', false], ['lado', false], ['lado', true], ['espalda', false]]

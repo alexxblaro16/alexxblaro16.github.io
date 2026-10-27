@@ -1,7 +1,7 @@
 // Pixel art dibujado con código: suelos, árboles y Jerry. Los personajes están en personajes.js
 // y los edificios en edificios.js; aquí se reexportan para que el resto del juego los pida a un solo sitio.
 import { lienzo, px, azar, texto, textoCentrado, aclarar } from './pixel.js'
-export { crearPersonaje, PALETAS, ANCHO_PJ, ALTO_PJ } from './personajes.js'
+export { crearPersonaje, retrato, PALETAS, ANCHO_PJ, ALTO_PJ } from './personajes.js'
 export { crearEdificios } from './edificios.js'
 
 export const T = 16 // tamaño de una casilla
