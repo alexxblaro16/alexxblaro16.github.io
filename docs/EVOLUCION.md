@@ -347,6 +347,29 @@ Tras probar la versión 17, Alejandro pidió:
 - Retoques: Arseny con gafas grises y media melena negra, Alba rubia platino, Emma con la piel más oscura y Jandro con
   el pelo corto.
 
+## 27 de octubre de 2026: iPhone, accesos fiables y creador nuevo
+
+- **iPhone:** ningún navegador de iPhone permite la pantalla completa. En su lugar sale un aviso para añadir la web a
+  la pantalla de inicio, y para eso hay manifest e iconos nuevos. Los campos de texto ya no amplían la página al
+  escribir.
+- **Pantalla completa desde la intro:** en el móvil se pide con el primer toque, no al empezar a jugar, así que el
+  nombre y el creador ya se ven sin barras.
+- **Accesos:**
+  - La ubicación sale de la IP, así que es aproximada. Se marca «(aprox.)» con iCloud Private Relay o con datos
+    móviles: una amiga salía en A Coruña estando en Salamanca. También se avisa de la itinerancia: con una SIM
+    rumana, otra amiga salía en Bucarest.
+  - Las apps (Instagram, WhatsApp, LinkedIn…) y los navegadores de iPhone se detectan bien.
+  - Los robots de centros de datos ya no cuentan, y se borraron los antiguos.
+  - La visita guarda el nombre aunque no termine el personaje.
+  - Visitas y opiniones van en páginas de 10.
+- **Peña:** «Clase 101», de Fideo (El Ferxxito). Es un reguetón lento al estilo Feid, con melodía propia.
+- **Creador:**
+  - El muñeco volvía a quedarse quieto y las flechas no hacían nada. Era un fallo desde que se añadió la pantalla
+    del nombre, ya arreglado. El giro va en redondo.
+  - Versión 2 con la misma disposición: miniaturas de cada opción puestas en tu muñeco, complementos que se ponen y
+    quitan, lo elegido al lado del nombre de la fila, placa con tu nombre y saltito al cambiar.
+  - Los botones de abajo se ven siempre, el scroll no salta al elegir y en el móvil las fichas van en tiras.
+
 ## Ideas para más adelante
 
 - Dominio propio.

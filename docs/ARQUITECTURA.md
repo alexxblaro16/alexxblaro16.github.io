@@ -99,6 +99,18 @@ convierte en una hoja de sprites. El creador tiene tres pestañas (cuerpo, ropa 
 opciones a la vez, una vista previa de 144 × 192 que anda y se puede girar a las cuatro direcciones, y un botón que
 elige todo al azar. Cada cambio vuelve a dibujar la hoja, así que lo que se ve es exactamente lo que saldrá en el juego.
 
+Antes del creador va la pantalla del nombre (obligatorio). Al pasarla se vuelve a poner en marcha el reloj de la
+vista previa: si no, el muñeco se quedaba quieto. Las flechas giran en redondo con `GIRO = [0, 2, 3, 1]`, porque
+las filas de la hoja van abajo, izquierda, derecha y arriba.
+
+Cada opción de lista (peinado, barba, prenda, dibujo, abajo, corte y gorro) es una ficha con miniatura. `retrato()`
+(`personajes.js`) dibuja un solo fotograma de frente con ese valor puesto sobre tus rasgos. El creador recorta la
+cabeza, el torso o las piernas y guarda el resultado en una caché por rasgos. Los complementos (gafas, cascos,
+pendientes, sonrisa, bufanda, cadena, reloj y mochila) son fichas que se ponen y se quitan. Al repintar se conserva
+el scroll de las opciones. El creador tiene alto fijo, solo se desplazan las opciones y «Volver / A jugar» quedan
+siempre a la vista. En pantallas pequeñas (ancho de 640 o menos, o alto de 520 o menos) el muñeco se encoge, las
+fichas van en tiras que se deslizan de lado y el campo del nombre se oculta, porque ya se pidió antes.
+
 **El probador** es el mismo creador en modo `creador(true)`. Se abre jugando, con el botón ROPA o con el armario de su
 cuarto (`ropa: true` en `interiores.js`):
 - Solo enseña las pestañas de ropa y extras, sin nombre ni cuerpo.
@@ -186,7 +198,15 @@ comprado alguna vez allí y ofrece abrir las reseñas de Google de la tienda rea
 
 En pantallas táctiles, la mitad izquierda de abajo es una palanca flotante: aparece donde apoyas el dedo y escribe `vx` y `vy`
 (de -1 a 1) en `teclasTactiles`, así que se anda en cualquier dirección y más o menos deprisa. `Mundo.update()` usa esos valores
-si existen y, si no, el teclado. Al empezar a jugar en el móvil se pide la pantalla completa (`pantallaCompleta()` en `ui.js`).
+si existen y, si no, el teclado. En táctil, la pantalla completa se pide con el primer toque, ya en la intro
+(`iniciarUI()`, `pantallaCompleta()` en `ui.js`), y otra vez al empezar a jugar.
+
+**iPhone:** ningún navegador de iPhone permite la pantalla completa, porque todos usan Safari por dentro. En su lugar
+sale una vez el aviso `consejoIPhone()`: «Compartir → Añadir a pantalla de inicio». El botón de pantalla completa
+lo vuelve a enseñar. `manifest.webmanifest` (`display: fullscreen`, `start_url` con `?ref=pantalla-inicio`) y los
+iconos `img/icono-*.png` sirven para abrirlo desde el icono, ya sin barras. En táctil los campos de texto van a
+16 px, porque si no iOS amplía la página al escribir y no la devuelve a su tamaño. Además se usa `maximum-scale=1`
+y se quitan el menú de mantener pulsado y el rebote.
 
 ## Idiomas y estado
 
@@ -198,11 +218,23 @@ salen de `content.js` y `historia.js`, que tienen la misma estructura en `es` y 
 `registro.js` avisa al servidor de `registro/` (un Cloudflare Worker con una base de datos D1) cuando alguien
 entra y de lo que hace: el personaje que crea, las zonas, si termina o se salta el recorrido, el modo clásico,
 el CV, las recreativas y los enlaces a otras webs. País y ciudad aproximados los añade Cloudflare; la IP no se
-guarda y no hay cookies. No cuenta en desarrollo, ni a los robots, ni el navegador de Alejandro.
+guarda y no hay cookies. No cuenta en desarrollo, ni a los robots, ni el navegador de Alejandro. Tampoco cuenta
+las visitas desde centros de datos (`CENTRO_DATOS` según `cf.asOrganization`: Google, Microsoft, Amazon, Meta…),
+que son vistas previas de enlaces.
+
+Lo que guarda de cada visita:
+- **Navegador:** `leerAgente()` distingue las apps que abren la web por dentro («App de Instagram», WhatsApp,
+  LinkedIn, TikTok…), Chrome, Firefox y Edge de iPhone (CriOS, FxiOS y EdgiOS), el iPad (iPadOS) y ChromeOS.
+- **Red:** la columna `red` guarda `cf.asOrganization`. Con ella, `/accesos/` marca «(aprox.)» la ubicación cuando
+  es iCloud Private Relay o datos móviles, y avisa de la posible itinerancia si un móvil entra desde otro país con una
+  SIM extranjera.
+- **Nombre:** el evento `nombre` se manda al escribirlo, así que la visita lleva nombre aunque no termine el
+  personaje. En ese caso sale «· se quedó en el creador».
 
 `/accesos/` es una segunda página de Vite (`accesos/index.html` y `accesos.js`) que pide la contraseña
-(secreto `CLAVE_ACCESOS` del Worker) y muestra las últimas 150 visitas, con un resumen de hoy, la semana y los
-países. Se actualiza cada 30 s y, al entrar, marca ese navegador para que no cuente como visita.
+(secreto `CLAVE_ACCESOS` del Worker) y muestra hasta 500 visitas en páginas de 10, igual que las opiniones, con un
+resumen de hoy, la semana y los países. Se actualiza cada 30 s sin perder la página en la que estás y, al entrar,
+marca ese navegador para que no cuente como visita.
 
 El mismo Worker guarda los récords de las recreativas en la tabla `records` (`esquema.sql`), con las rutas
 `GET /records` y `POST /record`.
