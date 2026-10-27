@@ -78,3 +78,7 @@ h1 { font: 18px 'Press Start 2P', monospace; color: var(--verde); margin: 0; let
 .opiniones p { margin: 0 0 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .opiniones footer { font-size: 12px; color: #8b93a3; }
 .titulo-visitas { font-family: 'Press Start 2P', monospace; font-size: 11px; color: #2fbf71; margin: 6px 0 10px; }
+
+/* Paginación de 10 en 10 */
+.paginas { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 12px 0 4px; font-size: 13px; color: #8b93a3; }
+.paginas .boton:disabled { opacity: .4; cursor: default; border-color: var(--borde); }

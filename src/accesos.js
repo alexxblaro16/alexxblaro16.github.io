@@ -118,7 +118,31 @@ function tarjeta(v) {
     </article>`
 }
 
-function pintar({ resumen, visitas, opiniones = [] }) {
+// Listas de 10 en 10, con la página de cada una guardada para que la recarga de cada 30 s no te devuelva a la primera
+const POR_PAGINA = 10
+const paginas = { visitas: 0, opiniones: 0 }
+let ultimos = null
+function trozo(lista, cual) {
+  const total = Math.max(1, Math.ceil(lista.length / POR_PAGINA))
+  paginas[cual] = Math.min(paginas[cual], total - 1)
+  const desde = paginas[cual] * POR_PAGINA
+  return { items: lista.slice(desde, desde + POR_PAGINA), total, desde }
+}
+function controles(cual, { total, desde }, n) {
+  if (total < 2) return ''
+  const p = paginas[cual]
+  return `<nav class="paginas" data-lista="${cual}">
+      <button class="boton" data-ir="-1" ${p === 0 ? 'disabled' : ''}>← Anteriores</button>
+      <span>${desde + 1}-${Math.min(desde + POR_PAGINA, n)} de ${n} · página ${p + 1} de ${total}</span>
+      <button class="boton" data-ir="1" ${p === total - 1 ? 'disabled' : ''}>Siguientes →</button>
+    </nav>`
+}
+
+function pintar(datos) {
+  ultimos = datos
+  const { resumen, visitas: todas, opiniones: todasOp = [] } = datos
+  const pv = trozo(todas, 'visitas'), po = trozo(todasOp, 'opiniones')
+  const visitas = pv.items, opiniones = po.items
   const r = resumen
   raiz.innerHTML = `
     <header class="cabecera">
@@ -136,9 +160,19 @@ function pintar({ resumen, visitas, opiniones = [] }) {
     </section>
     ${r.paises.length ? `<p class="paises">${r.paises.map((p) => `<span>${esc(nombrePais(p.pais))} <b>${p.n}</b></span>`).join('')}</p>` : ''}
     <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s. El lugar sale de la IP: es aproximado, sobre todo en móviles con datos y en iPhone con iCloud Private Relay (marcados con «aprox.»).</p>
-    <section class="opiniones"><h2>CORREOS · OPINIONES Y SUGERENCIAS (${opiniones.length})</h2>${opiniones.length ? opiniones.map((o) => `<blockquote><p>${esc(o.texto)}</p><footer>${esc(o.nombre || 'Sin nombre')} · ${o.donde === 'buzon' ? 'buzón del metro' : 'hablando contigo'}${o.pais ? ' · ' + esc(nombrePais(o.pais)) : ''} · <time title="${esc(hora(o.hora))}">${esc(hace(o.hora))}</time></footer></blockquote>`).join('') : '<p class="nada">Todavía no te ha escrito nadie. Lo que te manden desde el juego (hablando contigo o en el buzón del metro) sale aquí y te llega al correo.</p>'}</section>
-    <h2 class="titulo-visitas">VISITAS</h2>
-    <section class="lista">${visitas.length ? visitas.map(tarjeta).join('') : '<p class="nada">Todavía no ha entrado nadie.</p>'}</section>`
+    <section class="opiniones"><h2>CORREOS · OPINIONES Y SUGERENCIAS (${todasOp.length})</h2>${opiniones.length ? opiniones.map((o) => `<blockquote><p>${esc(o.texto)}</p><footer>${esc(o.nombre || 'Sin nombre')} · ${o.donde === 'buzon' ? 'buzón del metro' : 'hablando contigo'}${o.pais ? ' · ' + esc(nombrePais(o.pais)) : ''} · <time title="${esc(hora(o.hora))}">${esc(hace(o.hora))}</time></footer></blockquote>`).join('') : '<p class="nada">Todavía no te ha escrito nadie. Lo que te manden desde el juego (hablando contigo o en el buzón del metro) sale aquí y te llega al correo.</p>'}${controles('opiniones', po, todasOp.length)}</section>
+    <h2 class="titulo-visitas">VISITAS (${todas.length})</h2>
+    <section class="lista">${visitas.length ? visitas.map(tarjeta).join('') : '<p class="nada">Todavía no ha entrado nadie.</p>'}</section>
+    ${controles('visitas', pv, todas.length)}`
+  raiz.querySelectorAll('.paginas button').forEach((b) => {
+    b.onclick = () => {
+      const cual = b.closest('.paginas').dataset.lista
+      paginas[cual] += Number(b.dataset.ir)
+      pintar(ultimos)
+      // al cambiar de página de visitas, se vuelve al principio de la lista
+      if (cual === 'visitas') $('.titulo-visitas').scrollIntoView({ block: 'start' })
+    }
+  })
   // pulsar una visita la despliega con todos sus datos y lo que hizo minuto a minuto
   const lista = $('.lista')
   const alternar = (art) => {
@@ -158,7 +192,7 @@ async function cargar(clave) {
   if (!clave) return pintarEntrada()
   if (!URL_REGISTRO) return pintarEntrada('Falta configurar el servidor de registro.')
   try {
-    const r = await fetch(`${URL_REGISTRO}/accesos?limite=150`, { headers: { Authorization: `Bearer ${clave}` } })
+    const r = await fetch(`${URL_REGISTRO}/accesos?limite=500`, { headers: { Authorization: `Bearer ${clave}` } })
     if (r.status === 401) { escribir(CLAVE, null); return pintarEntrada('Contraseña incorrecta.') }
     if (!r.ok) throw new Error()
     escribir(CLAVE, clave)
