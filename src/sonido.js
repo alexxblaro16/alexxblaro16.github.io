@@ -249,6 +249,11 @@ const CANCIONES = [
   { id: 'gasolinera', genero: 'regueton', artista: 'Daddy Yonki', titulo: 'Gasolinera',
     tocar: () => tema({ bpm: 96, ritmo: 'dembow', acordes: [[50, 53, 57], [46, 50, 53], [53, 57, 60], [48, 52, 55]], lead: 'sawtooth', vol: 0.016,
       melodia: mel('74 74 . 74 77 . 74 . 72 72 . 72 74 . . . 74 74 . 74 77 . 79 . 77 . 74 . 72 . . . 69 69 . 69 72 . 69 . 67 . 69 . 72 . . . 74 . 72 . 70 . 69 . 67 . . . . . . .') }) },
+  // Reguetón lento y melódico «a lo Ferxxo», en menor y con pad de fondo (melodía propia, el artista de broma)
+  { id: 'clase_101', genero: 'regueton', artista: 'Fideo (El Ferxxito)', titulo: 'Clase 101',
+    tocar: () => tema({ bpm: 90, ritmo: 'dembow', acordes: [[57, 60, 64], [53, 57, 60], [55, 59, 62], [52, 55, 59], [57, 60, 64], [53, 57, 60], [48, 52, 55], [52, 56, 59]],
+      pad: 'sine', lead: 'triangle', vol: 0.045, legato: 1.5, bombo: 0.13,
+      melodia: mel('76 . . 74 . 72 . . 72 . 74 . 76 . . . 77 . . 76 . 74 . . 72 . . . . . . . 74 . . 72 . 71 . . 71 . 72 . 74 . . . 76 . . 74 . 72 . . 71 . . . . . . . 76 . . 79 . 76 . . 74 . 72 . 74 . . . 72 . . 74 . 72 . . 69 . . . . . . . 72 . 71 . 69 . 71 . 72 . . 74 . . . 71 . . 68 . 69 . . . . . . . . . .') }) },
   // Urbano
   { id: 'colombina', genero: 'urbano', artista: 'Nepedo', titulo: 'Colombina',
     tocar: () => tema({ bpm: 98, ritmo: 'dembow', acordes: [[52, 55, 59], [48, 52, 55], [55, 59, 62], [50, 54, 57]], pad: 'sine', lead: 'triangle', vol: 0.04, legato: 1.6,

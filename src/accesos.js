@@ -9,7 +9,7 @@ const $ = (s) => document.querySelector(s)
 const raiz = $('#accesos')
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 const paises = new Intl.DisplayNames(['es'], { type: 'region' })
-const nombrePais = (c) => { try { return c ? paises.of(c) : 'País desconocido' } catch { return c } }
+const nombrePais = (c) => { try { return c && c !== 'XX' && c !== 'T1' ? paises.of(c) : 'País desconocido' } catch { return c } }
 const ARCADE = { serpiente: 'Serpiente', nave: 'Nave', ladrillos: 'Ladrillos', laberinto: 'Commit Hunt', futbol: 'los penaltis del campo', bits: 'Bit Drop (planta 3 de la UDIT)' }
 const SALAS = { casa: 'la casa de la familia', reblan: 'Reblán', medac: 'el aula del MEDAC', udit: 'la UDIT', udit3: 'la planta 3 de la UDIT', cienaga: 'la ciénaga', pena: 'la peña El Pilón', arcade: 'los recreativos', arte: 'el Bar El Arte' }
 // Las «zonas» nuevas (salas, esferas, deseo, pantalla completa) van por el mismo tipo para no tocar el servidor
@@ -18,6 +18,7 @@ function zona(d) {
   if (d.startsWith('esfera-')) return ['', `Encontró una esfera (${d.slice(7)}/7)`]
   if (d === 'deseo') return ['oro', 'Reunió las 7 esferas y pidió el deseo']
   if (d === 'pantalla-completa') return ['', 'Jugó a pantalla completa']
+  if (d === 'consejo-iphone') return ['', 'Vio el aviso de pantalla completa del iPhone']
   if (d === 'cerezas') return ['verde', 'Se comió las cerezas de Jandro']
   if (d === 'pilon') return ['', 'Subió el camino de la peña El Pilón']
   if (d.startsWith('pena-')) return ['', `Puso «${d.slice(5).replaceAll('_', ' ')}» en la peña`]
@@ -48,6 +49,7 @@ function evento(e) {
   const d = e.dato
   switch (e.tipo) {
     case 'personaje': return ['verde', `Creó a «${d}»`]
+    case 'nombre': return ['', `Escribió su nombre: «${d}»`]
     case 'vuelve': return ['verde', `«${d}» entró de nuevo`]
     case 'zona': return zona(d || '')
     case 'recorrido': return d === 'completo' ? ['verde', 'Terminó el recorrido'] : ['', `Se saltó el recorrido (${d.replace('saltado en el ', '')})`]
@@ -90,6 +92,8 @@ function tarjeta(v) {
   const cv = v.eventos.some((e) => e.tipo === 'cv')
   // si no creó personaje en esta visita pero volvió con el de otra vez, se dice en la cabecera
   const vuelve = !v.eventos.some((e) => e.tipo === 'personaje') && v.eventos.some((e) => e.tipo === 'vuelve')
+  // escribió el nombre pero no llegó a terminar el personaje
+  const aMedias = v.eventos.some((e) => e.tipo === 'nombre') && !v.eventos.some((e) => e.tipo === 'personaje' || e.tipo === 'vuelve')
   const abierta = abiertas.has(v.id)
   const ficha = [
     ['Entró', hora(v.inicio)], ['Última actividad', hora(v.ultima)], ['Tiempo dentro', duracion(v.duracion)],
@@ -102,7 +106,7 @@ function tarjeta(v) {
     </div>`
   return `<article class="visita${cv ? ' cv' : ''}${abierta ? ' abierta' : ''}" data-id="${esc(v.id)}" tabindex="0" aria-expanded="${abierta}">
       <header>
-        <h2>${v.personaje ? esc(v.personaje) : '<span class="sin">Sin personaje</span>'}${vuelve ? ' <span class="sin">· entró de nuevo</span>' : ''}</h2>
+        <h2>${v.personaje ? esc(v.personaje) : '<span class="sin">Sin personaje</span>'}${vuelve ? ' <span class="sin">· entró de nuevo</span>' : ''}${aMedias ? ' <span class="sin">· se quedó en el creador</span>' : ''}</h2>
         <time title="${esc(hora(v.inicio))}">${esc(hace(v.inicio))}</time>
       </header>
       <p class="lugar">${esc(lugar)}</p>
@@ -126,7 +130,7 @@ function pintar({ resumen, visitas, opiniones = [] }) {
       <div><b>${r.hoy || 0}</b><span>hoy</span></div>
       <div><b>${r.semana || 0}</b><span>últimos 7 días</span></div>
       <div><b>${r.total || 0}</b><span>en total</span></div>
-      <div><b>${r.conPersonaje || 0}</b><span>con personaje</span></div>
+      <div><b>${r.conPersonaje || 0}</b><span>con nombre</span></div>
     </section>
     ${r.paises.length ? `<p class="paises">${r.paises.map((p) => `<span>${esc(nombrePais(p.pais))} <b>${p.n}</b></span>`).join('')}</p>` : ''}
     <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s. El lugar sale de la IP: es aproximado, sobre todo en móviles con datos y en iPhone con iCloud Private Relay (marcados con «aprox.»).</p>

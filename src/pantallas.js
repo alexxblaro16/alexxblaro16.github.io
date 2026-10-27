@@ -194,7 +194,7 @@ function creador(soloRopa = false) {
     const seguir = () => {
       nombre = campo.value.trim()
       if (!nombre) { sfx.mover(); pintarNombre(true); return }
-      sfx.aceptar(); conNombre = true; pintar()
+      sfx.aceptar(); conNombre = true; registrar('nombre', nombre, true); pintar()
     }
     campo.oninput = () => { nombre = campo.value; $('.error-nombre').textContent = '' }
     campo.onkeydown = (e) => { if (e.key === 'Enter') seguir() }

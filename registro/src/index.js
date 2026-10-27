@@ -5,7 +5,7 @@
 // y las opiniones que dejan los visitantes, que le llegan a Alejandro al correo.
 
 const ORIGENES = ['https://alexxblaro16.github.io', 'http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5180']
-const TIPOS = new Set(['personaje', 'vuelve', 'zona', 'recorrido', 'clasico', 'cv', 'arcade', 'enlace', 'fin'])
+const TIPOS = new Set(['personaje', 'nombre', 'vuelve', 'zona', 'recorrido', 'clasico', 'cv', 'arcade', 'enlace', 'fin'])
 const MAX_EVENTOS = 300
 // tope razonable de puntos de cada minijuego (lo que pase de ahí es trampa)
 const JUEGOS = { serpiente: 300, nave: 5000, ladrillos: 500, laberinto: 1000, futbol: 1000, bits: 100000 }
@@ -38,15 +38,25 @@ function leerAgente(ua = '', tactil = 0) {
   const disfrazada = tactil > 1 && !/Windows|Android|iPhone|iPad|CrOS/i.test(ua) && /Mac OS|Linux/i.test(ua)
   const dispositivo = disfrazada || /iPad|Tablet/i.test(ua) || (/Android/i.test(ua) && !/Mobi/i.test(ua)) ? 'Tableta'
     : /Mobi|Android|iPhone/i.test(ua) ? 'Móvil' : 'Ordenador'
-  const sistema = /Windows/i.test(ua) ? 'Windows' : /iPhone|iPad|iOS/i.test(ua) ? 'iOS' : /Android/i.test(ua) ? 'Android'
+  const sistema = /Windows/i.test(ua) ? 'Windows' : /iPad/i.test(ua) ? 'iPadOS' : /iPhone|iPod|iOS/i.test(ua) ? 'iOS' : /Android/i.test(ua) ? 'Android'
     : disfrazada ? (/Mac OS/i.test(ua) ? 'iPadOS' : 'Android')
-    : /Mac OS/i.test(ua) ? 'macOS' : /Linux/i.test(ua) ? 'Linux' : 'Otro'
-  const navegador = /Edg\//.test(ua) ? 'Edge' : /OPR\//.test(ua) ? 'Opera' : /SamsungBrowser/.test(ua) ? 'Samsung'
-    : /Firefox\//.test(ua) ? 'Firefox' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Otro'
+    : /CrOS/.test(ua) ? 'ChromeOS' : /Mac OS/i.test(ua) ? 'macOS' : /Linux/i.test(ua) ? 'Linux' : 'Otro'
+  // primero las apps que abren la web por dentro (Instagram, WhatsApp, LinkedIn…), luego los navegadores;
+  // en iPhone, Chrome, Firefox y Edge se llaman CriOS, FxiOS y EdgiOS
+  const app = [[/Instagram/, 'Instagram'], [/FBAN|FBAV|FB_IAB/, 'Facebook'], [/WhatsApp/i, 'WhatsApp'], [/LinkedInApp/i, 'LinkedIn'],
+    [/musical_ly|BytedanceWebview|TikTok/i, 'TikTok'], [/Twitter/i, 'X'], [/Telegram/i, 'Telegram'], [/Snapchat/i, 'Snapchat'], [/GSA\//, 'Google']]
+    .find(([re]) => re.test(ua))?.[1]
+  const navegador = app ? `App de ${app}`
+    : /Edg(e|A|iOS)?\//.test(ua) ? 'Edge' : /OPR\/|OPT\//.test(ua) ? 'Opera' : /SamsungBrowser/.test(ua) ? 'Samsung'
+    : /Firefox\/|FxiOS/.test(ua) ? 'Firefox' : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Otro'
   return { dispositivo, sistema, navegador }
 }
 
-const esRobot = (ua = '') => /bot|crawl|spider|slurp|preview|headless|lighthouse|facebookexternalhit|linkedinbot/i.test(ua)
+const esRobot = (ua = '') => /bot|crawl|spider|slurp|preview|headless|lighthouse|facebookexternalhit|linkedinbot|whatsapp\/\d|telegrambot|skypeuripreview|discordbot/i.test(ua)
+// Las visitas desde centros de datos (Google, Microsoft, Amazon, Meta…) son robots que abren el enlace con aspecto
+// de navegador para hacer la vista previa o revisarlo: salían como gente de Council Bluffs, Boardman o Prineville
+const CENTRO_DATOS = /google|microsoft|amazon|aws|facebook|meta platforms|digitalocean|ovh|hetzner|linode|akamai connected cloud|oracle|alibaba|tencent|contabo|scaleway|vultr|choopa|leaseweb/i
+const esCentroDatos = (cf = {}) => CENTRO_DATOS.test(cf.asOrganization || '') && !/private relay/i.test(cf.asOrganization || '')
 
 // Comparación que tarda lo mismo acierte o falle
 function igual(a, b) {
@@ -61,6 +71,7 @@ async function nuevaVisita(request, env) {
   if (esRobot(ua)) return json(request, { id: null })
   const d = (await cuerpo(request)) || {}
   const cf = request.cf || {}
+  if (esCentroDatos(cf)) return json(request, { id: null })
   const { dispositivo, sistema, navegador } = leerAgente(ua, Number(d.tactil) || 0)
   const id = crypto.randomUUID()
   const ahora = Date.now()
@@ -88,6 +99,8 @@ async function nuevoEvento(request, env) {
   } else {
     pasos.push(env.DB.prepare('INSERT INTO eventos (visita, hora, tipo, dato) VALUES (?, ?, ?, ?)').bind(d.visita, ahora, d.tipo, dato))
     // 'vuelve' = un visitante que ya tenía personaje de otra vez y le dio a Continuar
+    // 'nombre' = escribió su nombre pero aún no ha terminado el personaje: solo si no hay otro
+    if (d.tipo === 'nombre') pasos.push(env.DB.prepare('UPDATE visitas SET personaje = COALESCE(personaje, ?) WHERE id = ?').bind(corta(dato, 24), d.visita))
     if (d.tipo === 'personaje' || d.tipo === 'vuelve') pasos.push(env.DB.prepare('UPDATE visitas SET personaje = ? WHERE id = ?').bind(corta(dato, 24), d.visita))
   }
   await env.DB.batch(pasos)
