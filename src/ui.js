@@ -53,6 +53,13 @@ export function iniciarUI() {
   })
   alCambiarIdioma(() => { pintarHUD(); if (!$('#clasico').hidden) pintarClasico() })
   pintarHUD()
+  // en el móvil, pantalla completa desde el primer toque (la intro), no al empezar a jugar: así el nombre y el
+  // creador ya se ven sin las barras del navegador. El navegador solo deja pedirla dentro de un toque.
+  if (esTactil()) {
+    const primerToque = () => { document.removeEventListener('touchend', primerToque); document.removeEventListener('click', primerToque); pantallaCompleta() }
+    document.addEventListener('touchend', primerToque)
+    document.addEventListener('click', primerToque)
+  }
   if (new URLSearchParams(location.search).get('modo') === 'clasico') abrirClasico()
 }
 

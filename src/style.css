@@ -434,3 +434,33 @@ a { color: var(--verde); }
   font-family: system-ui, sans-serif; font-size: 15px; line-height: 1.4; color: var(--texto); box-shadow: 0 6px 0 #0008; }
 #consejo-iphone b { font-family: var(--pixel); font-size: 10px; color: var(--verde); }
 #consejo-iphone p { margin: 8px 0 12px; }
+
+/* Creador en el móvil: el muñeco y los botones de abajo siempre a la vista; solo se desplazan las opciones */
+@media (max-width: 640px), (max-height: 520px) {
+  .pantalla:has(.creador) { padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+  .creador { height: calc(100vh - 16px); height: calc(100dvh - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: none; overflow: hidden; padding: 10px 12px; gap: 8px; }
+  .creador h2 { font-size: 11px; }
+  .creador-cuerpo { flex: 1; min-height: 0; }
+  .creador-opciones { overflow-y: auto; overscroll-behavior: contain; min-height: 0; max-height: 100%; padding-right: 4px; gap: 10px; }
+  .creador .botones { flex: none; }
+  /* el nombre ya se pidió en la pantalla anterior */
+  .creador .fila-creador:has(#nombre) { display: none; }
+}
+@media (max-width: 640px) {
+  .creador-cuerpo { display: flex; flex-direction: column; gap: 8px; }
+  .creador-vista { position: static; display: grid; grid-template-columns: auto auto; grid-template-rows: 1fr auto auto 1fr; column-gap: 12px; row-gap: 8px; justify-content: center; }
+  .creador-vista #vista { grid-row: 1 / 5; height: clamp(110px, 24dvh, 192px); width: auto; aspect-ratio: 3 / 4; }
+  .creador-vista .botones-vista { grid-row: 2; }
+  .creador-vista #aleatorio { grid-row: 3; }
+  .creador-opciones { flex: 1; }
+  .fila-creador { gap: 6px; }
+}
+@media (max-height: 520px) and (min-width: 641px) {
+  .creador { width: min(900px, 100%); }
+  .creador h2 { display: none; }
+  .creador-cuerpo { grid-template-columns: auto 1fr; gap: 14px; height: 100%; }
+  .creador-vista { position: static; gap: 6px; }
+  .creador-vista #vista { height: calc(100dvh - 160px); min-height: 90px; width: auto; aspect-ratio: 3 / 4; }
+  .fila-creador { grid-template-columns: 90px 1fr; align-items: start; }
+  .fila-creador > span { padding-top: 10px; }
+}
