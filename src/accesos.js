@@ -79,6 +79,8 @@ const RELAY = /apple|icloud|akamai|cloudflare|fastly/i
 const MOVIL = /telef|movistar|orange|vodafone|xfera|m[aá]s ?m[oó]vil|yoigo|digi|lowi|simyo|pepephone|\bo2\b|jazztel|euskaltel|r cable|telecable/i
 function fiabilidad(v) {
   if (v.red && RELAY.test(v.red) && /iOS|iPadOS|macOS/.test(v.sistema)) return 'iCloud Private Relay: la ciudad no es fiable, solo la zona'
+  // con una SIM de otro país, los datos móviles salen por ese país (itinerancia): parece que entra desde allí
+  if (v.red && v.pais && v.pais !== 'ES' && v.dispositivo !== 'Ordenador') return 'si tiene una SIM de otro país, con datos móviles sale el país de la SIM y no donde está'
   if (v.red && MOVIL.test(v.red) && v.dispositivo !== 'Ordenador') return 'si iba con datos móviles, la ciudad puede ser la de la central del operador'
   return null
 }
