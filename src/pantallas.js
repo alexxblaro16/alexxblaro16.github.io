@@ -232,12 +232,8 @@ function creador(soloRopa = false) {
       sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar()
     })
     caja().querySelectorAll('[data-pestana]').forEach((b) => b.onclick = () => { pestana = b.dataset.pestana; sfx.mover(); nombre = $('#nombre')?.value ?? nombre; pintar() })
-    // las filas de la hoja van abajo, izquierda, derecha, arriba: para girar en redondo hay que seguir este orden
-    // (de frente, a su derecha, de espaldas, a su izquierda), si no pasaba de un lado al otro sin ponerse de espaldas
-    const GIRO = [0, 2, 3, 1]
-    const girar = (paso) => { direccion = GIRO[(GIRO.indexOf(direccion) + paso + 4) % 4]; sfx.mover(); vista() }
-    $('#girar-izq').onclick = () => girar(-1)
-    $('#girar-der').onclick = () => girar(1)
+    $('#girar-izq').onclick = () => { direccion = (direccion + 3) % 4; sfx.mover() }
+    $('#girar-der').onclick = () => { direccion = (direccion + 1) % 4; sfx.mover() }
     $('#aleatorio').onclick = () => {
       if (soloRopa) {
         // en el probador, al azar solo la ropa: el cuerpo se queda como está
