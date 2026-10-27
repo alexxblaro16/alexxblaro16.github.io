@@ -26,7 +26,8 @@ export function pintarHUD() {
   // contador de esferas: aparece al encontrar la primera
   $('#hud-esferas').hidden = !estado.esferas.size
   $('#hud-esferas').textContent = `● ${estado.esferas.size}/7`
-  $('#btn-pantalla').hidden = !document.fullscreenEnabled
+  // en iPhone no hay pantalla completa en Safari: el botón explica cómo añadir la web a la pantalla de inicio
+  $('#btn-pantalla').hidden = !document.fullscreenEnabled && !(esIPhone() && !enPantallaInicio())
   $('#txt-hora').textContent = estado.idioma === 'es' ? 'DIA / NOCHE' : 'DAY / NIGHT'
   $('#txt-pantalla').textContent = estado.idioma === 'es' ? 'PANTALLA COMPLETA' : 'FULL SCREEN'
   $('#btn-pantalla').title = estado.idioma === 'es' ? 'Pantalla completa' : 'Full screen'
@@ -39,7 +40,7 @@ export function iniciarUI() {
   $('#btn-sonido').onclick = () => { alternarSonido(); pintarHUD() }
   $('#btn-musica').onclick = () => { cambiarMusica(); pintarHUD() }
   $('#btn-clasico').onclick = () => { cerrarMenuHUD(); abrirClasico() }
-  $('#btn-pantalla').onclick = () => pantallaCompleta(!document.fullscreenElement)
+  $('#btn-pantalla').onclick = () => { if (!document.fullscreenEnabled && esIPhone()) consejoIPhone(true); else pantallaCompleta(!document.fullscreenElement) }
   $('#btn-menu').onclick = () => { cerrarMenuHUD(); alPedirMenu?.() }
   $('#btn-ropa').onclick = () => { cerrarMenuHUD(); alPedirRopa?.() }
   // en el móvil, el resto de botones van en un menú desplegable para no tapar el juego
@@ -68,6 +69,7 @@ function cerrarMenuHUD() { $('#hud').classList.remove('abierto'); $('#btn-mas').
 // Pantalla completa (en móviles se pide al empezar a jugar). En iPhone Safari no existe: allí la web se puede
 // añadir a la pantalla de inicio y entonces se abre sin barras.
 export function pantallaCompleta(si = true) {
+  if (si && !document.fullscreenEnabled && esIPhone()) return consejoIPhone()
   try {
     if (si && !document.fullscreenElement && document.fullscreenEnabled) {
       document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => {})
@@ -76,6 +78,26 @@ export function pantallaCompleta(si = true) {
   } catch { /* el navegador no deja: se sigue jugando igual */ }
 }
 export const esTactil = () => matchMedia('(pointer: coarse)').matches
+// iPhone (y iPod): cualquier navegador de iOS usa Safari por dentro, así que ninguno tiene pantalla completa
+export const esIPhone = () => /iPhone|iPod/.test(navigator.userAgent)
+// abierta desde el icono de la pantalla de inicio: ahí ya se ve sin barras
+const enPantallaInicio = () => navigator.standalone === true || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches
+
+// Aviso para iPhone: sale una vez al empezar a jugar (o siempre que se pulse el botón de pantalla completa)
+export function consejoIPhone(forzar = false) {
+  if (enPantallaInicio() || $('#consejo-iphone')) return
+  try { if (!forzar && localStorage.getItem('consejoIPhone')) return; localStorage.setItem('consejoIPhone', '1') } catch { /* sin almacenamiento: se enseña igual */ }
+  const es = estado.idioma === 'es'
+  const caja = document.createElement('div')
+  caja.id = 'consejo-iphone'
+  caja.innerHTML = `<b>${es ? 'PANTALLA COMPLETA EN IPHONE' : 'FULL SCREEN ON IPHONE'}</b>
+    <p>${es ? 'Safari no deja poner pantalla completa. Pulsa <i>Compartir</i> y luego <i>Añadir a pantalla de inicio</i>: desde ese icono el juego se abre sin barras.'
+      : 'Safari does not allow full screen. Tap <i>Share</i> and then <i>Add to Home Screen</i>: from that icon the game opens without bars.'}</p>
+    <button class="boton verde">${es ? 'ENTENDIDO' : 'GOT IT'}</button>`
+  caja.querySelector('button').onclick = () => caja.remove()
+  document.body.append(caja)
+  registrar('zona', 'consejo-iphone', true)
+}
 
 export function mostrarHUD(si) { $('#hud').classList.toggle('visible', si); $('#mando').classList.toggle('visible', si) }
 

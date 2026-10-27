@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS visitas (
   ultima INTEGER NOT NULL,
   duracion INTEGER DEFAULT 0,
   pais TEXT, region TEXT, ciudad TEXT,
+  -- la red por la que entra (operador, o Apple/Akamai si es iCloud Private Relay): dice si la ciudad es fiable
+  red TEXT,
   dispositivo TEXT, sistema TEXT, navegador TEXT,
   idioma TEXT, pantalla TEXT, origen TEXT, campana TEXT,
   personaje TEXT

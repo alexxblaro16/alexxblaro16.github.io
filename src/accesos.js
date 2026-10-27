@@ -71,8 +71,19 @@ function pintarEntrada(error = '') {
   $('#clave').focus()
 }
 
+// La ubicación sale de la IP. Con iCloud Private Relay (iPhone y Mac con Safari) la IP es de Apple, Akamai o
+// Cloudflare y la ciudad es una cualquiera de la zona; con datos móviles suele salir la central del operador.
+const RELAY = /apple|icloud|akamai|cloudflare|fastly/i
+const MOVIL = /telef|movistar|orange|vodafone|xfera|m[aá]s ?m[oó]vil|yoigo|digi|lowi|simyo|pepephone|\bo2\b|jazztel|euskaltel|r cable|telecable/i
+function fiabilidad(v) {
+  if (v.red && RELAY.test(v.red) && /iOS|iPadOS|macOS/.test(v.sistema)) return 'iCloud Private Relay: la ciudad no es fiable, solo la zona'
+  if (v.red && MOVIL.test(v.red) && v.dispositivo !== 'Ordenador') return 'si iba con datos móviles, la ciudad puede ser la de la central del operador'
+  return null
+}
+
 function tarjeta(v) {
-  const lugar = [v.ciudad, v.region !== v.ciudad ? v.region : null, nombrePais(v.pais)].filter(Boolean).join(', ')
+  const aviso = fiabilidad(v)
+  const lugar = [v.ciudad, v.region !== v.ciudad ? v.region : null, nombrePais(v.pais)].filter(Boolean).join(', ') + (aviso ? ' (aprox.)' : '')
   const de = [v.origen, v.campana && v.origen ? `(${v.campana})` : v.campana].filter(Boolean).join(' ')
   const origen = de ? `Viene de ${esc(de)}` : 'Entró directo'
   const cosas = v.eventos.map(evento)
@@ -82,7 +93,7 @@ function tarjeta(v) {
   const abierta = abiertas.has(v.id)
   const ficha = [
     ['Entró', hora(v.inicio)], ['Última actividad', hora(v.ultima)], ['Tiempo dentro', duracion(v.duracion)],
-    ['Lugar', lugar], ['Dispositivo', `${v.dispositivo} · ${v.sistema} · ${v.navegador}`],
+    ['Lugar', lugar], ['Red', [v.red, aviso].filter(Boolean).join(' · ')], ['Dispositivo', `${v.dispositivo} · ${v.sistema} · ${v.navegador}`],
     ['Pantalla', v.pantalla], ['Idioma', v.idioma], ['Origen', v.origen || 'Directo'], ['Campaña', v.campana],
   ].filter(([, valor]) => valor)
   const detalle = `<div class="detalle">
@@ -118,7 +129,7 @@ function pintar({ resumen, visitas, opiniones = [] }) {
       <div><b>${r.conPersonaje || 0}</b><span>con personaje</span></div>
     </section>
     ${r.paises.length ? `<p class="paises">${r.paises.map((p) => `<span>${esc(nombrePais(p.pais))} <b>${p.n}</b></span>`).join('')}</p>` : ''}
-    <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s.</p>
+    <p class="aviso">Este navegador ya no cuenta como visita. Se actualiza solo cada 30 s. El lugar sale de la IP: es aproximado, sobre todo en móviles con datos y en iPhone con iCloud Private Relay (marcados con «aprox.»).</p>
     <section class="opiniones"><h2>CORREOS · OPINIONES Y SUGERENCIAS (${opiniones.length})</h2>${opiniones.length ? opiniones.map((o) => `<blockquote><p>${esc(o.texto)}</p><footer>${esc(o.nombre || 'Sin nombre')} · ${o.donde === 'buzon' ? 'buzón del metro' : 'hablando contigo'}${o.pais ? ' · ' + esc(nombrePais(o.pais)) : ''} · <time title="${esc(hora(o.hora))}">${esc(hace(o.hora))}</time></footer></blockquote>`).join('') : '<p class="nada">Todavía no te ha escrito nadie. Lo que te manden desde el juego (hablando contigo o en el buzón del metro) sale aquí y te llega al correo.</p>'}</section>
     <h2 class="titulo-visitas">VISITAS</h2>
     <section class="lista">${visitas.length ? visitas.map(tarjeta).join('') : '<p class="nada">Todavía no ha entrado nadie.</p>'}</section>`

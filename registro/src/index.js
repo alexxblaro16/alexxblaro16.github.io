@@ -64,9 +64,9 @@ async function nuevaVisita(request, env) {
   const { dispositivo, sistema, navegador } = leerAgente(ua, Number(d.tactil) || 0)
   const id = crypto.randomUUID()
   const ahora = Date.now()
-  await env.DB.prepare(`INSERT INTO visitas (id, inicio, ultima, pais, region, ciudad, dispositivo, sistema, navegador, idioma, pantalla, origen, campana)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .bind(id, ahora, ahora, corta(cf.country, 4), corta(cf.region, 60), corta(cf.city, 60), dispositivo, sistema, navegador,
+  await env.DB.prepare(`INSERT INTO visitas (id, inicio, ultima, pais, region, ciudad, red, dispositivo, sistema, navegador, idioma, pantalla, origen, campana)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(id, ahora, ahora, corta(cf.country, 4), corta(cf.region, 60), corta(cf.city, 60), corta(cf.asOrganization, 60), dispositivo, sistema, navegador,
       corta(d.idioma, 12), corta(d.pantalla, 20), corta(d.origen, 80), corta(d.campana, 80))
     .run()
   return json(request, { id })

@@ -64,7 +64,7 @@ a { color: var(--verde); }
 /* ---------- paneles ---------- */
 #panel { position: fixed; inset: 0; z-index: 30; background: #000a; display: grid; place-items: center; padding: 12px; }
 #panel[hidden], #dialogo[hidden], #clasico[hidden], #etiqueta[hidden] { display: none; }
-.ventana { width: min(980px, 100%); max-height: calc(100vh - 24px); display: flex; flex-direction: column;
+.ventana { width: min(980px, 100%); max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); display: flex; flex-direction: column;
   background: var(--editor); border: 3px solid var(--linea); box-shadow: 0 10px 0 #000; }
 .ventana-barra { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #151920; border-bottom: 2px solid var(--linea); }
 .ventana-barra i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
@@ -421,3 +421,16 @@ a { color: var(--verde); }
 #sonando b { font-size: 11px; }
 #sonando i { font-style: normal; color: #9aa3ad; }
 @keyframes sonando { from { box-shadow: 0 0 0 #f2c20000; } to { box-shadow: 0 0 14px #f2c20088; } }
+
+/* Móvil y tableta: iOS amplía la página al escribir en un campo de menos de 16 px y no la devuelve a su tamaño;
+   además se evita el menú de mantener pulsado, la selección de texto y el rebote al arrastrar */
+@media (pointer: coarse) {
+  html, body { overscroll-behavior: none; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-text-size-adjust: 100%; }
+  input, textarea { font-size: 16px !important; -webkit-user-select: text; user-select: text; }
+  button, .boton { touch-action: manipulation; }
+}
+#consejo-iphone { position: fixed; left: 50%; top: calc(64px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 70;
+  width: min(420px, calc(100% - 32px)); box-sizing: border-box; padding: 14px 16px; background: var(--editor); border: 3px solid var(--verde);
+  font-family: system-ui, sans-serif; font-size: 15px; line-height: 1.4; color: var(--texto); box-shadow: 0 6px 0 #0008; }
+#consejo-iphone b { font-family: var(--pixel); font-size: 10px; color: var(--verde); }
+#consejo-iphone p { margin: 8px 0 12px; }
